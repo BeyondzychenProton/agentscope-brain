@@ -1,0 +1,3874 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-page-node-id="zjx2oeRpsChQ9jdWszHVGF"><head data-page-node-id="75mPFoOwJc1WMX7jaGzpNL">
+<meta charset="UTF-8" data-page-node-id="VDlBAJGv71NXEqtNcYE0r8">
+<meta name="viewport" content="width=device-width, initial-scale=1" data-page-node-id="IjVtRFiovwhpxFmcpztxWG">
+<title data-page-node-id="wbc0vguFd2GtpGeOzZ6q31">海卓智慧大脑 · AI 助手</title>
+<style data-page-node-id="rUmKnnUR6iWngLHZJx4eqc">
+/* ============================================================
+   设计变量
+   - 用户态主色：靛蓝（工作区 / 对话）
+   - 管理态主色：墨绿（平台管理，按截图配色）
+   ============================================================ */
+:root{
+  --bg:#F6F6F2;
+  --panel:#FFFFFF;
+  --sidebar:#FAFAF6;
+  --line:#E7E7E0;
+  --line-soft:#F1F1EA;
+  --ink:#1C1C19;
+  --ink-2:#46463F;
+  --muted:#7D7D74;
+  --faint:#A6A69C;
+  --accent:#4F46E5;
+  --accent-soft:#EFEEFC;
+  --accent-line:#DAD8FB;
+  --ok:#12803F;
+  --warn:#B26A05;
+  --err:#B42318;
+  /* 管理端绿色系 */
+  --adm:#2C5F45;
+  --adm-2:#3E4C44;
+  --adm-icon:#84958B;
+  --adm-soft:#E7F1EA;
+  --adm-line:#D2E3D9;
+}
+*{box-sizing:border-box}
+html,body{height:100%}
+body{
+  margin:0;
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;
+  background:var(--bg);
+  color:var(--ink);
+  -webkit-font-smoothing:antialiased;
+  font-size:14px;
+}
+button{font-family:inherit}
+::-webkit-scrollbar{width:8px;height:8px}
+::-webkit-scrollbar-thumb{background:#DCDCD2;border-radius:8px;border:2px solid transparent;background-clip:content-box}
+::-webkit-scrollbar-thumb:hover{background:#C8C8BC;background-clip:content-box}
+::-webkit-scrollbar-track{background:transparent}
+
+.app{display:flex;height:100vh;width:100%;overflow:hidden}
+
+/* ============================================================
+   左侧：工作区管理 + 平台管理
+   ============================================================ */
+.sidebar{
+  width:282px;flex:0 0 282px;position:relative;
+  background:var(--sidebar);
+  border-right:1px solid var(--line);
+  display:flex;flex-direction:column;
+  transition:margin-left .26s cubic-bezier(.4,0,.2,1);
+}
+.sidebar.collapsed{margin-left:-282px}
+
+.sb-top{padding:16px 14px 12px;display:flex;align-items:center;gap:10px}
+.brand-mark{
+  width:30px;height:30px;border-radius:9px;flex:0 0 30px;
+  background:linear-gradient(140deg,#5B52F0,#9B8CF8);
+  color:#fff;display:grid;place-items:center;font-size:14px;
+  box-shadow:0 6px 14px -8px rgba(91,82,240,.9);
+}
+.brand-txt{line-height:1.25}
+.brand-name{font-size:14px;font-weight:650;letter-spacing:.1px}
+.brand-sub{font-size:10.5px;color:var(--faint);letter-spacing:.4px}
+
+.new-chat{
+  margin:2px 12px 10px;height:36px;
+  display:flex;align-items:center;justify-content:center;gap:7px;
+  border:1px solid var(--accent-line);border-radius:10px;
+  background:var(--panel);color:var(--accent);
+  font-size:13px;font-weight:600;cursor:pointer;
+  transition:background .15s,box-shadow .15s;
+}
+.new-chat:hover{background:var(--accent-soft);box-shadow:0 4px 12px -10px rgba(79,70,229,.8)}
+
+.sb-search{margin:0 12px 10px;position:relative}
+.sb-search input{
+  width:100%;height:34px;border-radius:9px;
+  border:1px solid var(--line);background:var(--panel);
+  padding:0 10px 0 31px;font-size:12.5px;color:var(--ink);outline:none;
+  transition:border-color .15s,box-shadow .15s;
+}
+.sb-search input::placeholder{color:var(--faint)}
+.sb-search input:focus{border-color:var(--accent-line);box-shadow:0 0 0 3px rgba(79,70,229,.07)}
+.sb-search svg{position:absolute;left:10px;top:50%;transform:translateY(-50%);color:var(--faint)}
+
+.sb-label{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:8px 18px 6px 20px;
+  font-size:10.5px;font-weight:650;letter-spacing:.9px;color:var(--faint);
+}
+.sb-label button{
+  width:20px;height:20px;border:0;background:transparent;color:var(--faint);
+  border-radius:5px;cursor:pointer;display:grid;place-items:center;font-size:14px;line-height:1;
+}
+.sb-label button:hover{background:#EFEFE8;color:var(--ink-2)}
+
+.sb-scroll{flex:1;overflow-y:auto;padding-bottom:10px}
+
+/* ---------- 平台管理（仅超级管理员可见） ---------- */
+.admin-block{display:none}
+.role-admin .admin-block{display:block;animation:slideDown .26s ease both}
+@keyframes slideDown{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:none}}
+
+.admin-nav{display:flex;flex-direction:column;gap:1px;padding:0 8px}
+.anav{
+  display:flex;align-items:center;gap:10px;width:100%;
+  padding:8px 10px;border:0;border-radius:9px;
+  background:transparent;color:var(--adm-2);
+  font-size:13px;font-weight:560;text-align:left;cursor:pointer;
+  transition:background .14s,color .14s;
+}
+.anav > svg{flex:0 0 14px;width:14px;height:14px;color:var(--adm-icon);transition:color .14s}
+.anav:hover{background:#F2F5F0;color:var(--adm)}
+.anav:hover > svg{color:var(--adm)}
+.anav.active{background:var(--adm-soft);color:var(--adm);font-weight:680}
+.anav.active > svg{color:var(--adm)}
+.anav.parent-on{color:var(--adm);font-weight:650}
+.anav.parent-on > svg{color:var(--adm)}
+
+/* 一级导航 + 二级导航（模型与网关） */
+.anav .cv{margin-left:auto;display:grid;place-items:center;transition:transform .2s}
+.anav .cv svg{width:10px;height:10px;flex:0 0 10px;color:var(--faint)}
+.anav-group.open > .anav .cv{transform:rotate(180deg)}
+.anav-sub{display:none;margin:1px 0 3px 16px;padding-left:9px;border-left:1px solid var(--line)}
+.anav-group.open .anav-sub{display:block}
+.anav.sub{font-size:12.3px;font-weight:520;padding:6px 8px;color:var(--ink-2)}
+.anav.sub:hover{background:#F2F5F0;color:var(--adm)}
+.anav.sub.active{background:var(--adm-soft);color:var(--adm);font-weight:650}
+.sb-divider{height:1px;background:var(--line);margin:8px 14px 2px}
+
+/* 看管理页时，工作区的高亮让位给平台管理，避免出现两个选中态 */
+body.view-admin .ws.active > .ws-head{background:transparent}
+body.view-admin .sitem.active{background:transparent;color:var(--ink-2);font-weight:400;box-shadow:none}
+
+/* 进入平台管理后，侧边栏只留平台导航，不显示工作区与对话 */
+body.view-admin .ws-row,
+body.view-admin .new-chat,
+body.view-admin .sb-search,
+body.view-admin #sessList{display:none}
+
+/* 工作区切换行：固定显示「默认工作区」，不要求用户先选择 */
+.ws-row{
+  display:flex;align-items:center;gap:9px;width:calc(100% - 20px);
+  margin:2px 10px 8px;padding:7px 8px;border-radius:10px;
+  border:1px solid transparent;background:transparent;cursor:pointer;text-align:left;
+  transition:background .15s,border-color .15s;
+}
+.ws-row:hover,.ws-row.open{background:#F1F1E9;border-color:var(--line)}
+.ws-row-tile{
+  width:24px;height:24px;flex:0 0 24px;border-radius:7px;
+  display:grid;place-items:center;font-size:12px;
+}
+.ws-row-txt{flex:1;min-width:0;line-height:1.25}
+.ws-row-txt b{display:block;font-size:12.8px;font-weight:620;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ws-row-txt i{display:block;font-size:10.3px;color:var(--faint);font-style:normal;margin-top:2px}
+.ws-row > svg{color:var(--faint);flex:0 0 10px}
+
+.ws-menu{
+  position:fixed;z-index:80;width:258px;
+  background:var(--panel);border:1px solid var(--line);border-radius:11px;
+  box-shadow:0 18px 40px -22px rgba(0,0,0,.45);padding:5px;display:none;
+}
+.ws-menu.show{display:block;animation:pop .15s ease both}
+.ws-opt{display:flex;align-items:center;gap:8px;padding:8px 9px;border-radius:7px;font-size:12.4px;color:var(--ink-2);cursor:pointer}
+.ws-opt:hover{background:#F5F5EE}
+.ws-opt.on{background:var(--accent-soft);color:var(--accent);font-weight:620}
+.ws-opt .tag-ro{margin-left:auto;font-size:9.5px;color:var(--faint);background:#F2F2EA;border-radius:4px;padding:1px 5px;font-weight:600}
+.ws-menu-foot{padding:7px 9px 4px;margin-top:3px;border-top:1px solid var(--line-soft);font-size:10.4px;color:var(--faint)}
+
+/* 历史会话：按日期分组，倒序排列 */
+.sgroup{margin-bottom:2px}
+.sg-label{padding:9px 20px 4px;font-size:10.3px;font-weight:650;letter-spacing:.8px;color:var(--faint)}
+.sitem{
+  display:flex;align-items:center;gap:5px;
+  margin:1px 8px;padding:7px 6px 7px 10px;border-radius:9px;
+  cursor:pointer;font-size:12.6px;color:var(--ink-2);transition:background .14s;
+}
+.sitem:hover{background:#F1F1E9}
+.sitem.active{background:#fff;color:var(--accent);font-weight:600;box-shadow:0 1px 2px rgba(20,20,15,.05),0 0 0 1px var(--accent-line) inset}
+.sitem-t{flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sitem input{
+  flex:1;min-width:0;border:1px solid var(--accent-line);border-radius:5px;
+  font:inherit;color:var(--ink);padding:1px 4px;outline:none;background:#fff;font-weight:400;
+}
+.smore{
+  width:20px;height:20px;flex:0 0 20px;border:0;background:transparent;border-radius:5px;
+  color:var(--faint);cursor:pointer;display:grid;place-items:center;opacity:0;transition:.14s;
+}
+.sitem:hover .smore,.sitem.active .smore{opacity:1}
+.smore:hover{background:#E7E7DE;color:var(--ink-2)}
+.sempty{padding:10px 20px;font-size:11.6px;color:var(--faint);line-height:1.75}
+.arch-toggle{
+  display:flex;align-items:center;gap:6px;margin:10px 12px 2px;padding:6px 8px;
+  border:0;background:transparent;color:var(--faint);font-size:11px;
+  cursor:pointer;border-radius:7px;width:calc(100% - 24px);text-align:left;
+}
+.arch-toggle:hover{background:#F1F1E9;color:var(--ink-2)}
+
+/* 会话操作菜单 */
+.sess-menu{
+  position:fixed;z-index:80;min-width:140px;
+  background:var(--panel);border:1px solid var(--line);border-radius:10px;
+  box-shadow:0 18px 40px -20px rgba(0,0,0,.42);padding:5px;display:none;
+}
+.sess-menu.show{display:block;animation:pop .14s ease both}
+.sm-item{display:flex;align-items:center;gap:8px;padding:7px 9px;border-radius:7px;font-size:12.3px;color:var(--ink-2);cursor:pointer}
+.sm-item:hover{background:#F5F5EE}
+.sm-item.danger{color:#B42318}
+.sm-item.danger:hover{background:#FDECEA}
+.sm-item svg{opacity:.6}
+
+.sb-foot{
+  border-top:1px solid var(--line);
+  padding:10px 12px;display:flex;align-items:center;gap:9px;
+  cursor:pointer;transition:background .15s;
+}
+.sb-foot:hover{background:#F4F4EE}
+.avatar{
+  width:28px;height:28px;border-radius:50%;flex:0 0 28px;
+  background:#E8E8DE;color:var(--ink-2);
+  display:grid;place-items:center;font-size:12px;font-weight:650;
+  transition:background .2s,color .2s;
+}
+.role-admin .avatar{background:var(--adm-soft);color:var(--adm)}
+.foot-txt{flex:1;min-width:0;line-height:1.35}
+.foot-name{font-size:12.5px;font-weight:600;display:flex;align-items:center;gap:5px}
+.foot-role{font-size:10.5px;color:var(--faint)}
+.role-badge{
+  display:none;font-size:9px;font-weight:700;letter-spacing:.4px;
+  padding:1px 5px;border-radius:4px;background:var(--adm-soft);color:var(--adm);
+}
+.role-admin .role-badge{display:inline-block}
+.icon-btn{
+  width:28px;height:28px;border:0;background:transparent;border-radius:8px;
+  color:var(--muted);cursor:pointer;display:grid;place-items:center;transition:background .15s,color .15s;
+}
+.icon-btn:hover{background:#F1F1E9;color:var(--ink)}
+
+/* 角色切换菜单 */
+.role-menu{
+  position:absolute;left:10px;right:10px;bottom:58px;z-index:40;
+  background:var(--panel);border:1px solid var(--line);border-radius:12px;
+  box-shadow:0 22px 44px -24px rgba(0,0,0,.45);
+  padding:6px;display:none;
+}
+.role-menu.show{display:block;animation:pop .16s ease both}
+.role-opt{display:flex;align-items:flex-start;gap:9px;padding:9px;border-radius:8px;cursor:pointer;transition:background .14s}
+.role-opt:hover{background:#F6F6F0}
+.role-opt.on{background:var(--adm-soft)}
+.role-opt b{font-size:12.5px;font-weight:640;display:block}
+.role-opt span{font-size:10.8px;color:var(--faint);line-height:1.5;display:block;margin-top:3px}
+.role-dot{
+  width:14px;height:14px;flex:0 0 14px;border-radius:50%;
+  border:1.5px solid #D5D5C9;margin-top:2px;
+}
+.role-opt.on .role-dot{border-color:var(--adm);background:radial-gradient(circle at center,var(--adm) 0 4px,transparent 4.5px)}
+.role-tip{
+  font-size:10px;color:var(--faint);padding:6px 9px 3px;border-top:1px solid var(--line-soft);margin-top:4px;
+}
+
+/* ============================================================
+   右侧：对话主界面
+   ============================================================ */
+.main{flex:1;display:flex;flex-direction:column;min-width:0;background:var(--bg)}
+
+.chat-head{
+  height:62px;flex:0 0 62px;
+  display:flex;align-items:center;gap:11px;
+  padding:0 18px;
+  border-bottom:1px solid var(--line);
+  background:rgba(255,255,255,.78);
+  backdrop-filter:blur(10px);
+}
+.head-tile{
+  width:32px;height:32px;border-radius:9px;flex:0 0 32px;
+  display:grid;place-items:center;font-size:15px;
+}
+.head-tile svg{width:16px;height:16px}
+.main.admin-on .head-tile{background:var(--adm-soft);color:var(--adm)}
+.head-txt{min-width:0;flex:1}
+.head-txt h1{margin:0;font-size:14.5px;font-weight:650;letter-spacing:.1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.head-txt p{margin:2px 0 0;font-size:11.5px;color:var(--faint);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.head-actions{display:flex;align-items:center;gap:6px}
+.ghost-btn{
+  height:30px;padding:0 11px;border-radius:8px;
+  border:1px solid var(--line);background:var(--panel);
+  font-size:12.3px;color:var(--ink-2);cursor:pointer;
+  display:inline-flex;align-items:center;gap:5px;transition:.15s;
+}
+.ghost-btn:hover{border-color:var(--accent-line);color:var(--accent);background:#FCFCFF}
+.main.admin-on .ghost-btn:hover{border-color:var(--adm-line);color:var(--adm);background:#FBFDFB}
+
+/* 消息流 */
+.chat-body{flex:1;overflow-y:auto;overflow-x:hidden}
+.stream{max-width:920px;margin:0 auto;padding:26px 30px 6px}
+
+.msg{margin-bottom:26px;animation:rise .28s ease both}
+@keyframes rise{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+.msg.user{display:flex;justify-content:flex-end}
+.bubble{
+  max-width:78%;background:#EDEDE5;color:var(--ink);
+  padding:10px 14px;border-radius:15px 15px 4px 15px;
+  font-size:14px;line-height:1.72;
+}
+.msg.ai{display:flex;gap:11px}
+.ai-avatar{
+  width:28px;height:28px;flex:0 0 28px;border-radius:9px;margin-top:1px;
+  background:linear-gradient(140deg,#5B52F0,#9B8CF8);
+  color:#fff;display:grid;place-items:center;font-size:12px;
+  box-shadow:0 5px 12px -8px rgba(91,82,240,.9);
+}
+.ai-main{flex:1;min-width:0}
+.ai-name{display:flex;align-items:center;gap:8px;margin-bottom:9px;font-size:11.5px;color:var(--faint)}
+.ai-name b{font-size:12.8px;color:var(--ink);font-weight:650}
+.tag{
+  font-size:10px;padding:1.5px 6px;border-radius:5px;
+  background:var(--accent-soft);color:var(--accent);font-weight:650;letter-spacing:.2px;
+}
+.tag.run{background:#FDF3E3;color:var(--warn)}
+
+/* 思考块 */
+/* 思考块：默认折叠，只露一行摘要 */
+.think{border-left:2px solid var(--accent-line);padding-left:12px;margin:0 0 12px}
+.tk{display:flex;align-items:center;gap:6px;cursor:pointer;font-size:11px;color:var(--faint);letter-spacing:.4px;user-select:none}
+.tk:hover{color:var(--muted)}
+.tk .tkc{flex:0 0 9px;transition:transform .18s}
+.think:not(.fold) .tk .tkc{transform:rotate(90deg)}
+.tk .tk-label{flex:0 0 auto}
+.tk .tk-peek{
+  color:var(--faint);letter-spacing:0;font-weight:400;font-size:11px;
+  max-width:min(440px,58%);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
+}
+.think:not(.fold) .tk-peek{display:none}
+.think.fold .tk-body{display:none}
+.tk-body{font-size:12.8px;line-height:1.75;color:var(--muted);margin-top:6px}
+
+/* 工具步骤卡片 */
+.steps{border:1px solid var(--line);border-radius:12px;background:var(--panel);margin-bottom:14px;overflow:hidden}
+.steps-head{
+  display:flex;align-items:center;gap:7px;
+  padding:8px 12px;background:#FBFBF7;border-bottom:1px solid var(--line-soft);
+  font-size:11.8px;color:var(--muted);cursor:pointer;user-select:none;
+}
+.steps-head > svg{transition:transform .18s;flex:0 0 11px}
+.steps:not(.fold) .steps-head > svg{transform:rotate(90deg)}
+.steps.has-fail .steps-head{background:#FEF9F8;border-bottom-color:#F2E2DF}
+.steps.has-fail .steps-head .sh-text{color:#9A3A30}
+.steps-head .cnt{
+  font-family:ui-monospace,"SF Mono",Consolas,monospace;
+  font-size:10.5px;color:var(--faint);background:#F1F1E8;border-radius:4px;padding:0 5px;
+}
+.steps.fold .steps-body{display:none}
+.step{padding:8px 12px;border-bottom:1px solid var(--line-soft);cursor:pointer}
+.step:last-child{border-bottom:0}
+.step:hover{background:#FDFDFB}
+.step-row{display:flex;align-items:center;gap:8px;font-size:12.3px}
+.st{width:13px;flex:0 0 13px;display:grid;place-items:center;font-size:10.5px}
+.st.done{color:var(--ok)}
+.st.fail{color:#B42318}
+.step.fail .step-name{color:#9A3A30}
+.step.fail .step-fn{background:#FBEFED;color:#A9564B}
+.st.wait{color:var(--faint)}
+.step-name{color:var(--ink-2);font-weight:560}
+.step-fn{
+  font-family:ui-monospace,"SF Mono",Consolas,monospace;font-size:10.5px;
+  color:var(--muted);background:#F4F4ED;border-radius:4px;padding:1px 5px;
+}
+.step-ms{margin-left:auto;font-size:10.5px;color:var(--faint);font-variant-numeric:tabular-nums}
+.step-body{
+  display:none;margin:8px 0 2px 21px;
+  font-family:ui-monospace,"SF Mono",Consolas,monospace;
+  font-size:11px;line-height:1.7;color:var(--muted);
+  background:#FAFAF6;border:1px solid var(--line-soft);border-radius:7px;
+  padding:8px 10px;white-space:pre-wrap;
+}
+.step.open .step-body{display:block}
+
+/* 正文 */
+.answer{font-size:14.6px;line-height:1.8;color:#25251F;word-wrap:break-word}
+.answer p{margin:0 0 9px}
+.answer p:last-child{margin-bottom:0}
+.answer ul{margin:2px 0 10px;padding-left:19px}
+.answer li{margin:2px 0}
+.answer strong{font-weight:650;color:var(--ink)}
+.answer code{
+  font-family:ui-monospace,"SF Mono",Consolas,monospace;font-size:12.4px;
+  background:#F2F2EA;border-radius:4px;padding:1px 5px;color:#37372F;
+}
+.answer table{width:100%;border-collapse:collapse;margin:10px 0 12px;font-size:13px;border:1px solid var(--line);border-radius:10px;overflow:hidden}
+.answer th{background:#FAFAF5;text-align:left;font-weight:650;color:var(--ink-2);padding:8px 11px;border-bottom:1px solid var(--line);font-size:12.3px}
+.answer td{padding:8px 11px;border-bottom:1px solid var(--line-soft);color:var(--ink-2)}
+.answer tr:last-child td{border-bottom:0}
+
+/* 引用 */
+.refs{display:flex;flex-wrap:wrap;gap:6px;margin-top:13px}
+.ref{
+  display:inline-flex;align-items:center;gap:5px;
+  font-size:11.2px;color:var(--muted);
+  border:1px solid var(--line);background:var(--panel);
+  border-radius:7px;padding:3px 8px;cursor:pointer;transition:.15s;
+}
+.ref:hover{border-color:var(--accent-line);color:var(--accent);background:#FCFCFF}
+.ref i{font-style:normal;font-size:9px;color:var(--faint);font-weight:700;background:#F2F2EA;border-radius:3px;padding:0 3px}
+
+/* 产出文件卡片 */
+.artifact{margin-top:13px;display:flex;align-items:center;gap:11px;border:1px solid var(--line);border-radius:12px;background:var(--panel);padding:10px 12px;max-width:430px;transition:.15s}
+.artifact:hover{border-color:var(--accent-line);box-shadow:0 8px 22px -18px rgba(20,20,15,.5)}
+.art-ic{width:34px;height:34px;flex:0 0 34px;border-radius:9px;background:#EFF2FF;display:grid;place-items:center;font-size:15px}
+.art-txt{flex:1;min-width:0;line-height:1.35}
+.art-txt b{display:block;font-size:12.5px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.art-txt span{font-size:10.8px;color:var(--faint)}
+.art-open{height:26px;padding:0 10px;border-radius:7px;border:1px solid var(--line);background:var(--panel);font-size:11.5px;color:var(--ink-2);cursor:pointer}
+.art-open:hover{border-color:var(--accent-line);color:var(--accent)}
+
+/* 空状态：招呼卡片 + 建议 */
+.welcome{max-width:100%;margin:0;padding:2px 0 0;animation:rise .35s ease both;text-align:left}
+
+.hero{
+  position:relative;overflow:hidden;
+  display:flex;align-items:center;gap:20px;
+  border:1px solid #E2EEE6;border-radius:16px;
+  background:linear-gradient(118deg,#F9FCFA 0%,#F5FAF7 52%,#F1F8F3 100%);
+  padding:22px 24px;
+  box-shadow:0 1px 2px rgba(20,40,28,.03);
+}
+.hero::after{
+  content:"";position:absolute;right:-50px;top:-80px;width:270px;height:270px;border-radius:50%;
+  background:radial-gradient(circle,rgba(178,220,192,.42),transparent 68%);pointer-events:none;
+}
+.hero-body{flex:1;min-width:0;position:relative;z-index:1}
+.hero-chip{
+  display:inline-flex;align-items:center;gap:5px;
+  background:#E2F0E6;color:#2A6A49;
+  font-size:10.4px;font-weight:650;letter-spacing:.3px;
+  padding:3px 8px 3px 6px;border-radius:6px;
+}
+.hero-chip i{width:5px;height:5px;border-radius:1.5px;background:#2A6A49;display:inline-block}
+.hero h2{
+  margin:11px 0 0;font-size:23px;font-weight:700;letter-spacing:-.6px;color:#14251C;
+  display:flex;align-items:center;gap:7px;line-height:1.35;
+}
+.hero h2 svg{width:19px;height:19px;flex:0 0 19px;color:#245B3E}
+.hero p{
+  margin:9px 0 0;max-width:520px;
+  font-size:12.6px;line-height:1.9;color:#5E6E64;
+}
+.hero-actions{display:flex;gap:8px;margin-top:16px}
+.hero-primary{
+  height:34px;padding:0 14px;border-radius:8px;border:0;
+  background:#1F5B3F;color:#fff;font-size:12.8px;font-weight:650;
+  display:inline-flex;align-items:center;gap:6px;cursor:pointer;
+  transition:.15s;box-shadow:0 8px 18px -14px rgba(31,91,63,.9);
+}
+.hero-primary:hover{background:#184B33;transform:translateY(-1px)}
+.hero-art{position:relative;flex:0 0 132px;height:120px;display:grid;place-items:center;z-index:1}
+.art-tile{
+  width:92px;height:92px;
+  border-radius:34px 30px 36px 28px;
+  background:linear-gradient(150deg,#CBE6D3 0%,#A3CFB3 58%,#8FC2A4 100%);
+  transform:rotate(-9deg);
+  display:grid;place-items:center;
+  box-shadow:0 20px 36px -22px rgba(44,95,69,.7),inset 0 1px 0 rgba(255,255,255,.85);
+}
+.art-tile svg{width:30px;height:30px;color:#2A5D44;transform:rotate(9deg)}
+
+.sug-label{
+  margin:22px 0 9px;font-size:10.6px;font-weight:650;
+  letter-spacing:.9px;color:var(--faint);
+}
+.suggests{display:grid;grid-template-columns:1fr 1fr;gap:9px;text-align:left}
+.sc{border:1px solid var(--line);background:var(--panel);border-radius:11px;padding:10px 12px;cursor:pointer;transition:.16s}
+.sc:hover{border-color:var(--accent-line);transform:translateY(-1px);box-shadow:0 10px 22px -18px rgba(20,20,15,.6)}
+.sc b{display:block;font-size:12.6px;font-weight:620;margin-bottom:3px;color:var(--ink)}
+.sc span{font-size:11.4px;color:var(--muted);line-height:1.55}
+
+/* 欢迎页只留一张演示入口卡片 */
+.suggests.one{grid-template-columns:1fr}
+.sc.demo{display:flex;align-items:center;gap:12px;padding:12px 14px}
+.sc-txt{flex:1;min-width:0}
+.sc.demo b{font-size:13px;margin-bottom:4px}
+.sc-go{font-size:11.6px;color:var(--accent);font-weight:600;white-space:nowrap}
+.sc.demo:hover .sc-go{text-decoration:underline}
+
+/* ---------- 端到端演示用卡片 ---------- */
+.dcard{border:1px solid var(--line);background:var(--panel);border-radius:12px;padding:13px 14px;margin:12px 0 0}
+.dcard-h{display:flex;align-items:center;gap:7px;font-size:11.4px;font-weight:650;color:var(--muted);letter-spacing:.3px;margin-bottom:11px}
+.dcard-h .dot{width:5px;height:5px;border-radius:50%;background:#4E9A72;flex:0 0 5px}
+.slots{display:grid;grid-template-columns:repeat(3,1fr);gap:11px 16px}
+.slot .k{font-size:10.4px;color:var(--faint);margin-bottom:3px}
+.slot .v{font-size:12.6px;color:var(--ink);font-weight:560;line-height:1.45}
+.slot .v em{font-style:normal;color:var(--faint);font-weight:400;font-size:11px}
+
+.disamb{display:flex;gap:8px;flex-wrap:wrap}
+.dopt{display:flex;align-items:center;gap:6px;border:1px solid var(--line);border-radius:8px;padding:7px 10px;font-size:12px;color:var(--muted)}
+.dopt.hit{border-color:#BFDCC9;background:#F2FAF5;color:#2C5F45;font-weight:600}
+.dopt.miss{opacity:.5}
+.dnote{margin-top:10px;font-size:11.2px;color:var(--faint);line-height:1.7}
+.dnote b{color:var(--muted);font-weight:600}
+.qline{font-size:12.9px;color:var(--ink-2);line-height:1.7;margin-bottom:11px}
+.slot .v em.just{color:#2C5F45;background:#E7F1EA;border-radius:4px;padding:0 4px;font-size:9.6px;font-weight:700;margin-left:3px}
+.slot .v em.miss{color:#9A3A30;background:#FBEFED;border-radius:4px;padding:0 4px;font-size:9.6px;font-weight:700;margin-left:3px}
+.slot .pe{font-size:9.5px;color:var(--faint);opacity:.75}
+.slot.editable{cursor:text}
+.slot.editable:hover .v{color:var(--accent)}
+.slot .v input{
+  width:100%;border:1px solid var(--accent-line);border-radius:5px;padding:1px 5px;
+  font:inherit;font-weight:500;color:var(--ink);outline:none;background:#fff;
+}
+.slot-hint{margin-top:11px;font-size:10.5px;color:var(--faint)}
+.syncnote{
+  margin-top:11px;background:#F2FAF5;border:1px solid #CFE4D8;color:#2C5F45;
+  border-radius:8px;padding:8px 10px;font-size:11.3px;line-height:1.65;
+}
+.syncnote b{font-weight:650}
+
+/* 多问题澄清卡 */
+.qblock{margin-bottom:13px}
+.qblock:last-of-type{margin-bottom:4px}
+.qtitle{font-size:12.4px;color:var(--ink-2);font-weight:600;margin-bottom:8px;display:flex;align-items:center;gap:6px}
+.qtitle i{
+  width:15px;height:15px;border-radius:50%;background:var(--accent-soft);color:var(--accent);
+  font-style:normal;font-size:9.5px;font-weight:700;display:grid;place-items:center;flex:0 0 15px;
+}
+.qtitle span{font-size:10.6px;color:var(--faint);font-weight:400}
+.qopts{display:flex;gap:7px;flex-wrap:wrap}
+.qopt{
+  height:30px;padding:0 12px;border-radius:8px;border:1px solid var(--line);
+  background:#fff;font-size:12.2px;color:var(--ink-2);cursor:pointer;transition:.14s;
+}
+.qopt:hover{border-color:var(--accent-line);color:var(--accent)}
+.qopt.on{border-color:var(--accent);background:var(--accent-soft);color:var(--accent);font-weight:650}
+.qfoot{display:flex;align-items:center;gap:10px;margin-top:4px;padding-top:11px;border-top:1px solid var(--line-soft)}
+.qhint{font-size:11px;color:var(--faint);flex:1}
+.cbtn:disabled{opacity:.45;cursor:not-allowed}
+
+/* 可折叠的说明卡（同名实体消歧） */
+.dcard-h[data-dtoggle]{cursor:pointer;user-select:none}
+.dcard-h[data-dtoggle]:hover{color:var(--ink-2)}
+.dcard-h .dcv{transition:transform .18s;flex:0 0 11px;color:var(--faint)}
+.dcard:not(.fold) .dcard-h .dcv{transform:rotate(90deg)}
+.dcard.fold .dcard-body{display:none}
+.warncard{border-color:#F0D8D3;background:#FEFBFA}
+.failrow{display:flex;align-items:center;gap:8px;font-size:12.2px;color:var(--ink-2);line-height:1.6;margin-bottom:2px}
+
+.picks{display:flex;flex-direction:column;gap:7px}
+.pick{display:flex;align-items:center;gap:9px;border:1px solid var(--line);border-radius:9px;padding:9px 11px;cursor:pointer;font-size:12.5px;transition:.14s}
+.pick:hover{border-color:#BFDCC9;background:#FBFDFB}
+.pick .pt{font-weight:620;color:var(--ink);font-variant-numeric:tabular-nums}
+.pick .pn{font-size:11px;color:var(--faint);margin-left:auto}
+.pick .badge{font-size:9.6px;font-weight:700;color:#2C5F45;background:#E7F1EA;border-radius:4px;padding:1px 5px}
+.pick .pdot{width:13px;height:13px;border-radius:50%;border:1.5px solid #D5D5C9;flex:0 0 13px}
+.pick.done{pointer-events:none;opacity:.5}
+.pick.on{border-color:#1F5B3F;background:#F4FAF6;opacity:1}
+.pick.on .pdot{border-color:#1F5B3F;background:radial-gradient(circle at center,#1F5B3F 0 3.5px,transparent 4px)}
+
+.confirm{border:1px solid #D9E6DE;background:linear-gradient(180deg,#FBFDFC,#F6FAF7);border-radius:13px;padding:15px 16px;margin:12px 0 0}
+.confirm h4{margin:0 0 4px;font-size:14.5px;font-weight:680;color:#14251C}
+.confirm .when{font-size:12.6px;color:#2C5F45;font-weight:620;margin-bottom:11px;font-variant-numeric:tabular-nums}
+.crow{display:flex;gap:8px;padding:7px 0;border-top:1px solid #E8F0EB;font-size:12.2px}
+.crow .ck{width:50px;flex:0 0 50px;color:#9AA69E;font-size:11.4px;padding-top:1px}
+.crow .cv2{flex:1;color:#2F3A33;line-height:1.6}
+.cwarn{margin-top:11px;background:#FDF7EC;border:1px solid #F2E2C6;color:#8A5A12;border-radius:8px;padding:8px 10px;font-size:11.5px;line-height:1.6}
+.cactions{display:flex;gap:8px;margin-top:13px}
+.cbtn{height:32px;padding:0 14px;border-radius:8px;border:1px solid var(--line);background:#fff;font-size:12.4px;color:var(--ink-2);cursor:pointer;transition:.14s}
+.cbtn:hover{border-color:#BFDCC9;color:#2C5F45}
+.cbtn.primary{background:#1F5B3F;border-color:#1F5B3F;color:#fff;font-weight:640}
+.cbtn.primary:hover{background:#184B33;color:#fff}
+.cbtn.done{pointer-events:none;opacity:.45}
+
+.receipt{border:1px solid #CFE4D8;background:#F7FCF9;border-radius:13px;padding:14px 16px;margin:12px 0 0}
+.receipt .rh{display:flex;align-items:center;gap:7px;font-size:13.4px;font-weight:680;color:#14251C;margin-bottom:10px}
+.receipt .rh .okc{width:17px;height:17px;border-radius:50%;background:#1F5B3F;color:#fff;display:grid;place-items:center;font-size:10px;flex:0 0 17px}
+.rrow{display:flex;gap:8px;padding:6px 0;font-size:12.2px;border-top:1px solid #E4F0E8}
+.rrow .rk{width:62px;flex:0 0 62px;color:#9AA69E;font-size:11.4px}
+.rrow .rv{flex:1;color:#2F3A33}
+.rrow .rv code{font-family:ui-monospace,"SF Mono",Consolas,monospace;font-size:11.5px;background:#EAF4EE;border-radius:4px;padding:1px 5px;color:#2C5F45}
+
+/* 输入区：大圆角输入框（参考截图） */
+.composer-wrap{flex:0 0 auto;padding:0 30px 14px}
+.composer-box{max-width:860px;margin:0 auto}
+.composer{
+  border:1px solid #E9E9E3;background:var(--panel);border-radius:18px;
+  padding:13px 14px 9px;
+  box-shadow:0 1px 2px rgba(20,20,15,.03),0 12px 30px -26px rgba(20,20,15,.6);
+  transition:border-color .16s,box-shadow .16s;
+}
+.composer.focus{border-color:#D7D7CC;box-shadow:0 0 0 3px rgba(79,70,229,.06),0 12px 30px -26px rgba(20,20,15,.6)}
+.composer textarea{
+  width:100%;border:0;outline:0;resize:none;background:transparent;
+  font-family:inherit;font-size:13.8px;line-height:1.7;color:var(--ink);
+  max-height:160px;min-height:46px;display:block;
+}
+.composer textarea::placeholder{color:#B4B4AC}
+.cbar{display:flex;align-items:center;gap:8px;margin-top:6px}
+
+/* 左侧：+ 与范围选择 */
+.plus-btn{
+  width:29px;height:29px;flex:0 0 29px;border-radius:50%;border:0;
+  background:#F3F3ED;color:#4A4A42;cursor:pointer;
+  display:grid;place-items:center;transition:.14s;
+}
+.plus-btn:hover{background:#E8E8E0}
+
+/* 右侧：思考开关 / 语音 / 发送 */
+.cbar-right{margin-left:auto;display:flex;align-items:center;gap:8px}
+.think-btn{
+  height:28px;padding:0 10px;border-radius:8px;border:1px solid var(--line);
+  background:#fff;font-size:12.2px;color:#5C6270;cursor:pointer;
+  display:inline-flex;align-items:center;gap:5px;transition:.16s;
+}
+.think-btn:hover{border-color:var(--accent-line);color:var(--accent)}
+.think-btn.on{
+  background:var(--accent-soft);border-color:var(--accent-line);
+  color:var(--accent);font-weight:650;
+}
+.mic-btn{
+  width:28px;height:28px;border:0;background:transparent;border-radius:7px;
+  color:#5C6270;cursor:pointer;display:grid;place-items:center;transition:.14s;
+}
+.mic-btn:hover{background:#F3F3ED}
+.send{
+  width:31px;height:31px;flex:0 0 31px;border-radius:50%;border:0;cursor:pointer;
+  background:#C3CDF7;color:#fff;display:grid;place-items:center;transition:.15s;
+}
+.send:hover{background:#AEB9F2}
+.send:disabled{background:#E5E5DD;cursor:not-allowed}
+.hint{text-align:center;font-size:10.4px;color:var(--faint);margin:9px 0 0}
+
+/* ============================================================
+   管理端页面
+   ============================================================ */
+.admin-body{display:none;flex:1;overflow-y:auto;background:var(--bg)}
+.main.admin-on .admin-body{display:block}
+.main.admin-on .chat-body,
+.main.admin-on .composer-wrap{display:none}
+.main.admin-on #btnShare,
+.main.admin-on #btnSteps,
+.main.admin-on #btnReplay{display:none}
+#btnRefresh{display:none}
+.main.admin-on #btnRefresh{display:inline-flex}
+
+.apage{max-width:1000px;margin:0 auto;padding:24px 30px 44px}
+.ptool{display:flex;align-items:center;gap:8px;margin-bottom:13px}
+.ptool .grow{flex:1}
+.ptool input{
+  height:30px;width:230px;border:1px solid var(--line);border-radius:8px;
+  padding:0 10px;font-size:12.3px;outline:none;background:var(--panel);color:var(--ink);
+}
+.ptool input:focus{border-color:var(--adm-line);box-shadow:0 0 0 3px rgba(44,95,69,.07)}
+.ptool input::placeholder{color:var(--faint)}
+
+.kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:11px;margin-bottom:12px}
+.kpi{border:1px solid var(--line);background:var(--panel);border-radius:12px;padding:13px 14px}
+.k-lab{font-size:11.3px;color:var(--faint);letter-spacing:.2px}
+.k-val{font-size:25px;font-weight:680;letter-spacing:-.8px;margin:8px 0 5px;font-variant-numeric:tabular-nums;color:var(--ink)}
+.k-val em{font-size:12px;color:var(--faint);font-style:normal;font-weight:500;margin-left:2px;letter-spacing:0}
+.k-delta{font-size:10.8px;color:var(--faint)}
+.k-delta.up{color:var(--adm)}
+.k-delta.down{color:var(--err)}
+
+.card{border:1px solid var(--line);background:var(--panel);border-radius:12px;padding:14px 16px;margin-bottom:12px}
+.card h3{
+  margin:0 0 13px;font-size:12.8px;font-weight:660;color:var(--ink);
+  display:flex;align-items:center;gap:8px;
+}
+.card h3 .more{margin-left:auto;font-size:11px;color:var(--faint);font-weight:400;cursor:pointer}
+.card h3 .more:hover{color:var(--adm)}
+.grid-2{display:grid;grid-template-columns:1.32fr 1fr;gap:12px}
+
+/* 柱状图 */
+.bars{display:flex;align-items:flex-end;gap:10px;height:148px;padding:4px 2px 0}
+.bar-col{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;gap:7px;height:100%}
+.bar{
+  width:100%;max-width:36px;border-radius:5px 5px 2px 2px;
+  background:linear-gradient(180deg,#8CC4A6,#2C5F45);
+  transition:opacity .15s,transform .15s;
+}
+.bar:hover{opacity:.82;transform:translateY(-2px)}
+.bar-x{font-size:10px;color:var(--faint)}
+
+/* 模型占比 */
+.mrow{margin-bottom:12px}
+.mrow:last-child{margin-bottom:0}
+.mtop{display:flex;justify-content:space-between;font-size:12.2px;color:var(--ink-2);margin-bottom:6px}
+.mtop b{font-variant-numeric:tabular-nums;font-weight:600;font-size:11.8px;color:var(--muted)}
+.progress{height:6px;border-radius:4px;background:var(--line-soft);overflow:hidden}
+.progress i{display:block;height:100%;border-radius:4px;background:linear-gradient(90deg,#4F8A6B,#2C5F45)}
+
+/* 表格 */
+table.t{width:100%;border-collapse:collapse;font-size:12.4px}
+table.t th{
+  text-align:left;font-weight:600;color:var(--faint);font-size:10.8px;
+  letter-spacing:.4px;padding:0 10px 8px 0;border-bottom:1px solid var(--line);
+}
+table.t td{padding:10px 10px 10px 0;border-bottom:1px solid var(--line-soft);color:var(--ink-2);vertical-align:middle}
+table.t tr:last-child td{border-bottom:0}
+table.t td:last-child,table.t th:last-child{padding-right:0;text-align:right}
+table.t b{font-weight:640;color:var(--ink);font-size:12.5px}
+.sub2{font-size:10.5px;color:var(--faint);margin-top:2px;font-weight:400}
+.num{font-variant-numeric:tabular-nums}
+.lnk{color:var(--adm);font-weight:600;cursor:pointer;font-size:12px}
+.lnk:hover{text-decoration:underline}
+.mini-btn{
+  display:inline-flex;align-items:center;height:24px;padding:0 9px;
+  border:1px solid var(--line);border-radius:6px;background:#fff;
+  font-size:11.5px;color:var(--ink-2);cursor:pointer;transition:.14s;white-space:nowrap;
+}
+.mini-btn:hover{border-color:var(--adm-line);color:var(--adm)}
+
+.pill{font-size:10.5px;padding:2px 7px;border-radius:5px;font-weight:650;display:inline-block;letter-spacing:.2px;white-space:nowrap}
+.pill.ok{background:var(--adm-soft);color:var(--adm)}
+.pill.warn{background:#FCF1E0;color:#B26A05}
+.pill.err{background:#FCECEA;color:var(--err)}
+.pill.off{background:#F1F1EA;color:var(--muted)}
+
+/* 异常列表 */
+.exc{display:flex;gap:9px;padding:10px 0;border-bottom:1px solid var(--line-soft)}
+.exc:last-child{border-bottom:0;padding-bottom:0}
+.exc-t{flex:1;min-width:0}
+.exc-t b{display:block;font-size:12.3px;font-weight:600;color:var(--ink);margin-bottom:3px}
+.exc-t span{font-size:10.8px;color:var(--faint);line-height:1.5}
+
+/* Skills 卡片 */
+.sgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:11px}
+.skcard{border:1px solid var(--line);background:var(--panel);border-radius:12px;padding:13px 14px;display:flex;flex-direction:column;gap:9px;transition:.16s}
+.skcard:hover{border-color:var(--adm-line);box-shadow:0 10px 24px -20px rgba(20,20,15,.6)}
+.sk-top{display:flex;align-items:center;gap:8px}
+.sk-ic{width:26px;height:26px;border-radius:8px;background:var(--adm-soft);color:var(--adm);display:grid;place-items:center;font-size:13px;flex:0 0 26px}
+.sk-top b{font-size:12.6px;font-weight:650;color:var(--ink)}
+.skcard p{margin:0;font-size:11.5px;color:var(--muted);line-height:1.65;min-height:38px}
+.sk-foot{display:flex;align-items:center;gap:8px;font-size:10.6px;color:var(--faint);border-top:1px solid var(--line-soft);padding-top:9px;margin-top:auto}
+.sk-foot .sw{margin-left:auto;width:26px;height:15px;border-radius:9px;background:var(--adm);position:relative;cursor:pointer}
+.sk-foot .sw::after{content:"";position:absolute;top:2px;right:2px;width:11px;height:11px;border-radius:50%;background:#fff}
+.sk-foot .sw.off{background:#DEDED4}
+.sk-foot .sw.off::after{right:auto;left:2px}
+
+/* 角色统计小卡 */
+.rstat{display:grid;grid-template-columns:repeat(3,1fr);gap:11px;margin-bottom:12px}
+.rs{border:1px solid var(--line);background:var(--panel);border-radius:12px;padding:12px 14px;display:flex;align-items:center;gap:11px}
+.rs .rs-ic{width:32px;height:32px;border-radius:9px;background:var(--adm-soft);color:var(--adm);display:grid;place-items:center;font-size:14px;flex:0 0 32px}
+.rs b{display:block;font-size:19px;font-weight:680;letter-spacing:-.4px;font-variant-numeric:tabular-nums}
+.rs span{font-size:10.8px;color:var(--faint)}
+
+/* 审计筛选 */
+.filters{display:flex;gap:6px;margin-bottom:12px;flex-wrap:wrap}
+.fchip{
+  height:27px;padding:0 11px;border-radius:7px;border:1px solid var(--line);
+  background:var(--panel);font-size:11.8px;color:var(--muted);cursor:pointer;
+}
+.fchip:hover{border-color:var(--adm-line);color:var(--adm)}
+.fchip.on{background:var(--adm-soft);border-color:var(--adm-line);color:var(--adm);font-weight:650}
+
+/* 视角切换（超管视角 / 普通用户视角） */
+.vtabs{display:flex;gap:2px;background:#F1F1EA;border-radius:8px;padding:2px}
+.vtab{height:26px;padding:0 11px;border:0;background:transparent;border-radius:6px;font-size:11.8px;color:var(--muted);cursor:pointer;transition:.14s}
+.vtab:hover{color:var(--ink-2)}
+.vtab.on{background:#fff;color:var(--adm);font-weight:650;box-shadow:0 1px 2px rgba(20,20,15,.08)}
+
+/* 权限配置抽屉 */
+.drawer-mask{position:fixed;inset:0;background:rgba(20,30,24,.3);display:none;z-index:70;backdrop-filter:blur(1px)}
+.drawer-mask.show{display:block}
+.drawer{
+  position:fixed;top:0;right:0;bottom:0;width:440px;max-width:94vw;background:#fff;z-index:71;
+  display:flex;flex-direction:column;transform:translateX(102%);
+  transition:transform .26s cubic-bezier(.4,0,.2,1);
+  box-shadow:-24px 0 60px -34px rgba(0,0,0,.55);
+}
+.drawer.show{transform:none}
+.dr-head{padding:17px 20px 13px;border-bottom:1px solid var(--line);display:flex;align-items:flex-start;gap:10px}
+.dr-head h3{margin:0;font-size:15px;font-weight:680}
+.dr-head .ds{display:flex;align-items:center;gap:6px;font-size:11.5px;color:var(--faint);margin-top:6px}
+.ava-lg{width:32px;height:32px;border-radius:50%;background:#E8E8DE;color:var(--ink-2);display:grid;place-items:center;font-size:13px;font-weight:650;flex:0 0 32px}
+.dr-body{flex:1;overflow-y:auto;padding:2px 20px 16px}
+.dr-foot{padding:12px 20px;border-top:1px solid var(--line);display:flex;align-items:center;gap:8px}
+.dr-foot .fh{font-size:10.6px;color:var(--faint);flex:1;line-height:1.55}
+.dsec{padding:14px 0;border-bottom:1px solid var(--line-soft)}
+.dsec:last-child{border-bottom:0}
+.dsec-h{display:flex;align-items:center;gap:8px;font-size:12.6px;font-weight:650;color:var(--ink);margin-bottom:5px}
+.dsec-h .n{font-size:10.5px;color:var(--faint);font-weight:400;margin-left:auto}
+.dsec-p{font-size:11.2px;color:var(--faint);line-height:1.65;margin:0 0 10px}
+.chk{
+  display:flex;align-items:flex-start;gap:9px;padding:8px 9px;border-radius:8px;
+  border:1px solid var(--line);margin-bottom:6px;cursor:pointer;transition:.14s;
+}
+.chk:hover{border-color:var(--adm-line);background:#FBFDFB}
+.chk input{margin:2px 0 0;accent-color:#1F5B3F;flex:0 0 auto;cursor:pointer}
+.chk .cx{flex:1;min-width:0}
+.chk .cx b{font-size:12.2px;font-weight:620;color:var(--ink-2);display:block}
+.chk .cx span{font-size:10.8px;color:var(--faint);display:block;margin-top:2px;line-height:1.5}
+.chk.off{opacity:.55}
+.chk input:disabled{cursor:not-allowed}
+.radios{display:flex;flex-direction:column;gap:6px}
+.mini-btn.disabled{opacity:.45;pointer-events:none}
+.t-plain table.t td:last-child,.t-plain table.t th:last-child{text-align:left}
+.note-list{margin:0;padding-left:18px;font-size:12px;line-height:1.85;color:var(--ink-2)}
+.note-list li{margin:2px 0}
+
+/* 路由策略：规则卡片 */
+.rlist{display:flex;flex-direction:column;gap:10px}
+.rcard{border:1px solid var(--line);background:var(--panel);border-radius:12px;padding:13px 15px;transition:.15s}
+.rcard:hover{border-color:var(--adm-line)}
+.rc-head{display:flex;align-items:center;gap:8px;margin-bottom:11px}
+.rc-head b{font-size:13px;font-weight:650;color:var(--ink)}
+.rnum{
+  font-family:ui-monospace,"SF Mono",Consolas,monospace;font-size:10.5px;color:var(--faint);
+  background:#F4F4ED;border-radius:4px;padding:1px 5px;
+}
+.rtoggle{margin-left:auto;width:28px;height:16px;border-radius:9px;background:var(--adm);position:relative;cursor:pointer;flex:0 0 28px}
+.rtoggle::after{content:"";position:absolute;top:2px;right:2px;width:12px;height:12px;border-radius:50%;background:#fff;transition:.15s}
+.rtoggle.off{background:#DEDED4}
+.rtoggle.off::after{right:auto;left:2px}
+.rflow{display:flex;align-items:center;gap:7px;flex-wrap:wrap;font-size:11.8px;line-height:1.9}
+.rnode{background:#F5F5EE;border:1px solid var(--line);border-radius:6px;padding:3px 8px;color:var(--ink-2)}
+.rnode.target{background:var(--adm-soft);border-color:var(--adm-line);color:var(--adm);font-weight:650}
+.rarrow{color:var(--faint);font-size:10.8px}
+.rmeta{margin-top:9px;font-size:10.8px;color:var(--faint)}
+
+/* 调用诊断：耗时分解条 */
+.tbar{display:flex;height:10px;border-radius:5px;overflow:hidden;margin:10px 0 9px;background:#F1F1EA}
+.tbar i{display:block;height:100%}
+.tlegend{display:flex;gap:14px;flex-wrap:wrap;font-size:10.8px;color:var(--muted)}
+.tlegend span{display:inline-flex;align-items:center;gap:5px}
+.tlegend em{width:7px;height:7px;border-radius:2px;font-style:normal;display:inline-block}
+.trace-head{display:flex;align-items:center;gap:8px;margin-bottom:2px}
+.trace-head .rid{
+  font-family:ui-monospace,"SF Mono",Consolas,monospace;font-size:11px;
+  background:#F4F4ED;border-radius:4px;padding:1px 6px;color:var(--muted);
+}
+
+/* ============================================================
+   弹层 / 提示
+   ============================================================ */
+@keyframes pop{from{opacity:0;transform:scale(.97) translateY(6px)}to{opacity:1;transform:none}}
+.btn-ghost{height:32px;padding:0 13px;border-radius:8px;border:1px solid var(--line);background:var(--panel);font-size:12.5px;color:var(--ink-2);cursor:pointer}
+.btn-solid{height:32px;padding:0 15px;border-radius:8px;border:0;background:var(--accent);color:#fff;font-size:12.5px;font-weight:600;cursor:pointer}
+.btn-solid:hover{background:#443BD8}
+.btn-adm{background:var(--adm)}
+.btn-adm:hover{background:#24503A}
+
+.toast{
+  position:fixed;left:50%;bottom:34px;transform:translate(-50%,14px);
+  background:#242420;color:#fff;font-size:12.5px;
+  padding:9px 15px;border-radius:9px;opacity:0;pointer-events:none;
+  transition:.24s;z-index:60;box-shadow:0 14px 34px -18px rgba(0,0,0,.7);
+}
+.toast.show{opacity:1;transform:translate(-50%,0)}
+
+.caret{display:inline-block;width:2px;height:14px;background:var(--accent);vertical-align:-2px;margin-left:2px;animation:blink 1s steps(1) infinite}
+@keyframes blink{50%{opacity:0}}
+.spin{width:9px;height:9px;border:1.5px solid var(--accent-line);border-top-color:var(--accent);border-radius:50%;animation:rot .7s linear infinite}
+@keyframes rot{to{transform:rotate(360deg)}}
+
+@media (max-width:1100px){
+  .kpis{grid-template-columns:repeat(2,1fr)}
+  .grid-2{grid-template-columns:1fr}
+  .sgrid{grid-template-columns:repeat(2,1fr)}
+}
+@media (max-width:860px){
+  .sidebar{position:absolute;z-index:30;height:100%;box-shadow:14px 0 40px -30px rgba(0,0,0,.5)}
+  .stream{padding:20px 16px 6px}
+  .composer-wrap{padding:0 16px 12px}
+  .suggests{grid-template-columns:1fr}
+  .apage{padding:18px 16px 32px}
+  .rstat{grid-template-columns:1fr}
+  .sgrid{grid-template-columns:1fr}
+  .hero{padding:18px 18px;gap:12px}
+  .hero-art{display:none}
+  .hero h2{font-size:20px}
+  .slots{grid-template-columns:1fr 1fr}
+}
+</style>
+<style id="__dm_no_drag_style__">* { -webkit-user-drag: none !important; }</style><style id="__dm_bindable_badge_style__">[data-sp-bindable="database"]{outline:1px dashed #0088ff;outline-offset:2px;border-radius:4px;}[data-sp-bindable="database"] *{pointer-events:none !important;transition:none !important;animation:none !important;}[data-sp-bindable="database"]{transition:none !important;animation:none !important;}</style><style id="haizhuo-ui-refresh-v102">
+/* v1.0.2 · C 端交互与视觉统一层：在不破坏原型流程的前提下覆盖旧样式 */
+:root{
+  --bg:#F7F8FC;--panel:#FFFFFF;--sidebar:#FBFCFF;--line:#E8EAF2;--line-soft:#F0F2F7;
+  --ink:#20243A;--ink-2:#4B5068;--muted:#747A91;--faint:#969BB0;
+  --accent:#6257E8;--accent-soft:#F0EEFF;--accent-line:#DCD8FF;
+  --ok:#16845B;--warn:#A96608;--err:#C24148;
+  --adm:#28634A;--adm-2:#3E5147;--adm-icon:#7B9587;--adm-soft:#E9F4ED;--adm-line:#D0E6D8;
+  --radius-card:16px;--shadow-soft:0 10px 30px rgba(35,43,83,.055);
+}
+html,body{min-height:100%;}
+body{background:var(--bg);color:var(--ink);font-size:14px;letter-spacing:.005em;}
+button,input,textarea{font:inherit;}
+button{touch-action:manipulation;-webkit-tap-highlight-color:transparent;}
+button:focus-visible,input:focus-visible,textarea:focus-visible,[tabindex]:focus-visible{outline:3px solid rgba(98,87,232,.22);outline-offset:2px;}
+.app{background:var(--bg);}
+.sidebar{width:264px;flex-basis:264px;background:rgba(255,255,255,.88);border-right:1px solid var(--line);backdrop-filter:blur(18px);}
+.sidebar.collapsed{margin-left:-264px;}
+.sb-top{padding:20px 17px 18px;gap:11px;}
+.brand-mark{width:34px;height:34px;flex-basis:34px;border-radius:12px;background:linear-gradient(145deg,#6257E8 0%,#8C7DF4 100%);box-shadow:0 7px 18px rgba(98,87,232,.22);}
+.brand-name{font-size:14px;letter-spacing:.1px;font-weight:720;}
+.brand-sub{font-size:9.5px;letter-spacing:1px;color:#9A9FB2;margin-top:3px;}
+/* 普通员工不需要先理解工作区概念：侧栏只保留新对话、搜索和历史记录 */
+body:not(.role-admin) .ws-row,body:not(.role-admin) .ws-menu{display:none!important;}
+.new-chat{height:42px;margin:0 14px 12px;border:0;border-radius:12px;background:linear-gradient(135deg,#6257E8,#786CF0);color:#fff;font-size:13px;font-weight:650;box-shadow:0 7px 18px rgba(98,87,232,.16);}
+.new-chat:hover{background:linear-gradient(135deg,#5549DC,#6E62E8);box-shadow:0 10px 20px rgba(98,87,232,.22);transform:translateY(-1px);}
+.sb-search{margin:0 14px 14px;}
+.sb-search input{height:38px;border-radius:11px;border-color:#E6E8F1;background:#F7F8FC;padding-left:34px;font-size:12.5px;}
+.sb-search input:focus{background:#fff;border-color:var(--accent-line);box-shadow:0 0 0 4px rgba(98,87,232,.08);}
+.sb-label,.sg-label{font-size:10px;letter-spacing:.7px;color:#9A9FB2;}
+.sg-label{padding:13px 20px 6px;}
+.sitem{min-height:38px;margin:2px 10px;padding:8px 8px 8px 12px;border-radius:10px;font-size:12.7px;color:#555B72;}
+.sitem:hover{background:#F3F4FA;}
+.sitem.active{background:#F0EEFF;color:#5147D1;box-shadow:inset 0 0 0 1px #E3DFFF;font-weight:650;}
+.smore{opacity:.55;width:24px;height:24px;flex-basis:24px;}
+.sitem:hover .smore,.sitem.active .smore{opacity:1;}
+.sb-foot{padding:14px;border-top:1px solid var(--line);background:rgba(255,255,255,.7);}
+.avatar{width:32px;height:32px;flex-basis:32px;background:#EDEBFF;color:#5549D8;}
+.foot-name{font-size:12.5px;}
+.foot-role{font-size:11px;margin-top:3px;}
+.main{background:var(--bg);}
+.chat-head{height:66px;flex-basis:66px;padding:0 24px;background:rgba(255,255,255,.88);border-bottom:1px solid var(--line);backdrop-filter:blur(18px);gap:12px;}
+.head-tile{width:36px;height:36px;flex-basis:36px;border-radius:12px;background:#F0EEFF!important;color:#6257E8!important;font-size:16px;}
+.head-txt h1{font-size:14px;font-weight:700;letter-spacing:0;}
+.head-txt p{font-size:11px;color:#9298AE;margin-top:4px;}
+.icon-btn{width:34px;height:34px;border-radius:10px;color:#777D94;}
+.icon-btn:hover{background:#F0F1F8;color:var(--accent);}
+.ghost-btn{height:34px;border-radius:10px;padding:0 12px;background:#fff;border-color:#E5E7F0;font-size:12px;}
+.ghost-btn:hover{background:#F7F6FF;border-color:#DCD8FF;color:var(--accent);}
+.chat-body{scroll-behavior:smooth;}
+.stream{max-width:900px;padding:30px 32px 14px;}
+.msg{margin-bottom:28px;}
+.bubble{max-width:min(78%,640px);padding:12px 16px;border-radius:18px 18px 5px 18px;background:#ECEBFF;color:#2F3152;font-size:14px;line-height:1.8;}
+.ai-avatar{width:32px;height:32px;flex-basis:32px;border-radius:12px;background:linear-gradient(145deg,#6257E8,#9589F7);box-shadow:0 6px 14px rgba(98,87,232,.18);}
+.ai-name{font-size:11px;margin-bottom:10px;color:#999EB2;}
+.ai-name b{font-size:12.5px;color:#333852;}
+.tag{border-radius:999px;padding:3px 8px;font-size:9.5px;background:#F0EEFF;color:#5A50D8;}
+/* 对普通员工隐藏模型内部思考文本，保留可展开的操作记录 */
+.think{display:none!important;}
+.steps{border-radius:13px;border-color:#E8EAF3;box-shadow:0 3px 12px rgba(30,38,80,.025);}
+.steps-head{padding:10px 13px;background:#FAFBFE;font-size:11.5px;}
+.step{padding:10px 13px;}
+.step-body{border-radius:9px;overflow-wrap:anywhere;}
+.answer{font-size:14.5px;line-height:1.85;color:#33374D;}
+.answer p{margin-bottom:12px;}
+.answer strong{color:#20243A;font-weight:700;}
+.answer code{background:#F0F1F8;color:#4B4F68;border-radius:5px;}
+.answer table{border-radius:12px;border-color:var(--line);}
+.answer th{background:#F8F9FD;}
+.artifact,.dcard,.confirm,.receipt{border-radius:15px;box-shadow:0 5px 18px rgba(35,43,83,.035);}
+.dcard{padding:15px 16px;margin-top:14px;}
+.dcard-h{font-size:12px;color:#626982;letter-spacing:0;margin-bottom:13px;}
+.slots{gap:13px 18px;}
+.slot .k{font-size:11px;color:#8C92A8;margin-bottom:5px;}
+.slot .v{font-size:13px;line-height:1.55;}
+.qtitle{font-size:13px;color:#353A54;}
+.qtitle span{font-size:11px;color:#8C92A8;}
+.qopt{height:36px;padding:0 14px;border-radius:10px;background:#fff;font-size:12.5px;}
+.qopt:hover{background:#F8F7FF;border-color:#CFC9FF;}
+.qopt.on{background:#F0EEFF;border-color:#7569EB;color:#5147D1;box-shadow:0 0 0 2px rgba(98,87,232,.06);}
+.qfoot{padding-top:14px;gap:12px;}
+.qhint{font-size:11.5px;}
+.cbtn{height:36px;padding:0 15px;border-radius:10px;font-size:12.5px;}
+.cbtn.primary{background:var(--accent);border-color:var(--accent);box-shadow:0 5px 12px rgba(98,87,232,.14);}
+.cbtn.primary:hover{background:#5147D1;border-color:#5147D1;}
+.pick{padding:11px 13px;border-radius:11px;}
+.confirm h4{font-size:15px;}
+.receipt .rh{font-size:13.5px;}
+.composer-wrap{padding:0 24px 16px;}
+.composer-box{max-width:860px;}
+.composer{border:1px solid #E2E5F0;border-radius:20px;padding:14px 15px 10px;box-shadow:0 8px 28px rgba(42,48,95,.07);}
+.composer.focus{border-color:#C9C3FF;box-shadow:0 0 0 4px rgba(98,87,232,.08),0 8px 28px rgba(42,48,95,.07);}
+.composer textarea{font-size:14px;line-height:1.75;min-height:48px;}
+.composer textarea::placeholder{color:#A2A7BA;}
+.plus-btn{width:32px;height:32px;flex-basis:32px;border-radius:10px;background:#F1F2F8;color:#626982;}
+.plus-btn:hover{background:#E9EAF5;color:var(--accent);}
+.think-btn{height:31px;border-radius:9px;font-size:11.8px;}
+.mic-btn{width:32px;height:32px;border-radius:9px;}
+.send{width:36px;height:36px;flex-basis:36px;border-radius:12px;background:var(--accent);box-shadow:0 5px 12px rgba(98,87,232,.16);}
+.send:hover{background:#5147D1;}
+.send:disabled{background:#E2E4EF;box-shadow:none;}
+.hint{font-size:10.5px;margin-top:10px;color:#9A9FB2;}
+.toast{bottom:28px;border-radius:12px;padding:11px 16px;box-shadow:0 12px 30px rgba(25,29,55,.18);}
+/* 管理端沿用绿色治理色，但统一圆角、间距与卡片层级 */
+.admin-body{background:#F6F8F7;}
+.apage{max-width:1160px;padding:28px 32px 48px;}
+.kpi,.card,.skcard,.rs,.rcard{border-radius:15px;box-shadow:0 3px 14px rgba(31,55,43,.025);}
+.kpi{padding:16px;}
+.k-val{font-size:27px;}
+.card{padding:17px 18px;}
+.mini-btn,.fchip,.vtab{border-radius:8px;}
+.drawer{border-radius:18px 0 0 18px;}
+/* 响应式：小屏侧栏作为抽屉，减少头部按钮和卡片列数 */
+@media(max-width:1100px){
+  .sidebar{width:248px;flex-basis:248px;}
+  .sidebar.collapsed{margin-left:-248px;}
+  .stream{padding:24px 24px 12px;}
+  .chat-head{padding:0 18px;}
+}
+@media(max-width:860px){
+  .sidebar{position:fixed;left:0;top:0;bottom:0;height:100dvh;z-index:80;box-shadow:18px 0 50px rgba(25,31,67,.15);}
+  .sidebar.collapsed{margin-left:-248px;}
+  .chat-head{height:58px;flex-basis:58px;padding:0 12px;gap:8px;}
+  .head-tile{width:32px;height:32px;flex-basis:32px;}
+  .head-txt h1{font-size:13px;}
+  .head-txt p{font-size:10px;}
+  .head-actions{gap:4px;}
+  .head-actions .ghost-btn{padding:0 8px;font-size:11px;}
+  #btnShare,#btnSteps{display:none;}
+  .stream{padding:20px 14px 8px;}
+  .msg{margin-bottom:22px;}
+  .bubble{max-width:88%;padding:10px 13px;font-size:13.5px;}
+  .ai-avatar{width:28px;height:28px;flex-basis:28px;}
+  .answer{font-size:14px;}
+  .composer-wrap{padding:0 10px 10px;}
+  .composer{border-radius:17px;padding:11px 11px 8px;}
+  .composer textarea{font-size:13.5px;min-height:42px;}
+  .hint{font-size:9.5px;}
+  .slots{grid-template-columns:1fr 1fr;gap:12px;}
+  .dcard{padding:13px;}
+  .qopts{gap:7px;}
+  .qopt{padding:0 10px;}
+  .apage{padding:16px 12px 28px;}
+  .kpis{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;}
+  .k-val{font-size:23px;}
+  .grid-2{grid-template-columns:1fr;}
+  .sgrid{grid-template-columns:1fr;}
+}
+@media(max-width:480px){
+  .brand-sub{display:none;}
+  .chat-head{padding:0 8px;}
+  .head-txt p{display:none;}
+  #btnReplay{font-size:0;width:34px;padding:0;justify-content:center;}
+  #btnReplay svg{width:13px;height:13px;}
+  .slots{grid-template-columns:1fr 1fr;}
+  .qtitle{align-items:flex-start;flex-wrap:wrap;}
+  .qtitle span{width:100%;margin-left:21px;}
+  .qfoot{align-items:flex-start;flex-direction:column;}
+  .qfoot .cbtn{width:100%;}
+  .cactions{flex-wrap:wrap;}
+  .cactions .cbtn{flex:1;}
+  .rrow,.crow{font-size:11.5px;}
+  .kpi{padding:12px;}
+  .k-lab{font-size:10.5px;}
+}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto!important;animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important;}}
+</style>
+</head>
+<!-- UI refresh v1.0.2: C-end oriented visual system, simplified sidebar, responsive interaction -->
+<body class="" data-page-node-id="hJLrhlUvUfclE8vuMTqWr1" style="position: relative;">
+
+<div class="app" data-page-node-id="qCnHNNakY8T9LtqELAgVju">
+  <!-- ==================== 侧边栏 ==================== -->
+  <aside class="sidebar" id="sidebar" data-page-node-id="X1EGTCltr9MgWNKhBz0l06">
+    <div class="sb-top" data-page-node-id="uIucSz0ixdsDYmEgCaCDtl">
+      <div class="brand-mark" data-page-node-id="PxUF4tGQPu6UuT5ZHC7fuw">✦</div>
+      <div class="brand-txt" data-page-node-id="jGg0RCNH3hJ5fe6JqS4yqg">
+        <div class="brand-name" data-page-node-id="2DR6X2QEVgv8bgBMquKBZz">海卓智慧大脑</div>
+        <div class="brand-sub" style="" data-page-node-id="6gBOBGDdWtMb5s3vpBEjH5">HAIZHUO AI WORKBENCH​</div>
+      </div>
+    </div>
+
+    <!-- 平台管理：仅超级管理员显示 -->
+    <div class="admin-block" id="adminBlock" data-page-node-id="LK9172k0pACGFlrcpeLAkt">
+      <div class="sb-label" data-page-node-id="YUR9qaMaGZNGDw1Oh3Eo29"><span data-page-node-id="ODOZhtO8ZjqB58k4GIgCTX">平台管理</span></div>
+      <div class="admin-nav" id="adminNav" data-page-node-id="iEnkEZqYMq7s0dUpdoYW7T">
+      <button class="anav" data-admin="overview" data-page-node-id="JrqeBSiBzDVxvF20kvTnWl">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" data-page-node-id="RG7Vh8HGvDhO08henPkJmH"><rect x="3" y="3" width="7" height="7" rx="1.6" data-page-node-id="9IO7nflilF4FAanybu1Bqp"></rect><rect x="14" y="3" width="7" height="7" rx="1.6" data-page-node-id="GZ0uATDgDqo8EeXAIRjxpL"></rect><rect x="3" y="14" width="7" height="7" rx="1.6" data-page-node-id="tjHeGLxWa9LJkXF8KLAHIj"></rect><rect x="14" y="14" width="7" height="7" rx="1.6" data-page-node-id="LP6gvIcASquCZv7PvCD1Hm"></rect></svg><span data-page-node-id="9pAGggJvlCTDmXw7AcHFM1">平台总览</span>
+      </button>
+      <button class="anav" data-admin="agents" data-page-node-id="hhjRoimfkNQrwECiv9KVGI">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round" data-page-node-id="PLxvKMChxp8xXAU7LoS56L"><path d="M12 3.5l1.9 5.1 5.1 1.9-5.1 1.9L12 17.5l-1.9-5.1L5 10.5l5.1-1.9L12 3.5z" data-page-node-id="XSbPUvT1IXDrtFZKlDCULt"></path></svg><span data-page-node-id="cw1gnrSfdR4KDq04nXnzMm">Agent 管理</span>
+      </button>
+      <button class="anav" data-admin="skills" data-page-node-id="heCxfhxdhkIlPf3XymHzLB">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round" data-page-node-id="cAxFAYn4ZrlijMux1SwgAl"><path d="M12 3.5l8.5 8.5L12 20.5 3.5 12 12 3.5z" data-page-node-id="909QpGsbP59zzFugBSFaqE"></path></svg><span data-page-node-id="uTP6qChI1ZZAXhrQ0dAeR3">Skills 管理</span>
+      </button>
+      <button class="anav" data-admin="mcp" data-page-node-id="DLFbZSf6fssSkJ5UHPIQhe">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" data-page-node-id="5CD8Qz9YoMV1mpIP07Bjot"><path d="M4 12h16M7.5 8.5L4 12l3.5 3.5M16.5 8.5L20 12l-3.5 3.5" data-page-node-id="kwyx8zzcGaP3mvXiKmlAKJ"></path></svg><span data-page-node-id="MgJsAOtxk0U81txVWPgXzZ">MCP 连接管理</span>
+      </button>
+        <div class="anav-group " data-group="gateway" data-page-node-id="GDYhyLeV5BwJhQPv5KeDGv">
+          <button class="anav" data-gtoggle="gateway" data-page-node-id="X0JXJDvXriIAfC1z8DVuVk">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round" data-page-node-id="RI0vV2hq24yaCP9at7JBQ5"><path d="M12 3l8 4.4-8 4.4-8-4.4L12 3z" data-page-node-id="E5JQK5B9sXMmkrwFkebzgD"></path><path d="M4 12.2l8 4.4 8-4.4" data-page-node-id="HhQzoiaeqb4rHBsi8pB4MS"></path><path d="M4 16.8l8 4.4 8-4.4" data-page-node-id="4OcZKq1ujESeajjvuf0EzN"></path></svg><span data-page-node-id="YE6YsZ0Ry6Qvfch2Sb8eNU">模型与网关</span>
+            <span class="cv" data-page-node-id="p6UkhKaUFlG69zAskoB5cI">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round" data-page-node-id="FBoGtahGN7PAqq903mexTA"><path d="M6 9l6 6 6-6" data-page-node-id="qhavb9xuNNFsujl9J2qBoP"></path></svg>
+            </span>
+          </button>
+          <div class="anav-sub" data-page-node-id="OylZOZ3HTO2SGf004lB9Mw">
+            
+              <button class="anav sub" data-admin="models" data-page-node-id="t43sWNuheAM8BVMzI6jaZS">模型接入</button>
+              <button class="anav sub" data-admin="routing" data-page-node-id="7U5mGyi6fZFkCSQ4QgDZzl">路由策略</button>
+              <button class="anav sub" data-admin="cost" data-page-node-id="biHpnsrhieKgZa6DajcONY">用量成本</button>
+              <button class="anav sub" data-admin="trace" data-page-node-id="NT2bOsVvCuGkK3WDjk6fHV">调用诊断</button>
+          </div>
+        </div>
+      <button class="anav" data-admin="users" data-page-node-id="O0IkF1ZyqGrF7TKalZ0n5x">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" data-page-node-id="5sHU7yPOIFznPtlGJ3Xa70"><circle cx="12" cy="8" r="3.4" data-page-node-id="HhOqNDBEE7qSVcSJx9ENBa"></circle><path d="M4.8 20c0-3.4 3.2-5.6 7.2-5.6s7.2 2.2 7.2 5.6" data-page-node-id="ZVomYHhRkzmXPjhcbD4895"></path></svg><span data-page-node-id="B9x7YNZe6qUw0AE2tTg4IS">用户与权限</span>
+      </button>
+      <button class="anav" data-admin="audit" data-page-node-id="HbXO2ZTOtZ135K0CboJsU0">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" data-page-node-id="SbxrOUDt1msSLNhbqDhdDj"><circle cx="12" cy="12" r="8.2" data-page-node-id="S7Bo6NYHWOpHy0DwQavrFH"></circle><path d="M12 7.6v4.6l3.2 1.9" data-page-node-id="GbVyM3nZxZkvycisz1krRt"></path></svg><span data-page-node-id="BUGkwxMvIq5lYtvGAa8qT6">运行与审计</span>
+      </button></div>
+      <div class="sb-divider" data-page-node-id="oBnAIRAHEFuBM4iu1rjZWH"></div>
+    </div>
+
+    <!-- 固定显示默认工作区，用户不需要理解工作区概念 -->
+    <button class="ws-row" id="wsRow" data-page-node-id="iOBdzW0CLwrp4imIDsbR2u">
+      <span class="ws-row-tile" id="wsTile" style="background: rgba(79, 70, 229, 0.094); color: rgb(79, 70, 229);" data-page-node-id="83abRzjjY8p50d52pjiQCA">📁</span>
+      <span class="ws-row-txt" data-page-node-id="l0dUkaZDayM4SSShbRfp6K">
+        <b id="wsName" data-page-node-id="q13pGvGElU2ez3X1FJXzhS">默认工作区</b>
+        <i id="wsMeta" data-page-node-id="ZcLvtN7BObk9ThtPVOFKXb">你的个人空间</i>
+      </span>
+      <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" data-page-node-id="GTCNTbZoEd89MH0CR0xQbE"><path d="M6 9l6 6 6-6" data-page-node-id="gRxulS25IRGttdfovqZxha"></path></svg>
+    </button>
+
+    <div class="ws-menu" id="wsMenu" data-page-node-id="AsdcGaFQWbBtIWqbXvbkhF">
+      <div class="ws-opt on" data-ws="default" data-page-node-id="ynYwYu6A39aSq5f1oItF7J"><span data-page-node-id="DaD8snLKFU0Ke5Jmxk1L6E">📁</span>默认工作区<span class="tag-ro" style="background:transparent;color:#4F46E5" data-page-node-id="2MI1BAXLKLTusV6CiZa95s">当前</span></div>
+      <div class="ws-opt" data-ws="fin" data-page-node-id="s00JHvycI4r6EpNCjCLHeG"><span data-page-node-id="CZuskzBTTWxHIT1bOsXtFY">📗</span>财务共享空间<span class="tag-ro" data-page-node-id="jewMGKLCJbTsWbnbgDsmi8">只读</span></div>
+      <div class="ws-opt" data-ws="ops" data-page-node-id="5wiYA3LY6XChyf1lWCeeBQ"><span data-page-node-id="DvcqIFYYVOENUcDKRBHyCe">📊</span>运维分析空间<span class="tag-ro" data-page-node-id="M6qGaP2JBGnmudZxqk1aTZ">只读</span></div>
+      <div class="ws-menu-foot" data-page-node-id="AmMlENfSdwiQRN3zXvQWeZ">自定义工作区 · 后续开放</div>
+    </div>
+
+    <button class="new-chat" id="btnNewChat" data-page-node-id="G4Sz4PYXhLI6H3s6Bc3zwb">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" data-page-node-id="VSV9QzKn17fi80Lc7cqBxI"><path d="M12 5v14M5 12h14" data-page-node-id="6wPyGU6PxAju0MZFxN4tGf"></path></svg>
+      新建对话
+    </button>
+
+    <div class="sb-search" data-page-node-id="YNoAFfF6gdmdN2UQjVYyy0">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" data-page-node-id="peSB9FAm1kkGzQKnhOCzdz"><circle cx="11" cy="11" r="7" data-page-node-id="sk2iAGAZA83wQCdCBC00FB"></circle><path d="M20 20l-3.5-3.5" stroke-linecap="round" data-page-node-id="OaJDvJtSOy8fY0E9zrnd4p"></path></svg>
+      <input id="searchInput" type="text" placeholder="搜索历史对话" data-page-node-id="HB3h1BzHrFjzJ8I4HY46dx">
+    </div>
+
+    <div class="sb-scroll" id="sessList" data-page-node-id="bZPML3zcK17nh3QdnfRUH8">
+        <div class="sgroup" data-page-node-id="jpSbGVbAXJb2sstQzMDiOG">
+          <div class="sg-label" data-page-node-id="EBxhj0XQU6SfvjRciKhNty">今天</div>
+          
+    <div class="sitem active" data-sid="demo-meeting" data-page-node-id="1FSm7Z9P8IoPcf4sACk9EY">
+      <span class="sitem-t" data-page-node-id="KdQZ77VcXEFjCIVPyZaB8I">预约产品评审会</span>
+      <button class="smore" data-menu="demo-meeting" title="更多" data-page-node-id="EHp1OZ4ici8QSy5sH0sT9d">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor" data-page-node-id="WFYhr4JFzQIIXYLdyhrN8L"><circle cx="5" cy="12" r="1.7" data-page-node-id="ukfmNeqfIoevNLvyDNGGmB"></circle><circle cx="12" cy="12" r="1.7" data-page-node-id="2M8apDXUGJwzNoUAjmx46x"></circle><circle cx="19" cy="12" r="1.7" data-page-node-id="7OM94mwOzmscM3vrcFTbIQ"></circle></svg>
+      </button>
+    </div>
+        </div>
+        <div class="sgroup" data-page-node-id="g3Lkkljfk16HtGxq5OGIxB">
+          <div class="sg-label" data-page-node-id="29LhfuUrOsffXxHH6JaUSZ">昨天</div>
+          
+    <div class="sitem " data-sid="s6" data-page-node-id="YS68B6iH4g8skPXymLjO3L">
+      <span class="sitem-t" data-page-node-id="HqaDJKMQO3FvBZTKBKj1bb">约周三下午 3 点评审会</span>
+      <button class="smore" data-menu="s6" title="更多" data-page-node-id="khbAI3HaQhnHm5RmbXr8F1">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor" data-page-node-id="v2qybF0myJQIh6L0vgrPiI"><circle cx="5" cy="12" r="1.7" data-page-node-id="SivKGbFWNE14DBiTat9MK0"></circle><circle cx="12" cy="12" r="1.7" data-page-node-id="gkGmzOTeMgbNuKtpSI20eU"></circle><circle cx="19" cy="12" r="1.7" data-page-node-id="SnqOZvzZARzTvZHkKiJimB"></circle></svg>
+      </button>
+    </div>
+        </div></div>
+
+    <!-- 角色切换菜单 -->
+    <div class="role-menu" id="roleMenu" data-page-node-id="WEoLM2duaPCPxeMX6DZo8j">
+      <div class="role-opt on" data-role="user" data-page-node-id="KZqBleCEIHHFzbs2nssGZD">
+        <span class="role-dot" data-page-node-id="cA8xbLda2ypTZFjsmw8loi"></span>
+        <div data-page-node-id="vtcO5jcpocmJyd1gO7T7jC"><b data-page-node-id="HQEfPCRcuoZxXcu2OGxZfU">普通用户</b><span data-page-node-id="iRTCzBdzJ9p8OXWEfEHEqT">只能使用所属工作区的 Agent 与知识库</span></div>
+      </div>
+      <div class="role-opt" data-role="admin" data-page-node-id="6czPPsgQrQ6Kb9gdVeuRYA">
+        <span class="role-dot" data-page-node-id="lfH2EzUbnjpdH8hiRl7eHF"></span>
+        <div data-page-node-id="2UVjCFgG3YFKtDGi8MA8Zg"><b data-page-node-id="UABt831HMgXgAHdzDwbDX0">超级管理员</b><span data-page-node-id="jSMt0g4EhEatw7lBqp24zp">可管理 Agent、Skills、MCP 连接与用户权限</span></div>
+      </div>
+      <div class="role-tip" data-page-node-id="cBB8jxQt8K7eVcPeJ3UswZ">原型演示：点击切换角色，观察侧边栏变化</div>
+    </div>
+
+    <div class="sb-foot" id="userCard" data-page-node-id="JSx40G1LlphDM2YTEegaRx">
+      <div class="avatar" data-page-node-id="tJwYZFLMAcCGA2ma1qb1k9">陈</div>
+      <div class="foot-txt" data-page-node-id="fR9ZHoZdA20BqaCGgmqxvA">
+        <div class="foot-name" data-page-node-id="njy3t2aVX2FcBnd9bX3kWs">陈智龙 <span class="role-badge" data-page-node-id="NMNardH2Rn7qQbtQ2PZRAd">超管</span></div>
+        <div class="foot-role" id="roleLabel" data-page-node-id="lQZFDfiuWpYVu4hbpRQnxU">普通用户 · 产品部</div>
+      </div>
+      <button class="icon-btn" title="设置" id="btnSetting" data-page-node-id="OfoELGjaeDqGtdPSj8aSbv">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" data-page-node-id="AlIjDOLeqXmupLBdZHXXwQ"><circle cx="12" cy="12" r="3" data-page-node-id="TyH1NPqZSAkkRT07qS6wjj"></circle><path d="M19.4 15a1.7 1.7 0 00.34 1.87l.06.06a2 2 0 11-2.83 2.83l-.06-.06a1.7 1.7 0 00-1.87-.34 1.7 1.7 0 00-1 1.55V21a2 2 0 11-4 0v-.11a1.7 1.7 0 00-1.11-1.55 1.7 1.7 0 00-1.87.34l-.06.06a2 2 0 11-2.83-2.83l.06-.06a1.7 1.7 0 00.34-1.87 1.7 1.7 0 00-1.55-1H3a2 2 0 110-4h.11a1.7 1.7 0 001.55-1.11 1.7 1.7 0 00-.34-1.87l-.06-.06a2 2 0 112.83-2.83l.06.06a1.7 1.7 0 001.87.34H9a1.7 1.7 0 001-1.55V3a2 2 0 114 0v.11a1.7 1.7 0 001 1.55 1.7 1.7 0 001.87-.34l.06-.06a2 2 0 112.83 2.83l-.06.06a1.7 1.7 0 00-.34 1.87V9a1.7 1.7 0 001.55 1H21a2 2 0 110 4h-.11a1.7 1.7 0 00-1.49 1z" data-page-node-id="ycdsrumljyWVW5f50JLkbV"></path></svg>
+      </button>
+    </div>
+  </aside>
+
+  <!-- ==================== 主区 ==================== -->
+  <section class="main" id="main" data-page-node-id="SfyLaXhnCaqh9jCPlAwKz5">
+    <header class="chat-head" data-page-node-id="bLteFiDPOugeDaEywWZzxD">
+      <button class="icon-btn" id="btnToggleSb" title="收起 / 展开侧边栏" data-page-node-id="AOjEFRQdJKFUtdMCy0Q37e">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" data-page-node-id="jrobNo23inBh6xRhWO0Yhs"><path d="M4 6h16M4 12h16M4 18h16" data-page-node-id="GHBtry43zCrc7zre2mYf4U"></path></svg>
+      </button>
+      <div class="head-tile" id="headTile" style="background: rgba(79, 70, 229, 0.094);" data-page-node-id="DYwBbaDsrULGgdWS11Oob3">📁</div>
+      <div class="head-txt" data-page-node-id="BrmPC4n9nYB0kZY5WCCsv2">
+        <h1 id="headTitle" data-page-node-id="NRT4GWCIwIxZwLn1Y4O1pN">预约产品评审会</h1>
+        <p id="headMeta" data-page-node-id="MmlbdWFZGf5wEzSaX0AVzm">默认工作区 · 2 条消息</p>
+      </div>
+      <div class="head-actions" data-page-node-id="2ZSeOp1r455W4acQON98lH">
+        <button class="ghost-btn" id="btnReplay" data-page-node-id="RRlCwAQ39wbtuTNYp7RZj0">
+          <svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor" data-page-node-id="iR5taiWDkhfeJ3V9BQzPln"><path d="M8 5l11 7-11 7V5z" data-page-node-id="qLMj4NwD1c5rWYpjr6bAvr"></path></svg>
+          重新体验流程
+        </button>
+        <button class="ghost-btn" id="btnSteps" data-page-node-id="pDvAurCQWGGfASwP3eG4cc">
+          
+          执行详情
+        </button>
+        <button class="ghost-btn" id="btnShare" data-page-node-id="xD5XZ9QQjBvNx9YNFIz82g">
+          
+          分享
+        </button>
+        <button class="ghost-btn" id="btnRefresh" data-page-node-id="AW7ocC7wpaDqSbI7RzXHRG">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-page-node-id="8Cxzgk4pFC1BJQ8IeS6F71"><path d="M20 11a8 8 0 10-2.3 6.3M20 5v6h-6" data-page-node-id="yKBjNZyabmXvM43DoBbQwu"></path></svg>
+          刷新数据
+        </button>
+      </div>
+    </header>
+
+    <div class="chat-body" id="chatBody" data-page-node-id="JXdCj09CGLfeMlQrFv4zWg">
+      <div class="stream" id="stream" data-page-node-id="vXupYrHybFKMySasaReCV3"><div class="msg user" data-page-node-id="JAZliwWzoSAbx8vYrLRvXE"><div class="bubble" data-page-node-id="1dffKpIsVN7Wx8UBWVPR7x">帮我约下周三下午和张三、李四开个产品评审会，3 点后，要投屏。</div></div><div class="msg ai" data-page-node-id="IqLwW93UCLZtrxF2gFUE5M">
+    <div class="ai-avatar" data-page-node-id="45zqqTmcg9WBbJdBjW4fYk">✦</div>
+    <div class="ai-main" data-page-node-id="cOmDYIoEZ4MFdDZZTIrNWK">
+      <div class="ai-name" data-page-node-id="UHBdhtyiPIMR2tLWDVyAEu"><b data-page-node-id="THlgQBV3hXqDPKG57lAelC">海卓AI</b><span class="tag" data-page-node-id="DUVqpOqIYV14lt0PzpsJTG">Agent</span><span class="t-time" data-page-node-id="HstWBe6sdwXy6zELGF7EQu">刚刚</span></div>
+      <div class="think fold" style="" data-page-node-id="Ul6TF1FwO80RhCbYJbDhMB">
+        <div class="tk" data-think="" data-page-node-id="hWFuk9ITAaffl1YGHeV5OR">
+          <svg class="tkc" width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round" data-page-node-id="miGJlIqaK8sEFFpZwgAXKn"><path d="M9 6l6 6-6 6" data-page-node-id="m5VdES2l1C4EFFpWWtKVaY"></path></svg>
+          <span class="tk-label" data-page-node-id="Jy8NEjv3Xvt9UWSz2hCYmW">思考过程</span>
+          <span class="tk-peek" data-page-node-id="RARkK3eXy4DSX6QeDJ9ndM">会议预订请求，先路由到 meeting-booking。盘一遍槽位：主题、参会人、设备都…</span>
+        </div>
+        <div class="tk-body" data-page-node-id="FMbTbMTB5z0EyvFtlATpEk">会议预订请求，先路由到 meeting-booking。盘一遍槽位：主题、参会人、设备都有；「下周三下午」落不到钟点，「没说楼层」等于没地点。这两个都是必填项，一张卡一起问，别挤牙膏。</div>
+      </div>
+      <div class="steps fold" style="" data-page-node-id="FjQoCfAvNhPl1cTiHLvdoT">
+        <div class="steps-head" data-steps-toggle="" data-page-node-id="X0IUtsoooiRRsnLYDPP45n">
+          <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" data-page-node-id="NtACqS5dMlcM4ojP2ol9KF"><path d="M9 6l6 6-6 6" data-page-node-id="yJeIJlaIRx5WBvouA93OOG"></path></svg>
+          <span class="sh-text" data-page-node-id="uqWfHM7ZrWWsMyE23tp7oX">执行了 2 步</span>
+        </div>
+        <div class="steps-body" data-page-node-id="qWQ9SS1XjmAKKevTOcESyw"><div class="step" data-page-node-id="HJCYUvfIVcjiBsf07vUC47">
+    <div class="step-row" data-page-node-id="avE4LdSUo3bsvILZ6yLKdl">
+      <span class="st done" data-page-node-id="FbdkqO2iIZyqZ1PSGibd2V">✓</span>
+      <span class="step-name" data-page-node-id="enXef0H3fQv81sRGVRtw8i">匹配技能</span>
+      <span class="step-fn" data-page-node-id="K2CsF0qO3B5k3uz4Hqgj2q">skill_route</span>
+      <span class="step-ms" data-page-node-id="CzxDduXFy7ss0gc7fRxXEI">0.66s</span>
+    </div>
+    <div class="step-body" data-page-node-id="oZTepiNMxH3mse3s8UaNuH">{ query: "约 / 评审会 / 会议室" }
+
+命中 meeting-booking v1.0.1
+触发词：约、开会、会议室</div></div><div class="step" data-page-node-id="2BqdywoTNEZjP6Co5HFa68">
+    <div class="step-row" data-page-node-id="GwmKsr8HAHQ4JkExVBHA1y">
+      <span class="st done" data-page-node-id="mjzwKV6Ff03LAu2zBe3qrM">✓</span>
+      <span class="step-name" data-page-node-id="5y7I7dbFs3VOA9uTkLg9Qv">槽位盘点</span>
+      <span class="step-fn" data-page-node-id="kIMC6KmNFxOTLqEceNjMH7">slot_extract</span>
+      <span class="step-ms" data-page-node-id="rdiFGf1EjiMFriVI2ItPQv">0.62s</span>
+    </div>
+    <div class="step-body" data-page-node-id="TqPtbePHwgMiZdrqkZcz8U">{ input: "约下周三下午…3 点后…要投屏" }
+
+已填：subject / participants / equipment
+缺失必填：duration_minutes、location
+待定：start_time（只有日期段，没有钟点）</div></div></div>
+      </div>
+      <div class="answer" data-page-node-id="k4jPne0iludmrBcbpZx6CX"><p data-page-node-id="jjPUfdD2p8pYVdEW7p99iO">主题、参会人、设备都拿到了，<strong data-page-node-id="fyAL0b45KgbrAL7vS1bla1">缺时长和楼层</strong>两项必填；开始时间也只有「下午」这个区间。缺的两项我一起问：</p>
+  <div class="dcard" data-slotcard="" data-page-node-id="6J1GJ0YieujBx9wDDBIEDM">
+    <div class="dcard-h" data-page-node-id="FVZzB73PH7DcGqNLMkWpCN"><span class="dot" data-page-node-id="IE7k4fg8z8nGhEfMySA3xa"></span>槽位盘点 · 3 项待补充</div>
+    <div class="slots" data-page-node-id="Fvb9ZjdPcVSP6dD1TprDJe">
+      
+        <div class="slot editable" data-edit="subject" data-page-node-id="ZCslrxrUa8IlZCyTPXoyFb">
+          <div class="k" data-page-node-id="sxPQBeFUCMgv5Vr4FyAIeg">会议主题 <span class="pe" data-page-node-id="tAtWLch1BDS3eFgEqkG3Ek">✎</span></div>
+          <div class="v" data-page-node-id="r2ZzBX8FHz9UTNABURfwvq">产品评审会</div>
+        </div>
+        <div class="slot " data-page-node-id="s53xFE2ushNmyWQHBsm4JI">
+          <div class="k" data-page-node-id="U1ZP1NlXhZVuJioHyWEmMC">参会人</div>
+          <div class="v" data-page-node-id="35merGpp4Be2wVC63XuCJb">张三、李四</div>
+        </div>
+        <div class="slot " data-page-node-id="xVJHUJf9Mx2SOflY3Ko4EL">
+          <div class="k" data-page-node-id="6YbX7LvLxIj1OSai76djss">时长</div>
+          <div class="v" data-page-node-id="9y2AD6DdXVjSXH5qwXoS0h">待补充 <em class="miss" data-page-node-id="FMPjF4ndvBT2C3WFQXfmfs">缺失</em></div>
+        </div>
+        <div class="slot " data-page-node-id="iLFTdH0bWuW0Y2zyey4raa">
+          <div class="k" data-page-node-id="g5AlBwaN4Jm4DtwABKltza">开始时间</div>
+          <div class="v" data-page-node-id="poQHAQvEkCIlgYTD1C2HNG">下周三下午 <em class="miss" data-page-node-id="otA3JYSOnyDfG2kJqM9Ymr">待选</em></div>
+        </div>
+        <div class="slot " data-page-node-id="PHlJFQKARy4UtRsgOEiUoP">
+          <div class="k" data-page-node-id="VGeYkNambmU7ByJgm5pk0m">地点</div>
+          <div class="v" data-page-node-id="IGJO1xxDtxMBVuDuCqzJr1">待补充 <em class="miss" data-page-node-id="TgwPRFmiRcSnXCBlrpA5vT">缺失</em></div>
+        </div>
+        <div class="slot " data-page-node-id="3z0bH0D6ZMPq0g99YBZMFq">
+          <div class="k" data-page-node-id="TJcU1FYgBINrj1ZF0ng4Be">设备</div>
+          <div class="v" data-page-node-id="KSauitCF4p8Ni4wNLYyFZe">投屏 <em class="" data-page-node-id="35dkYBs7mfyktDXtGpPtcb">未登记</em></div>
+        </div>
+    </div>
+    <div class="slot-hint" data-page-node-id="qT2Sv3dtzp6ldTFrIRu6yg">点「会议主题」可以直接改，改完会自动同步到后面所有环节。</div>
+  </div>
+  <div class="dcard" data-page-node-id="mg4fQbmqL5v3gfstzowMFb">
+    <div class="dcard-h" data-page-node-id="aKYIHq7BAJ173IYR6dCCpa"><span class="dot" style="background:#C08A2E" data-page-node-id="KUF3osrXwB4CGNM5AJ1Xto"></span>必填槽位缺失 · 2 项待补充</div>
+    <div class="qblock" data-page-node-id="awgCMHg6XSGClq0q2smQzF">
+      <div class="qtitle" data-page-node-id="NonOUG1r1bNHn6cLcK4GPX"><i data-page-node-id="NNlMF0ikTrBM5nTJ6WNs1k">1</i>会议开多久？<span data-page-node-id="eFIs0lgmrtedw0VaQg6rvo">你只说了「下周三下午」，没说时长</span></div>
+      <div class="qopts" data-q="dur" data-page-node-id="SMJQixquPYcFipCBPeoL7W">
+        <button class="qopt" data-v="30" data-page-node-id="cp5sCZSncfLZ8s6ELZ7IOa">30 分钟</button>
+        <button class="qopt" data-v="60" data-page-node-id="uBC6vWaCs6K9SEGqon4dop">1 小时</button>
+        <button class="qopt" data-v="90" data-page-node-id="9iajDAu8pdlf4U9b1x2ECN">1.5 小时</button>
+      </div>
+    </div>
+    <div class="qblock" data-page-node-id="RF2rDzWFdy9Aq12YpV13XF">
+      <div class="qtitle" data-page-node-id="qdvRwj99hVmEgKRhrVeUCK"><i data-page-node-id="YkJTB5fX42eh9z21zN2grU">2</i>在哪个楼层？<span data-page-node-id="WG5aznEUhSHBQ91EFRGkIK">没说楼层等于没地点，房间容量和投影位也不一样</span></div>
+      <div class="qopts" data-q="loc" data-page-node-id="lbiWaOlCKZGbH6c1HzrwWA">
+        <button class="qopt" data-v="17F" data-page-node-id="6O8j6AsUHCzBn293sDTO7Q">17 楼 · 郁金香</button>
+        <button class="qopt" data-v="18F" data-page-node-id="5Q7406vlMX8ivzKxEakWJW">18 楼 · 蒲公英</button>
+      </div>
+    </div>
+    <div class="qfoot" data-page-node-id="CS9QiXHIWqnIbp3AT16mPJ">
+      <span class="qhint" id="qhint" data-page-node-id="dF7mqvONADkjgB2A5lzG56">两项都选完才能继续</span>
+      <button class="cbtn primary" id="qgo" disabled="" data-page-node-id="syUofRK9yiVRgmow8dQljz">继续</button>
+    </div>
+  </div></div>
+      <div class="refs" data-page-node-id="73Cfugbv6QgvWbVayO2oKF"></div>
+    </div></div></div>
+    </div>
+
+    <div class="admin-body" id="adminBody" data-page-node-id="ZOQXFgxQE0ULCL0MtySI1T"><div class="apage" data-page-node-id="veG7T6DaqsPIF27CGN2egF">
+      <div class="kpis" data-page-node-id="40flUMXMFN2gCJO9GsZV9O">
+        <div class="kpi" data-page-node-id="Ee4rlIIiUNVOINM5WsfCuy"><div class="k-lab" data-page-node-id="smSTP7ugfmW2Z97c6QWnVg">今日 Agent 调用</div><div class="k-val" data-page-node-id="13rkDvz7DMCVBB2XNeOMJg">12,847</div><div class="k-delta up" data-page-node-id="xpq4nYVV8EYyyB68drD3Cc">↑ 18.2% · 较昨日</div></div>
+        <div class="kpi" data-page-node-id="OCCCEtdPEC7LbHSXuKRyB3"><div class="k-lab" data-page-node-id="jDTnZXlV0sXgMQ3Grg1gCe">活跃用户</div><div class="k-val" data-page-node-id="FfXDL56G6RlGKjYrpe8Wif">326</div><div class="k-delta up" data-page-node-id="azzqsASHGFNC6JwBdTrrDS">↑ 6 人 · 本周新增</div></div>
+        <div class="kpi" data-page-node-id="G4ezj49K0c5bOCHxFf0qA4"><div class="k-lab" data-page-node-id="7Lmdsr7Fn32eeIp3TYEEVT">在线 Agent</div><div class="k-val" data-page-node-id="v9BFF63yrJc49iSnxlgIBL">9<em data-page-node-id="BM4lGzktvvBEU7VeVKoYxt">/ 11</em></div><div class="k-delta" data-page-node-id="48WEopOgvecqJS2cPvtHyL">2 个草稿未发布</div></div>
+        <div class="kpi" data-page-node-id="DqdqgxD4wPXYQUyvtEuH9t"><div class="k-lab" data-page-node-id="vejNCkUIxEQmJjk2LPSFya">首字响应</div><div class="k-val" data-page-node-id="0wIqOZvTal8cLWLYk0BP1E">1.82<em data-page-node-id="BvIoqrQqCVzzypKUcyAZpW">s</em></div><div class="k-delta up" data-page-node-id="BrbY82DJ16dAWDDfsw2tPF">↓ 0.31s · 优化 14%</div></div>
+      </div>
+
+      <div class="grid-2" data-page-node-id="Uw6ziBcFfWCdx7TEiL52aG">
+        <div class="card" data-page-node-id="p1zcPC6jmjNTnuAEOGMpxG">
+          <h3 data-page-node-id="PSFie5NkGVnebDTUyyYGrH">近 7 天调用量<span class="more" data-page-node-id="dpFyGpYMDsIqgAdfqIC9a6">峰值 1,520 次 · 周四</span></h3>
+          <div class="bars" data-page-node-id="wvNjZJiMPdIwFDBYOmuogd">
+        <div class="bar-col" data-page-node-id="PyvtxrSerdRnwp0YG1US6a">
+          <div class="bar" style="height:50px" title="一：820 次" data-page-node-id="iCeyo6WyQgO31MtBAl0xHx"></div>
+          <div class="bar-x" data-page-node-id="XP7f3qakr4mRi36BA02tGP">一</div>
+        </div>
+        <div class="bar-col" data-page-node-id="OQtOkCKf9owVFpwZO0dxyh">
+          <div class="bar" style="height:75px" title="二：1240 次" data-page-node-id="cOdbFV0Iu1kTH6jMPFYJei"></div>
+          <div class="bar-x" data-page-node-id="SfrFwF0kXa2fuJGQUs4VGx">二</div>
+        </div>
+        <div class="bar-col" data-page-node-id="QwF2vQAerqVjiDZV0LkQ4i">
+          <div class="bar" style="height:59px" title="三：980 次" data-page-node-id="cF6A9fE9B2NOLLlVJLm3lR"></div>
+          <div class="bar-x" data-page-node-id="AACUwYgN2YNS41PVNVnJ51">三</div>
+        </div>
+        <div class="bar-col" data-page-node-id="b3hDlx2QeEw8cOzEdRgOCR">
+          <div class="bar" style="height:92px" title="四：1520 次" data-page-node-id="QdJECsXMILNN5Rr5X0gk0s"></div>
+          <div class="bar-x" data-page-node-id="I9K6GsKEbI0Ve2HtLJH94m">四</div>
+        </div>
+        <div class="bar-col" data-page-node-id="CVRHLMppGp9mUrUadUiszZ">
+          <div class="bar" style="height:79px" title="五：1310 次" data-page-node-id="jLvfGK0MZpPHDHwwBsSYHA"></div>
+          <div class="bar-x" data-page-node-id="hTQH7gbwrp8e1im9H5GbOd">五</div>
+        </div>
+        <div class="bar-col" data-page-node-id="x1GDv6OBPZqdHCDFChSBhT">
+          <div class="bar" style="height:39px" title="六：640 次" data-page-node-id="hYhZKOogGLyMXmbEvlO9sI"></div>
+          <div class="bar-x" data-page-node-id="KlQv4yLIMCwCPFiZGfRxWa">六</div>
+        </div>
+        <div class="bar-col" data-page-node-id="Eb5SAA3p14pi9pP643KAV2">
+          <div class="bar" style="height:44px" title="日：720 次" data-page-node-id="R2dLiET1bBCLAtPugsYjDw"></div>
+          <div class="bar-x" data-page-node-id="ENPciaUiSHF59mD0HcRY3K">日</div>
+        </div></div>
+        </div>
+        <div class="card" data-page-node-id="q3PJ5dmcPbgIqcILTCoM3G">
+          <h3 data-page-node-id="cLtBUvNd4CKBhLuHkm4GGJ">模型用量分布<span class="more" data-page-node-id="sNImADKeNwqpKGNLxtl7pM">今日</span></h3>
+          
+        <div class="mrow" data-page-node-id="6sWRqawZbqbofvAI55wP3h">
+          <div class="mtop" data-page-node-id="BvyFu7AMTxd0nWi7HQUYFs"><span data-page-node-id="AOCKGNSoNBhRsz7sbLVdjX">DeepSeek-V4.1-Flash</span><b data-page-node-id="jwXtW2BBzTOGyolyjhDoeN">58%</b></div>
+          <div class="progress" data-page-node-id="XjruWSIBa7EVHPR6PBGLMU"><i style="width:58%" data-page-node-id="fMw2tECkis9aerBZrCzjuw"></i></div>
+        </div>
+        <div class="mrow" data-page-node-id="O5v2Wo64GgmfXWAVDftGGB">
+          <div class="mtop" data-page-node-id="vDHEZFCxZnajNjVGFVMRqf"><span data-page-node-id="ENfiB4D81wfE25I5Tozg1P">qwen3-max</span><b data-page-node-id="IdENeZYl91kGApALVxH1UK">26%</b></div>
+          <div class="progress" data-page-node-id="V4R8UiXVKvnUOYqbxiWTFs"><i style="width:26%" data-page-node-id="hGQFsz7L6DogPhl27D5pFG"></i></div>
+        </div>
+        <div class="mrow" data-page-node-id="g45tFZwg3f5ESrLARf9Jqh">
+          <div class="mtop" data-page-node-id="beCMyhraSE9XkAcBfxB0Ms"><span data-page-node-id="oeptmTp8Wa4I9PFHZNFENV">星辰大模型</span><b data-page-node-id="JCVM1x6JFF3WToYYHIPEZc">16%</b></div>
+          <div class="progress" data-page-node-id="PfJtRNjtY0xuS4B51noxzW"><i style="width:16%" data-page-node-id="G83awCjHav9OiJtFKbvt2I"></i></div>
+        </div>
+        </div>
+      </div>
+
+      <div class="grid-2" data-page-node-id="zdOs5JW7Osmxm39m5ytQ2e">
+        <div class="card" data-page-node-id="OtQwfMYXHgOGdBKAqquTX0">
+          <h3 data-page-node-id="WwTd0bG0qK4vesuVXC4lGD">调用最多的 Agent<span class="more" data-demo="" data-page-node-id="QJifWrNHyIYF52kOudZcRe">查看全部</span></h3>
+          
+  <table class="t" data-page-node-id="b568k14ciBLHP8xZtqWvIx">
+    <thead data-page-node-id="GTTdaIwcVH0i5c4nkva3rQ"><tr data-page-node-id="PERZda02rIy4cynGsVml54"><th data-page-node-id="j0TDwVPC1SWkT60kFNoRpT">Agent</th><th data-page-node-id="qBZNvnXqXWAO6tyD6QzdBj">所属工作区</th><th data-page-node-id="uk56T0MA9z768BOMSd6Ulm">今日调用</th><th data-page-node-id="xC8fkZ3CACkBDILcLqD6NQ">成功率</th></tr></thead>
+    <tbody data-page-node-id="aT68bsRAUhWAfnn5HkRPbq"><tr data-page-node-id="IXimMGznuRP8DAG3K6GOLh"><td data-page-node-id="hXx1FVJUIAODRnKCTf7FFy"><b data-page-node-id="HGx9OndbXpzfhAvfEtOvZ2">制度问答助手</b></td><td data-page-node-id="AA468PcyCcP2HWrkd3pLDN">默认工作区</td><td data-page-node-id="XvfYtNYoKgXt14EVczkrrp"><span class="num" data-page-node-id="NQjS32rsHb3H6q2KzFiMpG">4,231</span></td><td data-page-node-id="Q5ODnA4Y6qIAgMsvmC98U0">99.2%</td></tr><tr data-page-node-id="KZX1hulmo2rI0WGSMK0coS"><td data-page-node-id="wDRMMyuu1WheFCoOHvVyfM"><b data-page-node-id="GeKioxZVa6PFy3EyFBhmSS">周报生成器</b></td><td data-page-node-id="uoUYgKCvTbtQkdr1vlGq4O">默认工作区</td><td data-page-node-id="080fHrCyegwZJSFMKYu48d"><span class="num" data-page-node-id="EbKMVVb6ud9h8L7bXlMDBn">2,108</span></td><td data-page-node-id="DbJ5lD1Nxhoj7TjWI0yjhV">98.6%</td></tr><tr data-page-node-id="orlmJTLEpHQDBcKzIRc9re"><td data-page-node-id="3DNXcGrX9zeOk7yGElA0AB"><b data-page-node-id="NnBzsMgLuFcnwov8IT22B6">会议预订 Agent</b></td><td data-page-node-id="RbESiPyn3vYW4kjbkeKXe6">默认工作区</td><td data-page-node-id="6ZTBPfrVhvZV0bEBJEmdtT"><span class="num" data-page-node-id="vOTO4ik23AQEi81ZSBzKpK">1,764</span></td><td data-page-node-id="IoDgYtNsbMGqWX0U1RJNMW">97.4%</td></tr><tr data-page-node-id="D8a5aPSu1mxlcLPCb2yQV3"><td data-page-node-id="KyhxCg6YxWUpyE0XxCAvp4"><b data-page-node-id="O2tmCpteZGvmL5kt1F5Cxb">告警归因分析</b></td><td data-page-node-id="kECijjKRWmbyaIluGhOglG">运维分析空间</td><td data-page-node-id="VYC2FUGbcU3wl9YxJUaEZd"><span class="num" data-page-node-id="FjDmNnoBKX0xAhQO2qgxmx">1,309</span></td><td data-page-node-id="1RQgWVUnoFkAhrDRVHVDOb">93.1%</td></tr></tbody>
+  </table>
+        </div>
+        <div class="card" data-page-node-id="NdjAmom7DGaE0prUuhBU7g">
+          <h3 data-page-node-id="9QDRAbCuuLUqCQpW8BFjFi">最近异常<span class="more" data-page-node-id="HKaT581wfOTdpZqyp0x5G3">3 条未处理</span></h3>
+          <div class="exc" data-page-node-id="sdDpcdgCdiAiuAyU9rik9w">
+            <span class="pill err" data-page-node-id="EF7agpoSjPKxgj1oBSdjkS">失败</span>
+            <div class="exc-t" data-page-node-id="aIDDbKX89TuCHxAshNHobB"><b data-page-node-id="tW6a9D5PXDpeua7TxzCXoV">告警归因分析 · MCP 调用超时</b><span data-page-node-id="0Ju64WjHAqaxHF4FkYePGE">GitLab 连接 30s 未响应 · 3 分钟前</span></div>
+          </div>
+          <div class="exc" data-page-node-id="cADAqCKinubzU8GgvedXnK">
+            <span class="pill warn" data-page-node-id="5BMkqxKmHilOCUFzi2jDOX">降级</span>
+            <div class="exc-t" data-page-node-id="0EljBKTsAEj1HAC0AsgaoN"><b data-page-node-id="BwsvCU3Ogs7gg9cAqAkmyK">星辰大模型 · 切回公网 API</b><span data-page-node-id="nyc04yhGs7VR2NEc2FUxEX">接口限流触发自动降级 · 27 分钟前</span></div>
+          </div>
+          <div class="exc" data-page-node-id="N9LY2fGgYjmoVNoa3pUehY">
+            <span class="pill err" data-page-node-id="SYlOepJSAxO9h3J5stOVUC">失败</span>
+            <div class="exc-t" data-page-node-id="RB9IUORjOxdpyfKWcoxFaI"><b data-page-node-id="JhygF6NWmkm5JUta5u54vj">周报生成器 · 模板渲染报错</b><span data-page-node-id="LRu6HEAHhpxPLwX274rw3b">占位符未匹配 · 1 小时前</span></div>
+          </div>
+        </div>
+      </div></div></div>
+
+    <div class="composer-wrap" data-page-node-id="PHewFxkoYd3GOWZJ6wwUJX">
+      <div class="composer-box" data-page-node-id="WkY281pAEbIwxxrgPnIC0p">
+        <div class="composer" id="composer" data-page-node-id="NRx9BgBop35cD2L689AyBi">
+          <textarea id="input" rows="1" placeholder="描述你想要构建的内容，/ 调用指令，@ 文件或对话" data-page-node-id="0EhDGOgVfZpfNTrXpDWafo"></textarea>
+          <div class="cbar" data-page-node-id="YxXULRgtajdCUHV8u0hqU9">
+            <button class="plus-btn" id="btnPlus" title="添加附件" data-page-node-id="EP3JZiksyIEdBALPQCYvFp">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" data-page-node-id="NbCASWjs2GePGTqZLpByrW"><path d="M12 5v14M5 12h14" data-page-node-id="HFSDsg6Ts2KqYT4wcw1bk6"></path></svg>
+            </button>
+            <div class="cbar-right" data-page-node-id="nJcbE2BCrV6TsGfavbnhgw">
+              <button class="think-btn" id="thinkBtn" title="开启后进入思考模式" data-page-node-id="ppRKdUTJdZ0s5H3CfP2Scr">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" data-page-node-id="s1F7jO4biy8U7K0X8H8elJ"><path d="M9.5 18h5M10.5 21h3" data-page-node-id="XwLSS5iFx1f7c8OQxwHryk"></path><path d="M12 3a6 6 0 00-3.6 10.8c.5.4.8 1 .9 1.6l.1.6h5.2l.1-.6c.1-.6.4-1.2.9-1.6A6 6 0 0012 3z" data-page-node-id="IGI9SKUFGAyCujCssqcnSf"></path></svg>
+                思考
+              </button>
+              <button class="mic-btn" id="btnMic" title="语音输入" data-page-node-id="IWuBZ05sQ6kkxsTnVETKZB">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" data-page-node-id="JnDxKZyGrNV591Eb9ZAIcj"><rect x="9" y="3" width="6" height="10" rx="3" data-page-node-id="CUapQrZDseNRxqCyX1Q0ng"></rect><path d="M5.5 11a6.5 6.5 0 0013 0M12 17.5V21" data-page-node-id="RB3gmbgvR9mRaA0hz5lKHn"></path></svg>
+              </button>
+              <button class="send" id="btnSend" title="发送" data-page-node-id="IXPGO0ST1ihqGXYSlJJWSU"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" data-page-node-id="t9tt3REtUrOT7VhKs4KBGI"><path d="M12 19V5M6 11l6-6 6 6" data-page-node-id="65uQb9CfQlYdxptDAgrtav"></path></svg></button>
+            </div>
+          </div>
+        </div>
+        <p class="hint" data-page-node-id="HhMOESVauUA0zD9oPcCHIp">Enter 发送 · Shift + Enter 换行 · 输入 / 调用指令 · 输入 @ 引用文件或会话</p>
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- 会话操作菜单：重命名 / 归档 / 删除（内容由脚本按状态生成） -->
+<div class="sess-menu" id="sessMenu" style="left: 127.333px; top: 265.833px;" data-page-node-id="cGnbGyH2fhIswX2fBlXCbg">
+    <div class="sm-item" data-act="rename" data-page-node-id="MExVC7pdVry59uEyWuPltD"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" data-page-node-id="bVr2Kx9lMThn3oFFPpZrmm"><path d="M4 20h4L19.5 8.5a2.1 2.1 0 00-3-3L5 17v3z" data-page-node-id="wuwVnBerq6931IKGpwROxx"></path></svg>重命名</div>
+    <div class="sm-item" data-act="archive" data-page-node-id="qj4D4Bc3U2LW9qFnYHeLWt"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" data-page-node-id="jd6uAJuBXKPvTIPh3kGvNc"><rect x="3" y="4" width="18" height="4" rx="1" data-page-node-id="pTIBAVAjoL8LoCzxI1V5ti"></rect><path d="M5 8v11a1 1 0 001 1h12a1 1 0 001-1V8M10 12h4" data-page-node-id="KWPPj7l7oREndKhPsDrdiu"></path></svg>归档</div>
+    <div class="sm-item danger" data-act="delete" data-page-node-id="oD4hZnmVQKiNeA0KAE2y08"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" data-page-node-id="bUnMIk7Z8hS2IcVg0BKgCg"><path d="M4 7h16M9 7V5h6v2M6 7l1 13h10l1-13" data-page-node-id="lKS9PJHe6Ff5gttFEMKiCn"></path></svg>再点一次确认删除</div></div>
+
+<div class="toast" id="toast" data-page-node-id="EfRvmp8Yqt8sKHGtTOG2yc">已切换为普通用户，平台管理已隐藏</div>
+
+<!-- 权限配置抽屉（内容由脚本按用户生成） -->
+<div class="drawer-mask" id="permMask" data-page-node-id="NI2vfEb61T1uQFpo53EmC4"></div>
+<aside class="drawer" id="permDrawer" data-page-node-id="WyEMtMRq2oPyqLDH5ikrMZ"></aside>
+
+<script data-page-node-id="kB2BJTJfxYu4vtsFF6US1D">
+/* ============================================================
+   纯前端原型：数据全部写死，刷新即恢复初始状态
+   ============================================================ */
+
+const $ = (s, r = document) => r.querySelector(s);
+const esc = (s = '') => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+
+/* ---------- 1. 工作区与会话 ----------
+   默认只有一个「默认工作区」，登录后直接进入；
+   这里保留 DATA 结构是为了给「工作区切换」留位置，界面上不暴露创建工作区。 */
+let DATA = [
+  {
+    id: 'default', name: '默认工作区', emoji: '📁', tint: '#4F46E5',
+    meta: '你的个人空间',
+    sessions: [
+      // 「预约产品评审会」由演示流程在启动时自动创建，这里只保留一条历史
+      { id: 's6', title: '约周三下午 3 点评审会', time: '10:26', day: '昨天' }
+    ]
+  },
+  {
+    id: 'fin', name: '财务共享空间', emoji: '📗', tint: '#0F766E',
+    meta: '只读 · 财务部共享',
+    sessions: [
+      { id: 'f1', title: '差旅制度 9 月更新说明', time: '10-18', day: '更早' }
+    ]
+  },
+  {
+    id: 'ops', name: '运维分析空间', emoji: '📊', tint: '#0E7490',
+    meta: '只读 · 蒲公英数据',
+    sessions: [
+      { id: 'o1', title: '上周告警趋势', time: '10-17', day: '更早' }
+    ]
+  }
+];
+
+/* ---------- 2. 历史会话内容 ---------- */
+const MSGS = {
+  s1: [
+    { role: 'user', text: '差旅住宿报销标准是多少？上海和成都有区别吗？' },
+    {
+      role: 'assistant', tag: 'RAG', time: '2 分钟前',
+      think: '用户问的是制度类事实问题。先检索制度库，再核对制度版本号，避免引用已废止的条款。',
+      steps: [
+        { name: '检索知识库', fn: 'kb_search', arg: '{ query: "差旅 住宿 标准 城市分级", top_k: 5 }', ms: '0.82s',
+          out: '召回 5 个片段\n  1. 差旅费管理办法 v3.2 · P12 · score 0.91\n  2. 费用报销操作指引 · P3 · score 0.84\n  3. 财务制度汇编 · P47 · score 0.72' },
+        { name: '读取原文', fn: 'doc_read', arg: '{ doc_id: "DOC-012", page: 12, chunk: 3 }', ms: '0.34s',
+          out: '命中「第四章 住宿标准」\n包含城市分级表（9 行）与超标审批说明' },
+        { name: '比对版本', fn: 'doc_meta', arg: '{ doc_id: "DOC-012" }', ms: '0.11s',
+          out: 'version: v3.2\n  effective_from: 2026-07-01\n  status: 现行有效' }
+      ],
+      html: '<p>结论：住宿费按<strong>城市分级</strong>报销，上海和成都确实有区别，上海高一档。</p>' +
+        '<table><thead><tr><th>城市分级</th><th>覆盖城市</th><th>住宿上限</th></tr></thead><tbody>' +
+        '<tr><td>一类</td><td>北京 / 上海 / 广州 / 深圳</td><td>¥650 / 晚</td></tr>' +
+        '<tr><td>二类</td><td>杭州 / 成都 / 武汉等 12 城</td><td>¥500 / 晚</td></tr>' +
+        '<tr><td>三类及其他</td><td>其余城市</td><td>¥420 / 晚</td></tr>' +
+        '</tbody></table>' +
+        '<p>依据《差旅费管理办法》<strong>v3.2</strong>（2026-07-01 起执行）。两点要注意：</p>' +
+        '<ul><li>当天往返不产生住宿，报销单里勾选「当日往返」即可，不需要填住宿项；</li>' +
+        '<li>超标部分需部门负责人审批后才能提交，否则会被财务退回。</li></ul>',
+      refs: ['差旅费管理办法 v3.2 · P12', '费用报销操作指引 · P3']
+    },
+    { role: 'user', text: '那住同事家拿不到发票怎么办？' },
+    {
+      role: 'assistant', tag: 'RAG', time: '刚刚',
+      steps: [
+        { name: '检索知识库', fn: 'kb_search', arg: '{ query: "无发票 住宿 报销 替代凭证" }', ms: '0.61s',
+          out: '召回 2 个片段\n  1. 费用报销操作指引 · P7 · score 0.88' }
+      ],
+      html: '<p>制度里没有「住同事家」这一条，但有一条通用规则可以套：<strong>无法取得发票时，按实际发生的合理费用凭据报销</strong>，需要附《情况说明》并由部门负责人签字。</p>' +
+        '<p>实操上建议走差旅补贴里的<strong>住宿包干</strong>：一类城市 ¥400 / 晚，不用发票，按天数直接计发。这条在制度 P7 的备注里，很多人不知道。</p>'
+    }
+  ],
+  s4: [
+    { role: 'user', text: '生成本周项目周报，重点写 AI 中台的进度。' },
+    {
+      role: 'assistant', tag: 'Agent', time: '1 小时前',
+      think: '周报要覆盖三块：需求、开发、风险。先从 GitLab 拉本周合并记录，再扫一遍本周的会议纪要，最后套模板生成文档。',
+      steps: [
+        { name: '拉取代码记录', fn: 'gitlab_mrs', arg: '{ since: "2026-10-13", project: "ai-middle-platform" }', ms: '1.24s',
+          out: 'merged: 14 MR\n  feature/sse-stream ×5\n  fix/token-isolation ×4\n  feat/kb-upload ×5' },
+        { name: '汇总会议纪要', fn: 'notes_summary', arg: '{ range: "本周", source: "满天星" }', ms: '0.90s',
+          out: '3 场会议\n  10-14 需求评审 · 确定 3 个首发场景\n  10-16 技术方案 · H5 组件入口定稿\n  10-17 周会 · 权限暂不打通' },
+        { name: '套用模板生成', fn: 'doc_generate', arg: '{ template: "周报-AI中台", format: "docx" }', ms: '1.32s',
+          out: '生成成功 · 3 个板块 / 11 条进展 / 2 项风险\n输出：AI中台项目周报-第42周.docx' }
+      ],
+      html: '<p>已生成第 42 周周报，共 <strong>3 个板块、11 条进展、2 项风险</strong>。摘要如下：</p>' +
+        '<ul><li><strong>进展</strong>：统一 H5 入口组件完成 PC 端嵌入联调；4 个产品短 token 下发机制跑通；知识库按产品物理隔离落地。</li>' +
+        '<li><strong>风险</strong>：4 个平台权限体系未统一，跨产品搜索需推迟到 Phase 2；星辰大模型接口尚未开通，暂时用公网 API 验证。</li></ul>' +
+        '<p>措辞已按公文习惯调整，可以直接发群。</p>',
+      artifact: { name: 'AI中台项目周报-第42周.docx', meta: 'DOCX · 38 KB · 3 页' }
+    }
+  ],
+
+  /* 其余历史会话：各给一段简短对话，点开不会是空白 */
+  s2: [
+    { role: 'user', text: '年假可以跨年结转吗？' },
+    {
+      role: 'assistant', tag: 'RAG', time: '昨天',
+      steps: [
+        { name: '检索知识库', fn: 'kb_search', arg: '{ query: "年假 结转 上限" }', ms: '0.73s',
+          out: '召回 3 个片段\n  1. 员工假期管理办法 · P5 · score 0.89' }
+      ],
+      html: '<p>可以结转，但有上限：<strong>最多结转 5 天</strong>，且必须在次年 <strong>3 月 31 日</strong>前用完，逾期清零。</p>' +
+        '<p>没休完的部分不会折算工资，所以年底前记得先安排掉。</p>',
+      refs: ['员工假期管理办法 · P5']
+    }
+  ],
+
+  s5: [
+    { role: 'user', text: '把这周的会议纪要整理成日报' },
+    {
+      role: 'assistant', tag: 'Agent', time: '昨天',
+      steps: [
+        { name: '汇总纪要', fn: 'notes_summary', arg: '{ range: "本周" }', ms: '0.88s', out: '读取 3 份纪要' },
+        { name: '生成日报', fn: 'doc_generate', arg: '{ format: "docx" }', ms: '1.05s', out: '生成成功 · 1 页' }
+      ],
+      html: '<p>已按「进展 / 待决 / 下一步」三段式整理好本周日报，共 <strong>6 条</strong>。</p>' +
+        '<ul><li>进展：H5 入口组件联调完成</li><li>待决：权限映射方案待研发确认</li><li>下一步：周四前给出 Phase 2 范围</li></ul>',
+      artifact: { name: '本周会议日报-10月第3周.docx', meta: 'DOCX · 21 KB · 1 页' }
+    }
+  ],
+
+  s6: [
+    { role: 'user', text: '约周三下午 3 点，5 个人，要投影' },
+    {
+      role: 'assistant', tag: 'Agent', time: '昨天',
+      steps: [
+        { name: '查空闲时间', fn: 'calendar_free', arg: '{ date: "周三 15:00", people: 5 }', ms: '0.62s',
+          out: '5 人中 4 人空闲，李静 15:00-15:30 有会' },
+        { name: '预订会议室', fn: 'room_book', arg: '{ room: "A301", need: ["投影"] }', ms: '0.41s', out: 'A301 可用，已预订' }
+      ],
+      html: '<p>已订好：<strong>周三 15:00-16:00 · A301 会议室</strong>（有投影），并给 5 位参会人发了邀请。</p>' +
+        '<p>一个提醒：李静 15:00-15:30 有冲突，已把她的参会标记为「可选」。</p>',
+      refs: ['企业日历 · 周三']
+    }
+  ],
+
+  s3: [
+    { role: 'user', text: '帮我梳理一下采购审批流程' },
+    {
+      role: 'assistant', tag: 'RAG', time: '10-18',
+      steps: [
+        { name: '检索知识库', fn: 'kb_search', arg: '{ query: "采购 审批 流程 金额" }', ms: '0.78s',
+          out: '召回 4 个片段\n  1. 采购管理办法 · P8 · score 0.92' }
+      ],
+      html: '<p>按金额分三档：</p><ul>' +
+        '<li>5 万以下：部门负责人审批即可</li>' +
+        '<li>5-20 万：加财务负责人</li>' +
+        '<li>20 万以上：需总经理办公会</li></ul>' +
+        '<p>另外超过 10 万的采购必须走比价，至少 3 家供应商。</p>',
+      refs: ['采购管理办法 · P8']
+    }
+  ],
+
+  s7: [
+    { role: 'user', text: '统计上周告警数量，排个 TOP10' },
+    {
+      role: 'assistant', tag: 'Agent', time: '10-17',
+      steps: [
+        { name: '查询告警库', fn: 'data_query', arg: '{ range: "上周", source: "蒲公英" }', ms: '1.12s',
+          out: '返回 1,284 条告警记录' }
+      ],
+      html: '<p>上周共 <strong>1,284</strong> 条告警，TOP3 占了总量的 <strong>61%</strong>：</p>' +
+        '<ul><li>数据库连接池耗尽 · 412 条</li><li>磁盘使用率超 85% · 236 条</li><li>接口超时（p99 > 2s）· 135 条</li></ul>' +
+        '<p>前两类是同一个根因：批量任务没有错峰。建议先调批处理时间窗口。</p>',
+      refs: ['蒲公英告警库 · 上周']
+    }
+  ],
+
+  f1: [
+    { role: 'user', text: '9 月这版差旅制度改了哪些条款？' },
+    {
+      role: 'assistant', tag: 'RAG', time: '10-18',
+      steps: [
+        { name: '对比版本', fn: 'doc_diff', arg: '{ doc: "差旅费管理办法", from: "v3.1", to: "v3.2" }', ms: '0.95s',
+          out: '共 3 处差异，集中在住宿与补贴' }
+      ],
+      html: '<p>主要三处变化：</p><ul>' +
+        '<li>住宿标准整体上调 <strong>¥50/晚</strong></li>' +
+        '<li>新增「当日往返」选项，不再强制填住宿</li>' +
+        '<li>市内交通补贴由 ¥80/天 调整为 <strong>¥100/天</strong></li></ul>',
+      refs: ['差旅费管理办法 v3.2 · P12']
+    }
+  ],
+
+  o1: [
+    { role: 'user', text: '上周告警趋势怎么样？' },
+    {
+      role: 'assistant', tag: 'Agent', time: '10-17',
+      steps: [
+        { name: '聚合统计', fn: 'aggregate', arg: '{ group_by: "day", metric: "count" }', ms: '0.71s', out: '按天聚合完成' }
+      ],
+      html: '<p>整体呈下降趋势：周一 268 条 → 周日 121 条，降幅 <strong>55%</strong>。</p>' +
+        '<p>但周三有个小高峰（241 条），集中在 14:00-16:00，与当天的批量任务时间吻合。</p>',
+      refs: ['蒲公英告警库']
+    }
+  ]
+};
+
+/* 当前状态：登录后直接落在默认工作区 */
+const state = { ws: 'default', session: 's6', query: '', showArchived: false };
+
+/* ---------- 3. 侧边栏渲染：只渲染「历史会话」，按今天 / 昨天 / 更早分组 ---------- */
+const DAY_ORDER = ['今天', '昨天', '更早'];
+
+/* 标题 + 会话内容都能搜到 */
+function matchSession(s, q) {
+  if (!q) return true;
+  if (s.title.toLowerCase().includes(q)) return true;
+  const msgs = MSGS[s.id] || [];
+  return msgs.some(m => {
+    const t = (m.text || '') + ' ' + (m.html || '') + ' ' + (m.think || '');
+    return t.toLowerCase().includes(q);
+  });
+}
+
+function renderSidebar() {
+  const ws = currentWs();
+  const q = state.query.trim().toLowerCase();
+  const box = $('#sessList');
+
+  const mine = ws.sessions.filter(s => !s.archived && matchSession(s, q));
+  const arch = ws.sessions.filter(s => s.archived && !q);
+
+  if (!mine.length) {
+    box.innerHTML = `<div class="sempty">${q ? '没有匹配「' + esc(state.query.trim()) + '」的会话' : '还没有历史对话，点击「新建对话」开始'}</div>`;
+  } else {
+    box.innerHTML = DAY_ORDER.map(day => {
+      const list = mine.filter(s => (s.day || '更早') === day);
+      if (!list.length) return '';
+      return `
+        <div class="sgroup">
+          <div class="sg-label">${day}</div>
+          ${list.map(s => itemHTML(s)).join('')}
+        </div>`;
+    }).join('');
+  }
+
+  if (arch.length) {
+    box.insertAdjacentHTML('beforeend', `<button class="arch-toggle" id="archToggle">已归档 ${arch.length} 个 · 点击展开</button>`);
+    if (state.showArchived) {
+      box.insertAdjacentHTML('beforeend', arch.map(s => itemHTML(s, true)).join(''));
+    }
+  }
+}
+
+function itemHTML(s, isArch) {
+  return `
+    <div class="sitem ${s.id === state.session ? 'active' : ''}" data-sid="${s.id}">
+      <span class="sitem-t">${esc(s.title)}</span>
+      <button class="smore" data-menu="${s.id}" title="更多">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><circle cx="5" cy="12" r="1.7"/><circle cx="12" cy="12" r="1.7"/><circle cx="19" cy="12" r="1.7"/></svg>
+      </button>
+    </div>`;
+}
+
+/* ---------- 4. 头部 ---------- */
+function currentWs() { return DATA.find(w => w.id === state.ws) || DATA[0]; }
+function currentSession() { return currentWs().sessions.find(s => s.id === state.session) || null; }
+
+function renderHead() {
+  const ws = currentWs();
+  const s = currentSession();
+  const tile = $('#headTile');
+  tile.textContent = ws.emoji;
+  tile.style.background = ws.tint + '18';
+  tile.style.color = '';
+  $('#headTitle').textContent = s ? s.title : '新会话';
+  const n = s ? (MSGS[s.id] || []).length : 0;
+  $('#headMeta').textContent = n ? n + ' 条消息 · 可随时继续' : '开始一段新的对话';
+}
+
+/* 侧边栏顶部：工作区固定显示，不做「创建工作区」入口 */
+function renderWsRow() {
+  const ws = currentWs();
+  const t = $('#wsTile');
+  t.textContent = ws.emoji;
+  t.style.background = ws.tint + '18';
+  t.style.color = ws.tint;
+  $('#wsName').textContent = ws.name;
+  $('#wsMeta').textContent = ws.meta;
+  document.querySelectorAll('.ws-opt').forEach(o => o.classList.toggle('on', o.dataset.ws === ws.id));
+}
+
+/* ---------- 5. 消息渲染 ---------- */
+function md(t) {
+  const lines = esc(t).split('\n');
+  let out = '', inList = false;
+  const inline = s => s.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+                       .replace(/`([^`]+)`/g, '<code>$1</code>');
+  lines.forEach(line => {
+    const m = /^\s*-\s+(.*)$/.exec(line);
+    if (m) {
+      if (!inList) { out += '<ul>'; inList = true; }
+      out += '<li>' + inline(m[1]) + '</li>';
+    } else {
+      if (inList) { out += '</ul>'; inList = false; }
+      if (line.trim() === '') out += '<p></p>';
+      else out += '<p>' + inline(line) + '</p>';
+    }
+  });
+  if (inList) out += '</ul>';
+  return out;
+}
+
+function stepsHTML(steps) {
+  const failCount = steps.filter(s => s.fail).length;
+  const rows = steps.map(s => `
+    <div class="step ${s.fail ? 'fail' : ''}" data-step>
+      <div class="step-row">
+        <span class="st ${s.fail ? 'fail' : 'done'}">${s.fail ? '✗' : '✓'}</span>
+        <span class="step-name">${esc(s.name)}</span>
+        <span class="step-fn">${esc(s.fn)}</span>
+        <span class="step-ms">${esc(s.ms)}</span>
+      </div>
+      <div class="step-body">${esc(s.arg)}\n\n${esc(s.out || '')}</div>
+    </div>`).join('');
+
+  return `
+    <div class="steps fold ${failCount ? 'has-fail' : ''}">
+      <div class="steps-head" data-steps-toggle>
+        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg>
+        <span class="sh-text">执行了 ${steps.length} 步${failCount ? ' · ' + failCount + ' 步失败' : ''}</span>
+        <span class="cnt">${steps.map(s => s.fn).join(' → ')}</span>
+      </div>
+      <div class="steps-body">${rows}</div>
+    </div>`;
+}
+
+/* 折叠时露在标题后面的那行摘要 */
+function peek(text, n = 42) {
+  const t = String(text).replace(/\s+/g, ' ').trim();
+  return t.length > n ? t.slice(0, n) + '…' : t;
+}
+
+/* 思考块：默认折叠，标题带一行摘要 */
+function thinkHTML(text) {
+  return `
+    <div class="think fold">
+      <div class="tk" data-think>
+        <svg class="tkc" width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg>
+        <span class="tk-label">思考过程</span>
+        <span class="tk-peek">${esc(peek(text, 44))}</span>
+      </div>
+      <div class="tk-body">${esc(text)}</div>
+    </div>`;
+}
+
+function refsHTML(refs) {
+  if (!refs || !refs.length) return '';
+  return '<div class="refs">' + refs.map((r, i) =>
+    `<span class="ref" data-ref><i>${i + 1}</i>${esc(r)}</span>`).join('') + '</div>';
+}
+
+function artifactHTML(a) {
+  if (!a) return '';
+  return `
+    <div class="artifact">
+      <div class="art-ic">📄</div>
+      <div class="art-txt"><b>${esc(a.name)}</b><span>${esc(a.meta)}</span></div>
+      <button class="art-open" data-open>打开</button>
+    </div>`;
+}
+
+function renderMsg(m) {
+  if (m.role === 'user') {
+    return `<div class="msg user"><div class="bubble">${esc(m.text).replace(/\n/g, '<br>')}</div></div>`;
+  }
+  const think = m.think ? thinkHTML(m.think) : '';
+  const steps = m.steps && m.steps.length ? stepsHTML(m.steps) : '';
+  const body = m.html || md(m.text || '');
+
+  return `
+    <div class="msg ai">
+      <div class="ai-avatar">✦</div>
+      <div class="ai-main">
+        <div class="ai-name"><b>海卓AI</b>${m.tag ? `<span class="tag">${esc(m.tag)}</span>` : ''}<span>${esc(m.time || '刚刚')}</span></div>
+        ${think}
+        ${steps}
+        <div class="answer">${body}</div>
+        ${artifactHTML(m.artifact)}
+        ${refsHTML(m.refs)}
+      </div>
+    </div>`;
+}
+
+/* 按当前时间给招呼语 */
+function helloText() {
+  const h = new Date().getHours();
+  if (h < 5) return '夜深了';
+  if (h < 9) return '早上好';
+  if (h < 12) return '上午好';
+  if (h < 14) return '中午好';
+  if (h < 18) return '下午好';
+  return '晚上好';
+}
+
+function welcomeHTML() {
+  return `
+    <div class="welcome">
+      <!-- 招呼卡片 -->
+      <div class="hero">
+        <div class="hero-body">
+          <span class="hero-chip"><i></i>你的企业 AI 工作空间</span>
+          <h2>${helloText()}，欢迎使用海卓智慧大脑
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.6c.8 4.7 2.5 6.4 7.2 7.2-4.7.8-6.4 2.5-7.2 7.2-.8-4.7-2.5-6.4-7.2-7.2 4.7-.8 6.4-2.5 7.2-7.2z"/></svg>
+          </h2>
+          <p>你可以让 AI 帮你整理信息、跨系统查询、执行标准化办公流程。任务执行过程透明可追踪；涉及业务写入时，将根据规则进行确认和权限校验。</p>
+          <div class="hero-actions">
+            <button class="hero-primary" data-hero="start">
+              <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
+              开始与 AI 助手协作
+            </button>
+          </div>
+        </div>
+        <div class="hero-art">
+          <div class="art-tile">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.6c.8 4.7 2.5 6.4 7.2 7.2-4.7.8-6.4 2.5-7.2 7.2-.8-4.7-2.5-6.4-7.2-7.2 4.7-.8 6.4-2.5 7.2-7.2z"/></svg>
+          </div>
+        </div>
+      </div>
+
+      <div class="sug-label">你可以这样开始</div>
+      <div class="suggests one">
+        <div class="sc demo" data-demo-start>
+          <div class="sc-txt">
+            <b>会议预订</b>
+            <span>约周三下午和张三开会</span>
+          </div>
+          <span class="sc-go">进入演示 →</span>
+        </div>
+      </div>
+    </div>`;
+}
+
+function renderMessages() {
+  const list = MSGS[state.session] || [];
+  const stream = $('#stream');
+  stream.innerHTML = list.length ? list.map(renderMsg).join('') : welcomeHTML();
+  scrollBottom();
+}
+
+function scrollBottom() {
+  const b = $('#chatBody');
+  b.scrollTop = b.scrollHeight;
+}
+
+/* ---------- 6. 工作区 / 会话切换 ---------- */
+function showChat() {
+  $('#main').classList.remove('admin-on');
+  document.body.classList.remove('view-admin');
+  document.querySelectorAll('.anav').forEach(b => b.classList.remove('active', 'parent-on'));
+  renderHead();
+}
+
+function selectWorkspace(id) {
+  const ws = DATA.find(w => w.id === id);
+  if (!ws || id === state.ws) { closeWsMenu(); return; }
+  if (running) abortRun();
+  if (demo.running) abortDemo();
+  state.ws = id;
+  state.session = ws.sessions.length ? ws.sessions[0].id : null;
+  renderWsRow(); renderSidebar(); showChat(); renderMessages();
+  closeWsMenu();
+  toast('已切换到「' + ws.name + '」');
+}
+
+function selectSession(sid) {
+  if (running) abortRun();
+  if (demo.running && sid !== DEMO_SID) abortDemo();
+  state.session = sid;
+  closeSessMenu();
+  renderSidebar(); showChat(); renderMessages();
+}
+
+function newChat() {
+  if (running) abortRun();
+  if (demo.running) abortDemo();
+  const ws = currentWs();
+  const s = { id: 'n' + Date.now(), title: '新会话', time: '刚刚', day: '今天' };
+  ws.sessions.unshift(s);
+  state.session = s.id;
+  renderSidebar(); showChat(); renderMessages();
+  $('#input').focus();
+}
+
+/* ---------- 7. Agent 模拟执行 ---------- */
+let running = false;
+let runToken = 0;
+const sleep = ms => new Promise(r => setTimeout(r, ms));
+
+function abortRun() {
+  runToken++;
+  running = false;
+  setBusy(false);
+}
+
+const SCRIPTS = [
+  {
+    think: '用户问的是制度类事实问题。先检索知识库，再核对制度版本，避免引用已废止的条款。',
+    steps: [
+      { name: '检索知识库', fn: 'kb_search', arg: '{ query: "…", top_k: 5 }', ms: 820,
+        out: '召回 5 个片段\n  1. 相关制度文档 · P12 · score 0.91\n  2. 操作指引 · P3 · score 0.85' },
+      { name: '读取原文', fn: 'doc_read', arg: '{ doc_id: "DOC-012", page: 12 }', ms: 340,
+        out: '命中目标章节，包含分级表与例外条款' },
+      { name: '核对版本', fn: 'doc_meta', arg: '{ doc_id: "DOC-012" }', ms: 120,
+        out: 'version: v3.2 · status: 现行有效' }
+    ],
+    text: '按现行制度查到了，结论先说：\n\n- **一类城市**（北京 / 上海 / 广州 / 深圳）：¥650 / 晚\n- **二类城市**（杭州 / 成都 / 武汉等 12 城）：¥500 / 晚\n- **其他城市**：¥420 / 晚\n\n两个容易踩的点：当天往返不产生住宿，报销单勾选「当日往返」就行；超标部分必须部门负责人先审批，否则会被财务退回。\n\n需要我把这条整理成一张可直接发群的说明图吗？',
+    refs: ['相关制度文档 · P12', '操作指引 · P3']
+  },
+  {
+    think: '这个任务需要组合工具：先取数据，再做汇总，最后套模板出文件。',
+    steps: [
+      { name: '拉取数据', fn: 'data_query', arg: '{ range: "本周", scope: "当前工作区" }', ms: 960,
+        out: '返回 148 条记录，已按时间排序' },
+      { name: '聚合统计', fn: 'aggregate', arg: '{ group_by: "类型", metric: "count" }', ms: 430,
+        out: '分组完成，生成 6 个维度' },
+      { name: '生成文档', fn: 'doc_generate', arg: '{ template: "标准模板", format: "docx" }', ms: 1180,
+        out: '文档生成成功，共 3 页' }
+    ],
+    text: '已经跑完了，过程用到了 3 个工具。\n\n**核心结论**\n- 本周数据里有 2 个明显异常点，集中在周三下午\n- 相比上周整体下降 12%，但异常率反而上升\n- 建议把周三那批样本单独抽出来复核\n\n产出文件已生成，可以直接打开改。',
+    refs: ['数据源 · 本周快照']
+  },
+  {
+    think: '先确认用户真正想要的产出形态，再决定要不要出文件。',
+    steps: [
+      { name: '读取上下文', fn: 'context_load', arg: '{ session: "current" }', ms: 380,
+        out: '载入当前会话 4 轮对话与 2 个附件' },
+      { name: '生成草稿', fn: 'llm_compose', arg: '{ style: "公文", length: "medium" }', ms: 1420,
+        out: '草稿完成 · 约 420 字' }
+    ],
+    text: '整理好了，按公文口吻写的：\n\n- **背景**：统一入口组件已完成 PC 端联调，4 个产品的短 token 下发机制跑通\n- **问题**：权限体系尚未打通，跨产品检索暂不可用\n- **下一步**：Phase 2 优先解决权限映射，先做只读聚合\n\n要不要我再出一个「领导版」的一页摘要？',
+    refs: []
+  }
+];
+let scriptIdx = 0;
+
+function typeText(node, text, speed = 16) {
+  return new Promise(resolve => {
+    const token = runToken;
+    let i = 0;
+    const timer = setInterval(() => {
+      if (token !== runToken) { clearInterval(timer); resolve(); return; }
+      i += 3;
+      node.innerHTML = md(text.slice(0, i)) + (i < text.length ? '<span class="caret"></span>' : '');
+      scrollBottom();
+      if (i >= text.length) { clearInterval(timer); resolve(); }
+    }, speed);
+  });
+}
+
+async function runAgent(question) {
+  if (running) return;
+  running = true;
+  const token = ++runToken;
+  const sid = state.session;
+  const script = SCRIPTS[scriptIdx % SCRIPTS.length];
+  scriptIdx++;
+
+  setBusy(true);
+
+  const wrap = document.createElement('div');
+  wrap.className = 'msg ai';
+  wrap.innerHTML = `
+    <div class="ai-avatar">✦</div>
+    <div class="ai-main">
+      <div class="ai-name"><b>海卓AI</b><span class="tag run">运行中</span><span class="t-time">正在思考…</span></div>
+      <div class="think fold" style="display:none">
+        <div class="tk" data-think>
+          <svg class="tkc" width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg>
+          <span class="tk-label">思考中</span>
+          <span class="tk-peek"></span>
+        </div>
+        <div class="tk-body"></div>
+      </div>
+      <div class="steps fold" style="display:none">
+        <div class="steps-head" data-steps-toggle>
+          <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg>
+          <span class="sh-text">正在执行…</span>
+        </div>
+        <div class="steps-body"></div>
+      </div>
+      <div class="answer"></div>
+      <div class="refs"></div>
+    </div>`;
+  $('#stream').appendChild(wrap);
+  scrollBottom();
+
+  const thinkEl = wrap.querySelector('.think');
+  const thinkBody = wrap.querySelector('.tk-body');
+  const stepsEl = wrap.querySelector('.steps');
+  const stepsBody = wrap.querySelector('.steps-body');
+  const shText = wrap.querySelector('.sh-text');
+  const answer = wrap.querySelector('.answer');
+  const refsEl = wrap.querySelector('.refs');
+  const timeEl = wrap.querySelector('.t-time');
+
+  thinkEl.style.display = '';
+  const thinkTimer = setInterval(() => {
+    if (thinkBody.textContent.length < script.think.length) {
+      thinkBody.textContent = script.think.slice(0, thinkBody.textContent.length + 2);
+      wrap.querySelector('.tk-peek').textContent = peek(thinkBody.textContent, 44);
+    }
+  }, 18);
+  await sleep(760);
+  clearInterval(thinkTimer);
+  thinkBody.textContent = script.think;
+  wrap.querySelector('.tk-peek').textContent = peek(script.think, 44);
+  wrap.querySelector('.tk-label').textContent = '思考过程';
+  if (token !== runToken) return finishAbort();
+
+  stepsEl.style.display = '';
+  shText.outerHTML = `<span class="sh-text">执行中…</span>
+    <span class="cnt">${script.steps.map(s => s.fn).join(' → ')}</span>`;
+
+  for (let i = 0; i < script.steps.length; i++) {
+    const s = script.steps[i];
+    const row = document.createElement('div');
+    row.className = 'step';
+    row.innerHTML = `
+      <div class="step-row">
+        <span class="st wait"><span class="spin"></span></span>
+        <span class="step-name">${esc(s.name)}</span>
+        <span class="step-fn">${esc(s.fn)}</span>
+        <span class="step-ms">运行中</span>
+      </div>
+      <div class="step-body">${esc(s.arg)}\n\n${esc(s.out)}</div>`;
+    stepsBody.appendChild(row);
+    wrap.querySelector('.sh-text').textContent = '执行中 · ' + s.fn;
+    scrollBottom();
+
+    await sleep(s.ms);
+    if (token !== runToken) return finishAbort();
+    row.querySelector('.st').outerHTML = '<span class="st done">✓</span>';
+    row.querySelector('.step-ms').textContent = (s.ms / 1000).toFixed(2) + 's';
+  }
+  wrap.querySelector('.sh-text').textContent = `执行了 ${script.steps.length} 步`;
+
+  timeEl.textContent = '正在生成…';
+  await typeText(answer, script.text);
+  answer.innerHTML = md(script.text);
+
+  if (script.refs.length) refsEl.innerHTML = refsHTML(script.refs);
+
+  const tagEl = wrap.querySelector('.tag');
+  tagEl.className = 'tag';
+  tagEl.textContent = 'Agent';
+  timeEl.textContent = '刚刚';
+
+  const sess = MSGS[sid] = MSGS[sid] || [];
+  sess.push({
+    role: 'assistant', html: answer.innerHTML, tag: 'Agent', time: '刚刚',
+    think: script.think,
+    steps: script.steps.map(s => ({ ...s, ms: (s.ms / 1000).toFixed(2) + 's' })),
+    refs: script.refs
+  });
+
+  running = false;
+  setBusy(false);
+
+  function finishAbort() {
+    running = false;
+    setBusy(false);
+  }
+}
+
+function setBusy(on) {
+  const btn = $('#btnSend');
+  btn.disabled = on;
+  $('#input').disabled = on;
+  if (on) {
+    btn.innerHTML = '<span style="width:8px;height:8px;background:#fff;border-radius:1.5px"></span>';
+    btn.title = '生成中…';
+  } else {
+    btn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5M6 11l6-6 6 6"/></svg>';
+    btn.title = '发送';
+  }
+}
+
+/* ---------- 8. 发送 ---------- */
+function send() {
+  const input = $('#input');
+  const text = input.value.trim();
+  if (!text || running) return;
+
+  if (!state.session) {
+    const s0 = { id: 'n' + Date.now(), title: '新会话', time: '刚刚', day: '今天' };
+    currentWs().sessions.unshift(s0);
+    state.session = s0.id;
+  }
+
+  const sess = MSGS[state.session] = MSGS[state.session] || [];
+  sess.push({ role: 'user', text });
+
+  // 首条消息后自动生成会话标题（可再手动重命名）
+  const s = currentSession();
+  if (s && s.title === '新会话') {
+    s.title = text.length > 16 ? text.slice(0, 16) + '…' : text;
+    s.time = '刚刚';
+    s.day = '今天';
+  }
+
+
+  input.value = '';
+  input.style.height = 'auto';
+
+  $('#stream').innerHTML = sess.map(renderMsg).join('');
+  scrollBottom();
+  renderSidebar();
+  renderHead();
+
+  runAgent(text);
+}
+
+/* ---------- 9. 事件绑定 ---------- */
+
+/* 历史会话：点击切换；右侧「⋯」打开会话菜单 */
+$('#sessList').addEventListener('click', e => {
+  const menuBtn = e.target.closest('[data-menu]');
+  if (menuBtn) {
+    e.stopPropagation();
+    openSessMenu(menuBtn, menuBtn.dataset.menu, false);
+    return;
+  }
+  if (e.target.closest('#archToggle')) {
+    state.showArchived = !state.showArchived;
+    renderSidebar();
+    return;
+  }
+  const item = e.target.closest('[data-sid]');
+  if (item) selectSession(item.dataset.sid);
+});
+
+/* 会话菜单：重命名 / 归档 / 删除（删除需二次确认） */
+const MI = {
+  rename: '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20h4L19.5 8.5a2.1 2.1 0 00-3-3L5 17v3z"/></svg>',
+  archive: '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="4" rx="1"/><path d="M5 8v11a1 1 0 001 1h12a1 1 0 001-1V8M10 12h4"/></svg>',
+  trash: '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16M9 7V5h6v2M6 7l1 13h10l1-13"/></svg>'
+};
+
+let menuSid = null, menuAnchor = null, menuConfirm = false;
+
+function openSessMenu(btn, sid, confirm) {
+  menuSid = sid;
+  if (btn) menuAnchor = btn;
+  menuConfirm = !!confirm;
+
+  const m = $('#sessMenu');
+  m.innerHTML = `
+    <div class="sm-item" data-act="rename">${MI.rename}重命名</div>
+    <div class="sm-item" data-act="archive">${MI.archive}归档</div>
+    <div class="sm-item danger" data-act="delete">${MI.trash}${menuConfirm ? '再点一次确认删除' : '删除'}</div>`;
+  m.classList.add('show');
+
+  const r = menuAnchor.getBoundingClientRect();
+  m.style.left = Math.max(8, Math.min(r.right - 140, window.innerWidth - 156)) + 'px';
+  m.style.top = Math.min(r.bottom + 4, window.innerHeight - m.offsetHeight - 12) + 'px';
+}
+
+function closeSessMenu() { $('#sessMenu').classList.remove('show'); menuConfirm = false; }
+
+$('#sessMenu').addEventListener('click', e => {
+  e.stopPropagation();          // 菜单会被重建，阻止冒泡到 document 的关闭逻辑
+  const it = e.target.closest('[data-act]');
+  if (!it) return;
+  const act = it.dataset.act;
+  const ws = currentWs();
+  const idx = ws.sessions.findIndex(s => s.id === menuSid);
+  if (idx < 0) { closeSessMenu(); return; }
+  const s = ws.sessions[idx];
+
+  if (act === 'rename') { closeSessMenu(); startRename(s.id); return; }
+
+  if (act === 'archive') {
+    closeSessMenu();
+    s.archived = true;
+    if (state.session === s.id) {
+      const next = ws.sessions.find(x => !x.archived);
+      state.session = next ? next.id : null;
+    }
+    renderSidebar(); renderHead(); renderMessages();
+    toast('已归档「' + s.title + '」');
+    return;
+  }
+
+  if (act === 'delete') {
+    if (!menuConfirm) { openSessMenu(null, s.id, true); return; }
+    closeSessMenu();
+    ws.sessions.splice(idx, 1);
+    delete MSGS[s.id];
+    if (state.session === s.id) {
+      const next = ws.sessions.find(x => !x.archived);
+      state.session = next ? next.id : null;
+    }
+    renderSidebar(); renderHead(); renderMessages();
+    toast('已删除「' + s.title + '」');
+  }
+});
+
+/* 重命名：原地变成输入框，Enter 保存 / Esc 取消 */
+function startRename(sid) {
+  const item = document.querySelector(`.sitem[data-sid="${sid}"]`);
+  if (!item) return;
+  const span = item.querySelector('.sitem-t');
+  const old = span.textContent;
+
+  const input = document.createElement('input');
+  input.value = old;
+  span.replaceWith(input);
+  input.focus();
+  input.select();
+
+  let done = false;
+  const commit = save => {
+    if (done) return;
+    done = true;
+    const v = input.value.trim();
+    const s = currentWs().sessions.find(x => x.id === sid);
+    if (save && v && s) s.title = v;
+    renderSidebar();
+    renderHead();
+    if (save && v && s) toast('已重命名为「' + s.title + '」');
+  };
+
+  input.addEventListener('keydown', ev => {
+    ev.stopPropagation();
+    if (ev.key === 'Enter') { ev.preventDefault(); commit(true); }
+    if (ev.key === 'Escape') { ev.preventDefault(); commit(false); }
+  });
+  input.addEventListener('blur', () => commit(true));
+}
+
+/* 工作区切换（首期只提供切换，不提供创建） */
+$('#wsRow').addEventListener('click', e => {
+  e.stopPropagation();
+  const m = $('#wsMenu');
+  const open = !m.classList.contains('show');
+  m.classList.toggle('show', open);
+  $('#wsRow').classList.toggle('open', open);
+  if (open) {
+    const r = $('#wsRow').getBoundingClientRect();
+    m.style.left = r.left + 'px';
+    m.style.top = (r.bottom + 4) + 'px';
+  }
+});
+
+$('#wsMenu').addEventListener('click', e => {
+  const o = e.target.closest('[data-ws]');
+  if (!o) return;
+  closeWsMenu();
+  selectWorkspace(o.dataset.ws);
+});
+
+function closeWsMenu() {
+  $('#wsMenu').classList.remove('show');
+  $('#wsRow').classList.remove('open');
+}
+
+document.addEventListener('click', e => {
+  if (!e.target.closest('#wsRow') && !e.target.closest('#wsMenu')) closeWsMenu();
+  if (!e.target.closest('[data-menu]') && !e.target.closest('#sessMenu')) closeSessMenu();
+});
+
+/* 消息区交互 */
+$('#stream').addEventListener('click', e => {
+  // 折叠卡：同名实体消歧
+  const dt = e.target.closest('[data-dtoggle]');
+  if (dt) { dt.closest('.dcard').classList.toggle('fold'); return; }
+
+  // 槽位就地编辑（点输入框本身不重复进入）
+  const ed = e.target.closest('[data-edit]');
+  if (ed && e.target.tagName !== 'INPUT') { startSlotEdit(ed); return; }
+
+  // 多问题澄清卡：选项
+  const q = e.target.closest('.qopt');
+  if (q) {
+    const group = q.closest('.qopts');
+    group.querySelectorAll('.qopt').forEach(b => b.classList.toggle('on', b === q));
+    qSel[group.dataset.q] = q.dataset.v;
+    const go = document.getElementById('qgo');
+    if (go) {
+      go.disabled = !(qSel.dur && qSel.loc);
+      const hint = document.getElementById('qhint');
+      if (hint) hint.textContent = go.disabled ? '两项都选完才能继续' : '已选好，点「继续」';
+    }
+    return;
+  }
+
+  // 澄清卡：继续
+  if (e.target.closest('#qgo')) {
+    if (!demo.running || !demo.resume) { toast('演示已结束，点右上角「重新体验流程」再走一遍'); return; }
+    const r = demo.resume; demo.resume = null; r({ dur: qSel.dur, loc: qSel.loc });
+    return;
+  }
+
+  // 演示卡片上的可选操作（候选人 / 时间 / 确认 / 兜底方案）
+  const choice = e.target.closest('[data-choice]');
+  if (choice) {
+    if (!demo.running || !demo.resume) { toast('演示已结束，点右上角「重新体验流程」再走一遍'); return; }
+    const r = demo.resume; demo.resume = null; r(choice.dataset.choice);
+    return;
+  }
+
+  const hero = e.target.closest('[data-hero]');
+  if (hero) {
+    if (hero.dataset.hero === 'start') {
+      $('#input').focus();
+      toast('在这里输入你的第一个任务');
+    }
+    return;
+  }
+
+  // 欢迎页唯一入口：会议预订演示
+  if (e.target.closest('[data-demo-start]')) { startDemo(); return; }
+
+  const st = e.target.closest('.step');
+  if (st) { st.classList.toggle('open'); return; }
+
+  const toggle = e.target.closest('[data-steps-toggle]');
+  if (toggle) { toggle.parentElement.classList.toggle('fold'); return; }
+
+  const th = e.target.closest('[data-think]');
+  if (th) { th.parentElement.classList.toggle('fold'); return; }
+
+  const ref = e.target.closest('[data-ref]');
+  if (ref) { toast('已定位到原文：' + ref.textContent.slice(1)); return; }
+
+  const op = e.target.closest('[data-open]');
+  if (op) { toast('原型演示：这里会打开文档预览面板'); return; }
+
+  const sug = e.target.closest('[data-sug]');
+  if (sug) {
+    $('#input').value = sug.dataset.sug;
+    $('#input').focus();
+    autoGrow();
+  }
+});
+
+$('#btnSend').addEventListener('click', send);
+
+$('#input').addEventListener('keydown', e => {
+  if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); send(); }
+});
+
+function autoGrow() {
+  const t = $('#input');
+  t.style.height = 'auto';
+  t.style.height = Math.min(t.scrollHeight, 160) + 'px';
+}
+$('#input').addEventListener('input', autoGrow);
+$('#input').addEventListener('focus', () => $('#composer').classList.add('focus'));
+$('#input').addEventListener('blur', () => $('#composer').classList.remove('focus'));
+
+$('#btnToggleSb').addEventListener('click', () => $('#sidebar').classList.toggle('collapsed'));
+$('#btnNewChat').addEventListener('click', newChat);
+$('#btnReplay').addEventListener('click', startDemo);
+$('#btnShare').addEventListener('click', () => toast('已复制会话分享链接（原型演示）'));
+$('#btnSteps').addEventListener('click', () => toast('原型演示：右侧会展开完整的执行详情面板'));
+$('#btnSetting').addEventListener('click', e => { e.stopPropagation(); toast('原型演示：设置面板'); });
+$('#btnRefresh').addEventListener('click', () => {
+  if (role === 'admin') { renderAdminPage(); toast('数据已刷新'); }
+});
+
+$('#searchInput').addEventListener('input', e => {
+  state.query = e.target.value;
+  renderSidebar();
+});
+
+/* 输入框右下角的控件 */
+$('#btnPlus').addEventListener('click', () => toast('原型演示：上传文件 / 截图 / 引用云盘'));
+$('#btnMic').addEventListener('click', () => toast('原型演示：语音输入'));
+
+/* 思考模式开关：默认关闭，点一下变蓝 */
+state.think = false;
+$('#thinkBtn').addEventListener('click', () => {
+  state.think = !state.think;
+  $('#thinkBtn').classList.toggle('on', state.think);
+  $('#thinkBtn').title = state.think ? '已开启思考模式，再点关闭' : '开启后进入思考模式';
+});
+
+/* ---------- 11. Toast ---------- */
+let toastTimer;
+function toast(msg) {
+  const t = $('#toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => t.classList.remove('show'), 2000);
+}
+
+/* ============================================================
+   12. 角色切换：超级管理员 → 侧边栏新增「平台管理」
+   ============================================================ */
+let role = 'user';
+let adminPage = 'overview';
+let openGroups = { gateway: false };
+
+const ICON = {
+  overview: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="3" y="3" width="7" height="7" rx="1.6"/><rect x="14" y="3" width="7" height="7" rx="1.6"/><rect x="3" y="14" width="7" height="7" rx="1.6"/><rect x="14" y="14" width="7" height="7" rx="1.6"/></svg>',
+  agents: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"><path d="M12 3.5l1.9 5.1 5.1 1.9-5.1 1.9L12 17.5l-1.9-5.1L5 10.5l5.1-1.9L12 3.5z"/></svg>',
+  skills: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"><path d="M12 3.5l8.5 8.5L12 20.5 3.5 12 12 3.5z"/></svg>',
+  mcp: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12h16M7.5 8.5L4 12l3.5 3.5M16.5 8.5L20 12l-3.5 3.5"/></svg>',
+  gateway: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"><path d="M12 3l8 4.4-8 4.4-8-4.4L12 3z"/><path d="M4 12.2l8 4.4 8-4.4"/><path d="M4 16.8l8 4.4 8-4.4"/></svg>',
+  users: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><circle cx="12" cy="8" r="3.4"/><path d="M4.8 20c0-3.4 3.2-5.6 7.2-5.6s7.2 2.2 7.2 5.6"/></svg>',
+  audit: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><circle cx="12" cy="12" r="8.2"/><path d="M12 7.6v4.6l3.2 1.9"/></svg>'
+};
+
+/* 一级导航：带第三个元素的是分组，children 为二级导航 */
+const NAV = [
+  ['overview', '平台总览'],
+  ['agents', 'Agent 管理'],
+  ['skills', 'Skills 管理'],
+  ['mcp', 'MCP 连接管理'],
+  ['gateway', '模型与网关', [
+    ['models', '模型接入'],
+    ['routing', '路由策略'],
+    ['cost', '用量成本'],
+    ['trace', '调用诊断']
+  ]],
+  ['users', '用户与权限'],
+  ['audit', '运行与审计']
+];
+
+/* 二级页面 → 所属一级分组，用于自动展开和父级高亮 */
+const GROUP_OF = { models: 'gateway', routing: 'gateway', cost: 'gateway', trace: 'gateway' };
+
+const T = (heads, rows) => `
+  <table class="t">
+    <thead><tr>${heads.map(h => `<th>${h}</th>`).join('')}</tr></thead>
+    <tbody>${rows.map(r => `<tr>${r.map(c => `<td>${c}</td>`).join('')}</tr>`).join('')}</tbody>
+  </table>`;
+
+const BARS = [['一', 820], ['二', 1240], ['三', 980], ['四', 1520], ['五', 1310], ['六', 640], ['日', 720]];
+const MODEL_DIST = [['DeepSeek-V4.1-Flash', 58], ['qwen3-max', 26], ['星辰大模型', 16]];
+
+const PAGES = {
+  overview: {
+    title: '平台总览', meta: '全平台运行状态 · 数据更新于 09:12',
+    html() {
+      const bars = BARS.map(([d, v]) => `
+        <div class="bar-col">
+          <div class="bar" style="height:${Math.round(v / 1520 * 92)}px" title="${d}：${v} 次"></div>
+          <div class="bar-x">${d}</div>
+        </div>`).join('');
+
+      const models = MODEL_DIST.map(([n, v]) => `
+        <div class="mrow">
+          <div class="mtop"><span>${n}</span><b>${v}%</b></div>
+          <div class="progress"><i style="width:${v}%"></i></div>
+        </div>`).join('');
+
+      return `
+      <div class="kpis">
+        <div class="kpi"><div class="k-lab">今日 Agent 调用</div><div class="k-val">12,847</div><div class="k-delta up">↑ 18.2% · 较昨日</div></div>
+        <div class="kpi"><div class="k-lab">活跃用户</div><div class="k-val">326</div><div class="k-delta up">↑ 6 人 · 本周新增</div></div>
+        <div class="kpi"><div class="k-lab">在线 Agent</div><div class="k-val">9<em>/ 11</em></div><div class="k-delta">2 个草稿未发布</div></div>
+        <div class="kpi"><div class="k-lab">首字响应</div><div class="k-val">1.82<em>s</em></div><div class="k-delta up">↓ 0.31s · 优化 14%</div></div>
+      </div>
+
+      <div class="grid-2">
+        <div class="card">
+          <h3>近 7 天调用量<span class="more">峰值 1,520 次 · 周四</span></h3>
+          <div class="bars">${bars}</div>
+        </div>
+        <div class="card">
+          <h3>模型用量分布<span class="more">今日</span></h3>
+          ${models}
+        </div>
+      </div>
+
+      <div class="grid-2">
+        <div class="card">
+          <h3>调用最多的 Agent<span class="more" data-demo>查看全部</span></h3>
+          ${T(['Agent', '所属工作区', '今日调用', '成功率'], [
+            ['<b>制度问答助手</b>', '默认工作区', '<span class="num">4,231</span>', '99.2%'],
+            ['<b>周报生成器</b>', '默认工作区', '<span class="num">2,108</span>', '98.6%'],
+            ['<b>会议预订 Agent</b>', '默认工作区', '<span class="num">1,764</span>', '97.4%'],
+            ['<b>告警归因分析</b>', '运维分析空间', '<span class="num">1,309</span>', '93.1%']
+          ])}
+        </div>
+        <div class="card">
+          <h3>最近异常<span class="more">3 条未处理</span></h3>
+          <div class="exc">
+            <span class="pill err">失败</span>
+            <div class="exc-t"><b>告警归因分析 · MCP 调用超时</b><span>GitLab 连接 30s 未响应 · 3 分钟前</span></div>
+          </div>
+          <div class="exc">
+            <span class="pill warn">降级</span>
+            <div class="exc-t"><b>星辰大模型 · 切回公网 API</b><span>接口限流触发自动降级 · 27 分钟前</span></div>
+          </div>
+          <div class="exc">
+            <span class="pill err">失败</span>
+            <div class="exc-t"><b>周报生成器 · 模板渲染报错</b><span>占位符未匹配 · 1 小时前</span></div>
+          </div>
+        </div>
+      </div>`;
+    }
+  },
+
+  agents: {
+    title: 'Agent 管理', meta: '11 个 Agent · 9 个已发布',
+    html() {
+      return `
+      <div class="ptool">
+        <input placeholder="搜索 Agent 名称…" data-demo>
+        <span class="grow"></span>
+        <button class="ghost-btn" data-demo>批量导入</button>
+        <button class="btn-solid btn-adm" data-demo>＋ 新建 Agent</button>
+      </div>
+      <div class="card">
+        ${T(['Agent', '所属工作区', 'Skills', '状态', '今日调用', '成功率', '操作'], [
+          ['<b>制度问答助手</b><div class="sub2">agent-policy-qa</div>', '默认工作区', '3 个', '<span class="pill ok">已发布</span>', '<span class="num">4,231</span>', '99.2%', '<span class="lnk" data-demo>编辑</span>'],
+          ['<b>周报生成器</b><div class="sub2">agent-weekly-report</div>', '默认工作区', '2 个', '<span class="pill ok">已发布</span>', '<span class="num">2,108</span>', '98.6%', '<span class="lnk" data-demo>编辑</span>'],
+          ['<b>会议预订 Agent</b><div class="sub2">agent-meeting-book</div>', '默认工作区', '4 个', '<span class="pill ok">已发布</span>', '<span class="num">1,764</span>', '97.4%', '<span class="lnk" data-demo>编辑</span>'],
+          ['<b>告警归因分析</b><div class="sub2">agent-ops-rootcause</div>', '运维分析空间', '5 个', '<span class="pill ok">已发布</span>', '<span class="num">1,309</span>', '93.1%', '<span class="lnk" data-demo>编辑</span>'],
+          ['<b>合同审查助手</b><div class="sub2">agent-contract-review</div>', '财务共享空间', '2 个', '<span class="pill warn">草稿</span>', '<span class="num">—</span>', '—', '<span class="lnk" data-demo>编辑</span>'],
+          ['<b>招聘初筛 Agent</b><div class="sub2">agent-resume-screen</div>', '默认工作区', '1 个', '<span class="pill off">已停用</span>', '<span class="num">—</span>', '—', '<span class="lnk" data-demo>编辑</span>']
+        ])}
+      </div>`;
+    }
+  },
+
+  skills: {
+    title: 'Skills 管理', meta: '3 个 Skill · 1 个已启用',
+    html() {
+      const S = [
+        ['meeting-booking', 'v1.0.1', '会议创建 / 取消 / 忙闲查询'],
+        ['weekly-report', 'v0.1', '周报生成（概念）'],
+        ['incident-summary', 'v0.1', '运维摘要（概念）']
+      ];
+      return `
+      <div class="ptool">
+        <input placeholder="搜索 Skill 名称…" data-demo>
+        <span class="grow"></span>
+        <button class="ghost-btn" data-demo>从仓库导入</button>
+        <button class="btn-solid btn-adm" data-demo>＋ 新建 Skill</button>
+      </div>
+      <div class="card">
+        <h3>Skills 管理列表<span class="more">共 3 个</span></h3>
+        ${T(['名称', '状态 / 版本', '说明', '操作'],
+          S.map(([n, v, d]) => [
+            `<b>${n}</b>`,
+            `<span class="num">${v}</span>`,
+            d,
+            '<span class="mini-btn" data-demo>查看 / 配置</span>'
+          ]))}
+      </div>`;
+    }
+  },
+
+  mcp: {
+    title: 'MCP 连接管理', meta: '4 个连接 · 2 个正常',
+    html() {
+      return `
+      <div class="ptool">
+        <span class="grow"></span>
+        <button class="ghost-btn" data-demo>连通性检测</button>
+        <button class="btn-solid btn-adm" data-demo>＋ 新增连接</button>
+      </div>
+      <div class="card">
+        ${T(['连接名称', '传输方式', '端点', '工具数', '状态', '操作'], [
+          ['<b>腾讯会议 MCP</b><div class="sub2">tmeet</div>', 'SSE', '<span class="num">mcp.tmeet.qq.com/sse</span>', '12', '<span class="pill ok">已连接</span>', '<span class="lnk" data-demo>断开</span>'],
+          ['<b>CloudBase</b><div class="sub2">cloudbase</div>', 'stdio', '<span class="num">cloudbase-mcp</span>', '8', '<span class="pill ok">已连接</span>', '<span class="lnk" data-demo>断开</span>'],
+          ['<b>GitLab</b><div class="sub2">gitlab</div>', 'SSE', '<span class="num">gitlab.internal/mcp</span>', '6', '<span class="pill err">Token 过期</span>', '<span class="lnk" data-demo>重连</span>'],
+          ['<b>企业微信通讯录</b><div class="sub2">wecom-contact</div>', 'SSE', '<span class="num">qyapi.weixin.qq.com</span>', '4', '<span class="pill off">未配置</span>', '<span class="lnk" data-demo>配置</span>']
+        ])}
+      </div>
+      <div class="card">
+        <h3>连接说明</h3>
+        <p style="margin:0;font-size:12.2px;line-height:1.8;color:var(--muted)">
+          MCP 连接供所有工作区共享，具体某个工作区能用哪些工具，由「Agent 管理」里绑定的 Skill 决定。
+          单个连接异常只影响引用它的 Agent，不会阻塞其它工作区。
+        </p>
+      </div>`;
+    }
+  },
+
+  /* ---------- 模型与网关 ---------- */
+  models: {
+    title: '模型接入', meta: '5 个模型 · 4 个已启用',
+    html() {
+      return `
+      <div class="ptool">
+        <input placeholder="搜索模型名称…" data-demo>
+        <span class="grow"></span>
+        <button class="ghost-btn" data-demo>连通性检测</button>
+        <button class="btn-solid btn-adm" data-demo>＋ 接入模型</button>
+      </div>
+      <div class="kpis">
+        <div class="kpi"><div class="k-lab">已启用模型</div><div class="k-val">4<em>/ 5</em></div><div class="k-delta">星辰大模型联调中</div></div>
+        <div class="kpi"><div class="k-lab">今日调用</div><div class="k-val">12,847</div><div class="k-delta up">↑ 18.2% · 较昨日</div></div>
+        <div class="kpi"><div class="k-lab">本月 token</div><div class="k-val">8.42<em>M</em></div><div class="k-delta">预算 18M</div></div>
+        <div class="kpi"><div class="k-lab">百炼密钥到期</div><div class="k-val">12<em>天</em></div><div class="k-delta">到期后对话会自动降级</div></div>
+      </div>
+      <div class="card">
+        ${T(['模型', '提供方', '类型', '上下文', '状态', '今日调用', '操作'], [
+          ['<b>DeepSeek-V4.1-Flash</b><div class="sub2">deepseek-chat</div>', '官方 API', '对话', '128K', '<span class="pill ok">已启用</span>', '<span class="num">7,451</span>', '<span class="lnk" data-demo>配置</span>'],
+          ['<b>qwen3-max</b><div class="sub2">bailian</div>', '阿里云百炼', '对话', '128K', '<span class="pill ok">已启用</span>', '<span class="num">3,340</span>', '<span class="lnk" data-demo>配置</span>'],
+          ['<b>qwen3.7-text-embedding</b><div class="sub2">bailian</div>', '阿里云百炼', '向量', '8K', '<span class="pill ok">已启用</span>', '<span class="num">12,806</span>', '<span class="lnk" data-demo>配置</span>'],
+          ['<b>星辰大模型</b><div class="sub2">ctyun</div>', '中国电信', '对话', '32K', '<span class="pill warn">联调中</span>', '<span class="num">—</span>', '<span class="lnk" data-demo>配置</span>'],
+          ['<b>deepseek-v3</b><div class="sub2">备用通道</div>', '官方 API', '对话', '64K', '<span class="pill off">已停用</span>', '<span class="num">0</span>', '<span class="lnk" data-demo>启用</span>']
+        ])}
+      </div>
+      <div class="card">
+        <h3>接入说明</h3>
+        <p style="margin:0;font-size:12.2px;line-height:1.8;color:var(--muted)">
+          API Key 统一托管在网关侧，Agent 与 Skills 不直接持有密钥。新接入的模型只是「可用」，还需要在
+          「路由策略」里配置命中条件才会被真正调度；涉密与内网数据只允许走私有化部署的星辰大模型。
+        </p>
+      </div>`;
+    }
+  },
+
+  routing: {
+    title: '路由策略', meta: '4 条规则 · 3 条生效',
+    html() {
+      const R = [
+        { n: '默认对话', on: true, from: '所有请求', to: 'DeepSeek-V4.1-Flash', back: 'qwen3-max', meta: '命中 9,204 次 / 今日 · 平均延迟 1.6s' },
+        { n: '长上下文', on: true, from: 'prompt > 32K tokens', to: 'qwen3-max', back: '截断后回退默认', meta: '命中 412 次 / 今日 · 主要集中在周报与合同审查' },
+        { n: '向量化请求', on: true, from: '/embeddings', to: 'qwen3.7-text-embedding', back: '—', meta: '命中 12,806 次 / 今日 · 不计入对话额度' },
+        { n: '涉密 / 内网数据', on: false, from: '命中敏感词表 或 内网来源', to: '星辰大模型', back: '直接拦截，不降级', meta: '今日拦截 7 次 · 目标模型尚未就绪' }
+      ];
+      return `
+      <div class="ptool">
+        <span class="grow"></span>
+        <button class="ghost-btn" data-demo>试跑一条请求</button>
+        <button class="btn-solid btn-adm" data-demo>＋ 新建规则</button>
+      </div>
+      <div class="rlist">
+        ${R.map((r, i) => `
+        <div class="rcard">
+          <div class="rc-head">
+            <span class="rnum">${String(i + 1).padStart(2, '0')}</span>
+            <b>${r.n}</b>
+            <span class="pill ${r.on ? 'ok' : 'off'}">${r.on ? '生效中' : '已停用'}</span>
+            <span class="rtoggle ${r.on ? '' : 'off'}" data-demo></span>
+          </div>
+          <div class="rflow">
+            <span class="rnode">${r.from}</span>
+            <span class="rarrow">→</span>
+            <span class="rnode target">${r.to}</span>
+            ${r.back !== '—' ? `<span class="rarrow">· 失败降级</span><span class="rnode">${r.back}</span>` : ''}
+          </div>
+          <div class="rmeta">${r.meta}</div>
+        </div>`).join('')}
+      </div>
+      <div class="card" style="margin-top:12px">
+        <h3>匹配顺序</h3>
+        <p style="margin:0;font-size:12.2px;line-height:1.8;color:var(--muted)">
+          自上而下匹配，命中即停，所以越具体的规则要放越前面，「默认对话」必须留在最后兜底。
+          规则停用后不影响历史调用记录，只影响之后的请求分发。
+        </p>
+      </div>`;
+    }
+  },
+
+  cost: {
+    title: '用量成本', meta: '本月 ¥2,318 · 预算使用 46%',
+    html() {
+      const B = [['一', 168], ['二', 212], ['三', 186], ['四', 243], ['五', 221], ['六', 96], ['日', 84]];
+      const bars = B.map(([d, v]) => `
+        <div class="bar-col">
+          <div class="bar" style="height:${Math.round(v / 260 * 92)}px" title="周${d}：¥${v}"></div>
+          <div class="bar-x">${d}</div>
+        </div>`).join('');
+
+      const mix = [['对话生成', 68], ['向量化', 21], ['工具与检索', 11]].map(([n, v]) => `
+        <div class="mrow">
+          <div class="mtop"><span>${n}</span><b>${v}%</b></div>
+          <div class="progress"><i style="width:${v}%"></i></div>
+        </div>`).join('');
+
+      return `
+      <div class="kpis">
+        <div class="kpi"><div class="k-lab">本月成本</div><div class="k-val">¥2,318</div><div class="k-delta up">↑ 12.4% · 环比上月</div></div>
+        <div class="kpi"><div class="k-lab">本月 token</div><div class="k-val">8.42<em>M</em></div><div class="k-delta">预算 18M · 已用 46%</div></div>
+        <div class="kpi"><div class="k-lab">单次均成本</div><div class="k-val">¥0.18</div><div class="k-delta up">↓ 0.03 · 路由优化后</div></div>
+        <div class="kpi"><div class="k-lab">预算预警线</div><div class="k-val">80<em>%</em></div><div class="k-delta">达到后通知管理员</div></div>
+      </div>
+      <div class="grid-2">
+        <div class="card">
+          <h3>近 7 天成本（元）<span class="more">日均 ¥173</span></h3>
+          <div class="bars">${bars}</div>
+        </div>
+        <div class="card">
+          <h3>成本构成<span class="more">本月</span></h3>
+          ${mix}
+        </div>
+      </div>
+      <div class="card">
+        <h3>按模型统计<span class="more" data-demo>导出明细</span></h3>
+        ${T(['模型', '调用次数', 'token', '单价（¥/1K）', '成本', '占比'], [
+          ['<b>DeepSeek-V4.1-Flash</b>', '<span class="num">7,451</span>', '<span class="num">5.12M</span>', '0.002', '<span class="num">¥1,024</span>', '44%'],
+          ['<b>qwen3-max</b>', '<span class="num">3,340</span>', '<span class="num">2.64M</span>', '0.004', '<span class="num">¥1,056</span>', '46%'],
+          ['<b>qwen3.7-text-embedding</b>', '<span class="num">12,806</span>', '<span class="num">0.66M</span>', '0.0005', '<span class="num">¥198</span>', '8%'],
+          ['<b>deepseek-v3</b>', '<span class="num">0</span>', '<span class="num">0</span>', '0.002', '<span class="num">¥0</span>', '2%']
+        ])}
+      </div>`;
+    }
+  },
+
+  trace: {
+    title: '调用诊断', meta: '近 24 小时 12,847 次调用 · 失败 41 次',
+    html() {
+      return `
+      <div class="ptool">
+        <input placeholder="输入请求 ID、会话或 Agent 名称…" data-demo>
+        <span class="grow"></span>
+        <button class="ghost-btn" data-demo>导出诊断包</button>
+      </div>
+      <div class="card">
+        <h3>最近一次慢请求<span class="more">总耗时 3.62s · 超过 P95</span></h3>
+        <div class="trace-head">
+          <span class="rid">a91f3c</span>
+          <span style="font-size:11.8px;color:var(--muted)">制度问答助手 · DeepSeek-V4.1-Flash · 命中「默认对话」</span>
+        </div>
+        <div class="tbar">
+          <i style="width:6%;background:#C9D3C9"></i>
+          <i style="width:12%;background:#8FBFA3"></i>
+          <i style="width:24%;background:#4F8A6B"></i>
+          <i style="width:58%;background:#2C5F45"></i>
+        </div>
+        <div class="tlegend">
+          <span><em style="background:#C9D3C9"></em>排队 0.22s</span>
+          <span><em style="background:#8FBFA3"></em>检索 0.43s</span>
+          <span><em style="background:#4F8A6B"></em>首字 0.87s</span>
+          <span><em style="background:#2C5F45"></em>生成 2.10s</span>
+        </div>
+      </div>
+      <div class="filters">
+        <button class="fchip on" data-demo>全部</button>
+        <button class="fchip" data-demo>超时</button>
+        <button class="fchip" data-demo>失败</button>
+        <button class="fchip" data-demo>被降级</button>
+      </div>
+      <div class="card">
+        ${T(['时间', '请求 ID', 'Agent', '环节', '错误码', '耗时', '结果'], [
+          ['08:57:10', '<span class="num">a18d2e</span>', '告警归因分析', 'mcp_call', '<span class="num">MCP_TIMEOUT</span>', '30.00s', '<span class="pill err">失败</span>'],
+          ['08:41:22', '<span class="num">b03c77</span>', '周报生成器', 'llm_generate', '<span class="num">MODEL_429</span>', '1.85s', '<span class="pill warn">限流</span>'],
+          ['08:30:02', '<span class="num">c551ae</span>', '—', 'auth', '<span class="num">SCOPE_DENIED</span>', '0.02s', '<span class="pill off">拦截</span>'],
+          ['08:12:47', '<span class="num">d77b19</span>', '制度问答助手', 'llm_generate', '<span class="num">MODEL_FALLBACK</span>', '2.40s', '<span class="pill warn">已降级</span>'],
+          ['07:58:33', '<span class="num">e12f04</span>', '会议预订 Agent', 'calendar_create', '<span class="num">CAL_CONFLICT</span>', '0.61s', '<span class="pill err">失败</span>']
+        ])}
+      </div>`;
+    }
+  },
+
+  users: {
+    title: '用户与权限', meta: '326 名成员 · 2 种角色',
+    html() {
+      return permView === 'user' ? userPermView() : adminPermView();
+    }
+  },
+
+  audit: {
+    title: '运行与审计', meta: '近 24 小时 12,847 条运行记录',
+    html() {
+      return `
+      <div class="filters">
+        <button class="fchip on" data-demo>全部</button>
+        <button class="fchip" data-demo>仅失败</button>
+        <button class="fchip" data-demo>高危操作</button>
+        <button class="fchip" data-demo>今天</button>
+        <button class="fchip" data-demo>近 7 天</button>
+      </div>
+      <div class="card">
+        ${T(['时间', '操作人', 'Agent', '动作', '耗时', '结果'], [
+          ['09:12:04', '陈智龙', '制度问答助手', 'kb_search · 差旅住宿标准', '0.82s', '<span class="pill ok">成功</span>'],
+          ['09:08:31', '李静', '周报生成器', 'doc_generate · 部门周报', '1.32s', '<span class="pill ok">成功</span>'],
+          ['08:57:10', '王强', '告警归因分析', 'mcp_call · GitLab', '30.00s', '<span class="pill err">超时</span>'],
+          ['08:41:55', '张伟', '会议预订 Agent', 'calendar_create · 5 人', '1.10s', '<span class="pill ok">成功</span>'],
+          ['08:30:02', '陈智龙', '—', '修改 Agent 权限：agent-contract-review', '—', '<span class="pill warn">高危</span>'],
+          ['08:12:47', '赵敏', '制度问答助手', 'kb_search · 年假折算', '0.64s', '<span class="pill ok">成功</span>']
+        ])}
+      </div>
+      <div class="card">
+        <h3>留存策略</h3>
+        <p style="margin:0;font-size:12.2px;line-height:1.8;color:var(--muted)">
+          运行记录保留 180 天，高危操作（改权限、删知识库、停用 Agent）额外保留 3 年，支持按人 / 按 Agent 导出。
+        </p>
+      </div>`;
+    }
+  }
+};
+
+/* ============================================================
+   用户与权限：系统只有「超级管理员 / 普通用户」两种角色
+   超管按用户配置三类授权：Skill、MCP 连接、业务数据范围
+   ============================================================ */
+let permView = 'admin';
+let permUser = null;
+
+const SKILL_CAT = [
+  ['meeting-booking', '会议创建 / 取消 / 忙闲查询'],
+  ['weekly-report', '周报生成（概念）'],
+  ['incident-summary', '运维摘要（概念）']
+];
+const MCP_CAT = [
+  ['腾讯会议 MCP', 'SSE · 12 个工具'],
+  ['CloudBase', 'stdio · 8 个工具'],
+  ['GitLab', 'SSE · 6 个工具 · 连接异常'],
+  ['企业微信通讯录', 'SSE · 4 个工具 · 未配置']
+];
+const DATA_SCOPES = [
+  ['self', '仅本人', '只能检索自己的日程、文档与提交记录'],
+  ['dept', '本部门', '所属部门的共享文档与成员数据'],
+  ['all', '全公司', '全公司制度库、会议与业务数据（默认只读）']
+];
+
+const USERS = [
+  { name: '陈智龙', acc: 'cx', role: 'admin', dept: '产品部', last: '刚刚', on: true, skills: 'all', mcps: 'all', scopeKey: 'all', scope: '全公司' },
+  { name: '张伟', acc: 'zhangwei', role: 'user', dept: '研发部', last: '12 分钟前', on: true, skills: ['meeting-booking', 'weekly-report'], mcps: ['腾讯会议 MCP', 'CloudBase'], scopeKey: 'dept', scope: '本部门' },
+  { name: '李静', acc: 'lijing', role: 'user', dept: '财务部', last: '1 小时前', on: true, skills: ['meeting-booking'], mcps: ['腾讯会议 MCP'], scopeKey: 'dept', scope: '本部门' },
+  { name: '王强', acc: 'wangqiang', role: 'user', dept: '运维部', last: '昨天 18:40', on: false, skills: ['incident-summary'], mcps: ['GitLab'], scopeKey: 'self', scope: '仅本人' },
+  { name: '赵敏', acc: 'zhaomin', role: 'user', dept: '人力资源部', last: '10-18 09:12', on: false, skills: ['meeting-booking'], mcps: [], scopeKey: 'self', scope: '仅本人' }
+];
+
+/* ---------- 超管视角 ---------- */
+function adminPermView() {
+  const rows = USERS.map(u => {
+    const isAdmin = u.role === 'admin';
+    return [
+      `<b>${u.name}</b><div class="sub2">${u.dept} · ${u.acc}</div>`,
+      isAdmin ? '<span class="pill ok">超级管理员</span>' : '<span class="pill off">普通用户</span>',
+      isAdmin ? '全部' : `${u.skills.length} 个`,
+      isAdmin ? '全部' : (u.mcps.length ? `${u.mcps.length} 个` : '—'),
+      isAdmin ? '全公司' : u.scope,
+      u.on ? '<span class="pill ok">在线</span>' : '<span class="pill off">离线</span>',
+      isAdmin
+        ? '<span class="mini-btn disabled" title="超管固定拥有全部权限，不能在此收窄">不可修改</span>'
+        : `<span class="lnk" data-perm="${u.acc}">配置权限</span>`
+    ];
+  });
+
+  return `
+  <div class="ptool">
+    <div class="vtabs">
+      <button class="vtab on" data-vtab="admin">超级管理员视角</button>
+      <button class="vtab" data-vtab="user">普通用户视角</button>
+    </div>
+    <span class="grow"></span>
+    <button class="ghost-btn" data-demo>同步通讯录</button>
+    <button class="ghost-btn" data-demo>邀请成员</button>
+  </div>
+
+  <div class="rstat" style="grid-template-columns:repeat(2,1fr)">
+    <div class="rs"><div class="rs-ic">🛡️</div><div><b>2</b><span>超级管理员 · 全部配置权</span></div></div>
+    <div class="rs"><div class="rs-ic">👤</div><div><b>324</b><span>普通用户 · 按授权使用</span></div></div>
+  </div>
+
+  <div class="card">
+    <h3>角色与权限对应<span class="more">系统只有这两种角色</span></h3>
+    <div class="t-plain">${T(['能力', '超级管理员', '普通用户'], [
+      ['使用对话与 Agent', '可', '可（仅限已授权 Skill）'],
+      ['调用 MCP 工具', '全部连接', '仅限已授权连接'],
+      ['业务数据范围', '全公司', '按配置：本人 / 本部门 / 全公司'],
+      ['管理 Agent / Skills / MCP', '可', '不可，入口不渲染'],
+      ['配置他人权限', '可', '不可，接口返回 403']
+    ])}</div>
+  </div>
+
+  <div class="card">
+    <h3>成员列表<span class="more">点「配置权限」调整三类授权</span></h3>
+    ${T(['成员', '角色', 'Skill', 'MCP', '数据范围', '状态', '操作'], rows)}
+  </div>
+
+  <div class="grid-2">
+    <div class="card">
+      <h3>权限是怎么生效的</h3>
+      <ul class="note-list">
+        <li><b>存储</b>：按「用户 → 资源」白名单保存，不做角色继承，改一个人不影响别人。</li>
+        <li><b>校验点</b>：每次工具调用前依次校验 Skill 白名单、MCP 连接授权、数据范围，任一不通过即拦截。</li>
+        <li><b>时延</b>：保存后 60 秒内对新请求生效（网关缓存 TTL），有变更事件时主动失效缓存。</li>
+        <li><b>审计</b>：每次变更记录操作人、目标用户、字段前后值，可在「运行与审计」回放。</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3>边界情况</h3>
+      <ul class="note-list">
+        <li><b>未授权访问</b>：菜单不渲染（不是置灰）；直接请求接口返回 403 SCOPE_DENIED 并记审计。</li>
+        <li><b>最后一个超管</b>：不允许降级或删除，避免平台无人可管。</li>
+        <li><b>运行中的任务</b>：权限变更不打断，按发起时的权限快照执行完，下一次调用才用新权限。</li>
+        <li><b>收窄数据范围</b>：历史会话仍可见，但新检索只在新范围内进行。</li>
+        <li><b>MCP 连接被删</b>：引用它的授权自动失效，受影响用户下次调用收到「连接已下线」。</li>
+      </ul>
+    </div>
+  </div>`;
+}
+
+/* ---------- 普通用户视角 ---------- */
+function userPermView() {
+  return `
+  <div class="ptool">
+    <div class="vtabs">
+      <button class="vtab" data-vtab="admin">超级管理员视角</button>
+      <button class="vtab on" data-vtab="user">普通用户视角</button>
+    </div>
+  </div>
+
+  <div class="card" style="border-color:#D9E6DE;background:#FBFDFB">
+    <h3>你当前的可用范围<span class="more">只读 · 不能自行修改</span></h3>
+    <p style="margin:0 0 14px;font-size:12.2px;color:var(--muted);line-height:1.75">
+      普通用户在这个页面只能看到自己的授权摘要：看不到成员列表，看不到别人的角色和权限，也没有任何配置按钮。
+    </p>
+    <div class="slots">
+      <div class="slot"><div class="k">Skill 授权（2 个）</div><div class="v">meeting-booking、weekly-report</div></div>
+      <div class="slot"><div class="k">MCP 连接（2 个）</div><div class="v">腾讯会议 MCP、CloudBase</div></div>
+      <div class="slot"><div class="k">业务数据范围</div><div class="v">本部门 · 产品部</div></div>
+    </div>
+    <p style="margin:14px 0 0;font-size:11.6px;color:var(--faint)">
+      需要调整请联系超级管理员（陈智龙 · cx）。
+    </p>
+  </div>
+
+  <div class="card">
+    <h3>可以看什么 / 不能做什么</h3>
+    <div class="t-plain">${T(['事项', '普通用户'], [
+      ['查看自己的 Skill / MCP / 数据范围', '可以'],
+      ['查看其他成员的角色或授权', '不可以，成员列表不渲染'],
+      ['修改自己的授权', '不可以，需超管在成员列表里配置'],
+      ['进入「平台管理」', '不可以，菜单不出现；直接访问返回 403'],
+      ['使用未授权的 Skill', '不可见也不可调用，Agent 候选工具里不会出现']
+    ])}</div>
+  </div>`;
+}
+
+/* ---------- 权限配置抽屉 ---------- */
+function drawerHTML(u) {
+  const isAdmin = u.role === 'admin';
+  const skillOn = k => isAdmin || u.skills === 'all' || (Array.isArray(u.skills) && u.skills.includes(k));
+  const mcpOn = k => isAdmin || u.mcps === 'all' || (Array.isArray(u.mcps) && u.mcps.includes(k));
+
+  return `
+  <div class="dr-head">
+    <div class="ava-lg">${u.name.slice(0, 1)}</div>
+    <div style="flex:1;min-width:0">
+      <h3>${u.name} 的权限</h3>
+      <div class="ds">
+        <span class="pill ${isAdmin ? 'ok' : 'off'}">${isAdmin ? '超级管理员' : '普通用户'}</span>
+        ${u.dept} · ${u.acc}
+      </div>
+    </div>
+    <button class="icon-btn" data-close-drawer title="关闭">✕</button>
+  </div>
+
+  <div class="dr-body">
+    ${isAdmin ? `
+    <div class="dsec">
+      <div class="dsec-h">全部权限</div>
+      <p class="dsec-p" style="margin:0">超级管理员固定拥有全部 Skill、全部 MCP 连接与全公司数据范围，不支持在这里收窄。要限制某个人的访问，请先把他的角色改为普通用户，再配置具体授权。</p>
+    </div>` : ''}
+
+    <section class="dsec">
+      <div class="dsec-h">Skill 授权<span class="n">可多选 · 3 个可选</span></div>
+      <p class="dsec-p">只勾他工作中真正会用到的。未勾选的 Skill 在对话里不出现，Agent 也不会把它列进候选工具。</p>
+      ${SKILL_CAT.map(([k, d]) => `
+        <label class="chk ${skillOn(k) ? '' : 'off'}">
+          <input type="checkbox" data-k="skill" value="${k}" ${skillOn(k) ? 'checked' : ''} ${isAdmin ? 'disabled' : ''}>
+          <div class="cx"><b>${k}</b><span>${d}</span></div>
+        </label>`).join('')}
+    </section>
+
+    <section class="dsec">
+      <div class="dsec-h">MCP 连接授权<span class="n">可多选 · 4 个可选</span></div>
+      <p class="dsec-p">连接本身由超管在「MCP 连接管理」里统一维护，这里只决定这个人能不能用。连接异常或被删除时，对应授权会失效。</p>
+      ${MCP_CAT.map(([k, d]) => `
+        <label class="chk ${mcpOn(k) ? '' : 'off'}">
+          <input type="checkbox" data-k="mcp" value="${k}" ${mcpOn(k) ? 'checked' : ''} ${isAdmin ? 'disabled' : ''}>
+          <div class="cx"><b>${k}</b><span>${d}</span></div>
+        </label>`).join('')}
+    </section>
+
+    <section class="dsec">
+      <div class="dsec-h">业务数据范围<span class="n">单选 · 三档</span></div>
+      <p class="dsec-p">决定他能检索到哪些数据。范围之外的文档在检索阶段就被过滤掉，不会进入模型上下文。</p>
+      <div class="radios">
+        ${DATA_SCOPES.map(([k, label, d]) => `
+          <label class="chk">
+            <input type="radio" name="scope" value="${k}" ${u.scopeKey === k ? 'checked' : ''} ${isAdmin ? 'disabled' : ''}>
+            <div class="cx"><b>${label}</b><span>${d}</span></div>
+          </label>`).join('')}
+      </div>
+    </section>
+  </div>
+
+  <div class="dr-foot">
+    <span class="fh">保存后 60 秒内对新请求生效；正在运行的任务按发起时的权限快照执行完。</span>
+    <button class="cbtn" data-close-drawer>取消</button>
+    <button class="cbtn primary" id="permSave" ${isAdmin ? 'disabled' : ''}>保存并生效</button>
+  </div>`;
+}
+
+function openPermDrawer(acc) {
+  const u = USERS.find(x => x.acc === acc);
+  if (!u) return;
+  permUser = u;
+  const d = $('#permDrawer');
+  d.innerHTML = drawerHTML(u);
+  d.classList.add('show');
+  $('#permMask').classList.add('show');
+}
+
+function closePermDrawer() {
+  $('#permDrawer').classList.remove('show');
+  $('#permMask').classList.remove('show');
+  permUser = null;
+}
+
+function savePerm() {
+  if (!permUser || permUser.role === 'admin') return;
+  const d = $('#permDrawer');
+  const u = permUser;
+
+  u.skills = [...d.querySelectorAll('input[data-k="skill"]:checked')].map(i => i.value);
+  u.mcps = [...d.querySelectorAll('input[data-k="mcp"]:checked')].map(i => i.value);
+  const r = d.querySelector('input[name="scope"]:checked');
+  u.scopeKey = r ? r.value : 'self';
+  const sc = DATA_SCOPES.find(s => s[0] === u.scopeKey) || DATA_SCOPES[0];
+  u.scope = sc[1];
+
+  const nm = u.name;
+  closePermDrawer();
+  openAdmin('users');
+  toast('已保存「' + nm + '」的授权，60 秒内生效');
+}
+
+/* 渲染侧边栏的平台管理菜单：一级导航 + 可展开的二级导航 */
+function renderAdminNav() {
+  const parentOf = GROUP_OF[adminPage];
+
+  $('#adminNav').innerHTML = NAV.map(item => {
+    const [k, label] = item;
+    const kids = item[2];
+
+    if (kids) {
+      const isOpen = !!openGroups[k];
+      return `
+        <div class="anav-group ${isOpen ? 'open' : ''}" data-group="${k}">
+          <button class="anav ${parentOf === k ? 'parent-on' : ''}" data-gtoggle="${k}">
+            ${ICON[k]}<span>${label}</span>
+            <span class="cv">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
+            </span>
+          </button>
+          <div class="anav-sub">
+            ${kids.map(([kk, ll]) => `
+              <button class="anav sub ${kk === adminPage ? 'active' : ''}" data-admin="${kk}">${ll}</button>`).join('')}
+          </div>
+        </div>`;
+    }
+
+    return `
+      <button class="anav ${k === adminPage ? 'active' : ''}" data-admin="${k}">
+        ${ICON[k]}<span>${label}</span>
+      </button>`;
+  }).join('');
+}
+
+/* 打开某个管理页 */
+function openAdmin(page) {
+  adminPage = page;
+  const p = PAGES[page];
+
+  // 二级页面自动展开所属一级分组
+  if (GROUP_OF[page]) openGroups[GROUP_OF[page]] = true;
+  renderAdminNav();
+
+  $('#main').classList.add('admin-on');
+  document.body.classList.add('view-admin');
+
+  const tile = $('#headTile');
+  tile.innerHTML = ICON[page] || ICON[GROUP_OF[page]] || ICON.overview;
+  tile.style.background = '';
+  $('#headTitle').textContent = p.title;
+  $('#headMeta').textContent = p.meta;
+
+  $('#adminBody').innerHTML = '<div class="apage">' + p.html() + '</div>';
+  $('#adminBody').scrollTop = 0;
+}
+
+function renderAdminPage() { openAdmin(adminPage); }
+
+/* 切换角色 */
+function setRole(r) {
+  role = r;
+  document.body.classList.toggle('role-admin', r === 'admin');
+  $('#roleLabel').textContent = r === 'admin' ? '超级管理员 · 平台管理' : '普通用户 · 产品部';
+  document.querySelectorAll('.role-opt').forEach(o => o.classList.toggle('on', o.dataset.role === r));
+  $('#roleMenu').classList.remove('show');
+
+  if (r === 'admin') {
+    openAdmin(adminPage);
+    toast('已切换为超级管理员，侧边栏新增「平台管理」');
+  } else {
+    showChat();
+    toast('已切换为普通用户，平台管理已隐藏');
+  }
+}
+
+/* 事件：平台管理菜单（先判一级分组的展开/收起） */
+$('#adminNav').addEventListener('click', e => {
+  const g = e.target.closest('[data-gtoggle]');
+  if (g) {
+    const k = g.dataset.gtoggle;
+    openGroups[k] = !openGroups[k];
+    renderAdminNav();
+    return;
+  }
+  const b = e.target.closest('[data-admin]');
+  if (b) openAdmin(b.dataset.admin);
+});
+
+/* 事件：用户卡片 → 角色菜单 */
+document.addEventListener('click', e => {
+  if (e.target.closest('#btnSetting')) return;
+  if (e.target.closest('#userCard')) {
+    $('#roleMenu').classList.toggle('show');
+    return;
+  }
+  if (!e.target.closest('.role-menu')) $('#roleMenu').classList.remove('show');
+});
+
+$('#roleMenu').addEventListener('click', e => {
+  const o = e.target.closest('[data-role]');
+  if (o) setRole(o.dataset.role);
+});
+
+/* 权限抽屉：关闭 / 保存 / 勾选态 */
+document.addEventListener('click', e => {
+  if (e.target.closest('#permMask') || e.target.closest('[data-close-drawer]')) { closePermDrawer(); return; }
+  if (e.target.closest('#permSave')) { savePerm(); }
+});
+
+$('#permDrawer').addEventListener('change', e => {
+  const l = e.target.closest('.chk');
+  if (l && e.target.type === 'checkbox') l.classList.toggle('off', !e.target.checked);
+});
+
+/* 管理页里的演示按钮 */
+$('#adminBody').addEventListener('click', e => {
+  // 视角切换（超级管理员 / 普通用户）
+  const vt = e.target.closest('[data-vtab]');
+  if (vt) { permView = vt.dataset.vtab; openAdmin('users'); return; }
+
+  // 打开某个用户的权限抽屉
+  const pm = e.target.closest('[data-perm]');
+  if (pm) { openPermDrawer(pm.dataset.perm); return; }
+
+  const sw = e.target.closest('.sw');
+  if (sw) { sw.classList.toggle('off'); return; }
+
+  // 路由规则开关：同时更新状态标签
+  const rt = e.target.closest('.rtoggle');
+  if (rt) {
+    const off = rt.classList.toggle('off');
+    const pill = rt.parentElement.querySelector('.pill');
+    if (pill) {
+      pill.className = 'pill ' + (off ? 'off' : 'ok');
+      pill.textContent = off ? '已停用' : '生效中';
+    }
+    toast(off ? '规则已停用，不再参与分发' : '规则已启用');
+    return;
+  }
+
+  const f = e.target.closest('.fchip');
+  if (f) {
+    f.parentElement.querySelectorAll('.fchip').forEach(c => c.classList.toggle('on', c === f));
+    toast('原型演示：按「' + f.textContent.trim() + '」筛选');
+    return;
+  }
+
+  const d = e.target.closest('[data-demo]');
+  if (d) {
+    const label = (d.textContent || '').trim() || d.getAttribute('placeholder') || '该功能';
+    toast('原型演示：' + (label.length > 16 ? label.slice(0, 16) + '…' : label));
+  }
+});
+
+/* ============================================================
+   14. 端到端演示：预约会议（按 meeting-booking skill 走一遍）
+   ============================================================ */
+const DEMO_SID = 'demo-meeting';
+const demo = { token: 0, running: false, resume: null };
+const wait = ms => new Promise(r => setTimeout(r, ms));
+let demoTk = 0;
+const alive = () => demoTk === demo.token;
+
+/* ---------- 演示状态 ---------- */
+const demoSlots = { subject: '产品评审会', edited: false, people: '张三、李四', dur: null, loc: null, time: null };
+const qSel = { dur: null, loc: null };
+
+/* 楼层对应的房间（房间名录以 skill 的 room-directory 为准） */
+const ROOMSET = {
+  '17F': {
+    floor: '17 楼', term: '郁金香',
+    main: '郁金香会议室（1701）', mainS: '郁金香（1701）', cap: '20 人',
+    alt: '满天星会议室（1703）', altNote: '4 人位 · 无投影',
+    bk: '向日葵会议室（1702）', bkS: '向日葵（1702）', bkCap: '8 人 · 有投影位'
+  },
+  '18F': {
+    floor: '18 楼', term: '蒲公英',
+    main: '蒲公英会议室（1802）', mainS: '蒲公英（1802）', cap: '10 人',
+    alt: '萤火虫会议室（1601）', altNote: '16 楼 · 10 人 · 无投影',
+    bk: '萤火虫会议室（1601）', bkS: '萤火虫（1601）', bkCap: '16 楼 · 10 人 · 有投影位'
+  }
+};
+const SYSNAME = {
+  '郁金香': '郁金香商务管理平台', '蒲公英': '蒲公英数智运营服务平台',
+  '满天星': '满天星数字办公系统', '向日葵': '向日葵项目管理系统', '萤火虫': '萤火虫安全保障平台'
+};
+
+function curRoom() { return ROOMSET[demoSlots.loc] || ROOMSET['17F']; }
+
+/* 结束时间 = 开始 + 时长，避免口算 */
+function endTime(t, minutes) {
+  const p = String(t || '15:30').split(':');
+  const total = Number(p[0]) * 60 + Number(p[1]) + Number(minutes || 60);
+  return String(Math.floor(total / 60)).padStart(2, '0') + ':' + String(total % 60).padStart(2, '0');
+}
+
+/* ---------- 槽位卡：缺什么标什么，主题可直接改 ---------- */
+function slotCard() {
+  const R2 = demoSlots.loc ? curRoom() : null;
+  const rows = [
+    { k: '会议主题', v: demoSlots.subject, tag: demoSlots.edited ? '已修改' : '', cls: demoSlots.edited ? 'just' : '', edit: true },
+    { k: '参会人', v: demoSlots.people, tag: '', cls: '' },
+    { k: '时长', v: demoSlots.dur ? demoSlots.dur + ' 分钟' : '待补充', tag: demoSlots.dur ? '已补齐' : '缺失', cls: demoSlots.dur ? 'just' : 'miss' },
+    { k: '开始时间', v: demoSlots.time ? '10-28 ' + demoSlots.time : '下周三下午', tag: demoSlots.time ? '已确定' : '待选', cls: demoSlots.time ? 'just' : 'miss' },
+    { k: '地点', v: R2 ? R2.floor + ' · ' + R2.mainS : '待补充', tag: demoSlots.loc ? '已补齐' : '缺失', cls: demoSlots.loc ? 'just' : 'miss' },
+    { k: '设备', v: '投屏', tag: '未登记', cls: '' }
+  ];
+  const miss = rows.filter(r => r.cls === 'miss').length;
+
+  return `
+  <div class="dcard" data-slotcard>
+    <div class="dcard-h"><span class="dot"></span>槽位盘点 · ${miss ? miss + ' 项待补充' : '必填项已齐全'}</div>
+    <div class="slots">
+      ${rows.map(r => `
+        <div class="slot ${r.edit ? 'editable' : ''}" ${r.edit ? 'data-edit="subject"' : ''}>
+          <div class="k">${r.k}${r.edit ? ' <span class="pe">✎</span>' : ''}</div>
+          <div class="v">${esc(r.v)}${r.tag ? ` <em class="${r.cls}">${r.tag}</em>` : ''}</div>
+        </div>`).join('')}
+    </div>
+    ${demoSlots.edited
+      ? '<div class="syncnote">主题改过了。同步范围：<b>确认卡标题 · 日历事件标题 · 会议室预订备注 · 回执</b>，这四处都换成新主题，不用你再改一遍。</div>'
+      : '<div class="slot-hint">点「会议主题」可以直接改，改完会自动同步到后面所有环节。</div>'}
+  </div>`;
+}
+
+/* 改完主题后就地刷新卡片 */
+function refreshCards() {
+  const sc = document.querySelector('[data-slotcard]');
+  if (sc) {
+    const d = document.createElement('div');
+    d.innerHTML = slotCard();
+    sc.replaceWith(d.firstElementChild);
+  }
+  const cf = document.querySelector('[data-confirmcard]');
+  if (cf) {
+    const d = document.createElement('div');
+    d.innerHTML = confirmCard();
+    cf.replaceWith(d.firstElementChild);
+  }
+}
+
+/* 主题原地编辑 */
+function startSlotEdit(el) {
+  if (el.querySelector('input')) return;
+  const vEl = el.querySelector('.v');
+  const cur = demoSlots.subject;
+
+  const input = document.createElement('input');
+  input.value = cur;
+  vEl.textContent = '';
+  vEl.appendChild(input);
+  input.focus();
+  input.select();
+
+  let done = false;
+  const commit = save => {
+    if (done) return;
+    done = true;
+    const v = input.value.trim();
+    if (save && v && v !== cur) {
+      demoSlots.subject = v;
+      demoSlots.edited = true;
+      toast('主题已改为「' + v + '」，后续环节已同步');
+    }
+    refreshCards();
+  };
+
+  input.addEventListener('keydown', ev => {
+    ev.stopPropagation();
+    if (ev.key === 'Enter') { ev.preventDefault(); commit(true); }
+    if (ev.key === 'Escape') { ev.preventDefault(); commit(false); }
+  });
+  input.addEventListener('blur', () => commit(true));
+}
+
+/* ---------- 多槽位澄清卡：一张卡问 2 个问题 ---------- */
+function clarifyCard() {
+  return `
+  <div class="dcard">
+    <div class="dcard-h"><span class="dot" style="background:#C08A2E"></span>必填槽位缺失 · 2 项待补充</div>
+    <div class="qblock">
+      <div class="qtitle"><i>1</i>会议开多久？<span>你只说了「下周三下午」，没说时长</span></div>
+      <div class="qopts" data-q="dur">
+        <button class="qopt" data-v="30">30 分钟</button>
+        <button class="qopt" data-v="60">1 小时</button>
+        <button class="qopt" data-v="90">1.5 小时</button>
+      </div>
+    </div>
+    <div class="qblock">
+      <div class="qtitle"><i>2</i>在哪个楼层？<span>没说楼层等于没地点，房间容量和投影位也不一样</span></div>
+      <div class="qopts" data-q="loc">
+        <button class="qopt" data-v="17F">17 楼 · 郁金香</button>
+        <button class="qopt" data-v="18F">18 楼 · 蒲公英</button>
+      </div>
+    </div>
+    <div class="qfoot">
+      <span class="qhint" id="qhint">两项都选完才能继续</span>
+      <button class="cbtn primary" id="qgo" disabled>继续</button>
+    </div>
+  </div>`;
+}
+
+/* 参会人重名，需要用户指定 */
+function peopleCard() {
+  return `
+  <div class="dcard">
+    <div class="dcard-h"><span class="dot" style="background:#C08A2E"></span>参会人重名 · 需要你指定</div>
+    <div class="qline">通讯录里「张三」命中 2 个人。这种我不猜，你点一个：</div>
+    <div class="picks">
+      <div class="pick" data-choice="p-rd">
+        <span class="pdot"></span>
+        <span class="pt">张三</span>
+        <span class="badge">研发部</span>
+        <span class="pn">产品经理 · 工号 0412</span>
+      </div>
+      <div class="pick" data-choice="p-fin">
+        <span class="pdot"></span>
+        <span class="pt">张三</span>
+        <span class="pn">财务部 · 会计 · 工号 1037</span>
+      </div>
+    </div>
+  </div>`;
+}
+
+/* ---------- 同名实体消歧：默认折叠，只露结论 ---------- */
+function disambCard(term) {
+  const sys = SYSNAME[term] || '同名系统';
+  return `
+  <div class="dcard fold">
+    <div class="dcard-h" data-dtoggle>
+      <svg class="dcv" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg>
+      同名实体消歧 · 已判定为「${term}会议室」
+    </div>
+    <div class="dcard-body">
+      <div class="disamb">
+        <div class="dopt hit">✓ ${term}会议室（${curRoom().floor} · ${curRoom().cap}）</div>
+        <div class="dopt miss">✗ ${sys}</div>
+      </div>
+      <div class="dnote">依据：上下文出现<b>「楼层 / 会议室 / 投屏 / 开会」</b>，判定为场地；若出现「系统 / 平台 / 流程 / 审批」才会走系统侧。</div>
+    </div>
+  </div>`;
+}
+
+function pickCard() {
+  const opts = [
+    ['15:30', '最接近「3 点后」', true],
+    ['16:00', '全员空闲', false],
+    ['16:30', '全员空闲，稍晚', false]
+  ];
+  return `
+  <div class="dcard">
+    <div class="dcard-h"><span class="dot"></span>候选时间 · 请选择一个</div>
+    <div class="picks">
+      ${opts.map(([v, note, rec]) => `
+        <div class="pick" data-choice="t:${v}">
+          <span class="pdot"></span>
+          <span class="pt">${v}–${endTime(v, demoSlots.dur)}</span>
+          ${rec ? '<span class="badge">推荐</span>' : ''}
+          <span class="pn">${note}</span>
+        </div>`).join('')}
+    </div>
+  </div>`;
+}
+
+function confirmCard() {
+  const R2 = curRoom();
+  const t = demoSlots.time || '15:30';
+  return `
+  <div class="confirm" data-confirmcard>
+    <h4>${esc(demoSlots.subject)}</h4>
+    <div class="when">2026-10-28（周三）${t}–${endTime(t, demoSlots.dur)} · ${demoSlots.dur || 60} 分钟</div>
+    <div class="crow"><div class="ck">地点</div><div class="cv2">${R2.floor} · ${R2.main} · 可容纳 ${R2.cap}</div></div>
+    <div class="crow"><div class="ck">参会人</div><div class="cv2">${esc(demoSlots.people)}、陈智龙</div></div>
+    <div class="crow"><div class="ck">主题</div><div class="cv2">${esc(demoSlots.subject)}</div></div>
+    <div class="crow"><div class="ck">设备</div><div class="cv2">投屏</div></div>
+    <div class="cwarn">设备信息未登记，待人工确认。系统不会替你承诺投屏可用，建议提前 10 分钟到场试一下。</div>
+    <div class="cactions">
+      <button class="cbtn" data-choice="edit">再改一下</button>
+      <button class="cbtn primary" data-choice="yes">确认创建会议</button>
+    </div>
+  </div>`;
+}
+
+/* 预订失败 + 兜底方案 */
+function backupCard() {
+  const R2 = curRoom();
+  return `
+  <div class="dcard warncard">
+    <div class="dcard-h"><span class="dot" style="background:#B42318"></span>预订失败 · 会议室被占用</div>
+    <div class="failrow"><span class="pill err">ROOM_CONFLICT</span><span>${R2.mainS} 已被「Q4 预算沟通会」占用 15:00–16:00</span></div>
+    <div class="dnote">已按规则重试 1 次，仍是冲突，没有再往下硬顶。你选一个处理方式：</div>
+    <div class="picks" style="margin-top:10px">
+      <div class="pick" data-choice="backup">
+        <span class="pdot"></span>
+        <span class="pt">改用${R2.bkS}</span>
+        <span class="badge">同一时段</span>
+        <span class="pn">${R2.bkCap}</span>
+      </div>
+      <div class="pick" data-choice="time">
+        <span class="pdot"></span>
+        <span class="pt">换个时间段</span>
+        <span class="pn">回到候选时间重选</span>
+      </div>
+    </div>
+  </div>`;
+}
+
+function receiptCard(room, mid, tools) {
+  const t = demoSlots.time || '15:30';
+  return `
+  <div class="receipt">
+    <div class="rh"><span class="okc">✓</span>会议已预订成功</div>
+    <div class="rrow"><div class="rk">主题</div><div class="rv">${esc(demoSlots.subject)}</div></div>
+    <div class="rrow"><div class="rk">会议 ID</div><div class="rv"><code>${mid}</code></div></div>
+    <div class="rrow"><div class="rk">时间</div><div class="rv">2026-10-28 ${t}–${endTime(t, demoSlots.dur)}</div></div>
+    <div class="rrow"><div class="rk">日历事件</div><div class="rv">已创建，3 位参会人的日历已同步</div></div>
+    <div class="rrow"><div class="rk">会议室</div><div class="rv">${room} 已占用</div></div>
+    <div class="rrow"><div class="rk">设备</div><div class="rv">投屏 · 已备注「待人工确认」</div></div>
+    <div class="rrow"><div class="rk">审计</div><div class="rv">${tools} 次工具调用已记录，可回放</div></div>
+  </div>`;
+}
+
+/* ---------- 流式上屏的积木 ---------- */
+function demoUser(text) {
+  const el = document.createElement('div');
+  el.className = 'msg user';
+  el.innerHTML = `<div class="bubble">${esc(text)}</div>`;
+  $('#stream').appendChild(el);
+  scrollBottom();
+  const m = MSGS[DEMO_SID] = MSGS[DEMO_SID] || [];
+  m.push({ role: 'user', text });
+  renderHead();
+}
+
+function demoShell() {
+  const wrap = document.createElement('div');
+  wrap.className = 'msg ai';
+  wrap.innerHTML = `
+    <div class="ai-avatar">✦</div>
+    <div class="ai-main">
+      <div class="ai-name"><b>海卓AI</b><span class="tag run">运行中</span><span class="t-time">正在思考…</span></div>
+      <div class="think fold" style="display:none">
+        <div class="tk" data-think>
+          <svg class="tkc" width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg>
+          <span class="tk-label">思考中</span>
+          <span class="tk-peek"></span>
+        </div>
+        <div class="tk-body"></div>
+      </div>
+      <div class="steps fold" style="display:none">
+        <div class="steps-head" data-steps-toggle>
+          <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg>
+          <span class="sh-text">执行中…</span>
+        </div>
+        <div class="steps-body"></div>
+      </div>
+      <div class="answer"></div>
+      <div class="refs"></div>
+    </div>`;
+  $('#stream').appendChild(wrap);
+  scrollBottom();
+  return {
+    wrap,
+    thinkEl: wrap.querySelector('.think'),
+    thinkBody: wrap.querySelector('.tk-body'),
+    peekEl: wrap.querySelector('.tk-peek'),
+    tkLabel: wrap.querySelector('.tk-label'),
+    stepsEl: wrap.querySelector('.steps'),
+    stepsBody: wrap.querySelector('.steps-body'),
+    shText: wrap.querySelector('.sh-text'),
+    answer: wrap.querySelector('.answer'),
+    refs: wrap.querySelector('.refs'),
+    timeEl: wrap.querySelector('.t-time'),
+    tagEl: wrap.querySelector('.tag'),
+    thinkText: '',
+    list: []
+  };
+}
+
+async function demoThink(a, text) {
+  a.thinkText = text;
+  a.thinkEl.style.display = '';
+  const body = a.thinkBody;
+  body.textContent = '';
+  for (let i = 0; i < text.length; i += 2) {
+    if (!alive()) return;
+    body.textContent = text.slice(0, i + 2);
+    a.peekEl.textContent = peek(body.textContent, 44);
+    scrollBottom();
+    await wait(16);
+  }
+  body.textContent = text;
+  a.peekEl.textContent = peek(text, 44);
+  a.tkLabel.textContent = '思考过程';
+}
+
+async function demoTool(a, spec) {
+  a.stepsEl.style.display = '';
+  const row = document.createElement('div');
+  row.className = 'step';
+  row.innerHTML = `
+    <div class="step-row">
+      <span class="st wait"><span class="spin"></span></span>
+      <span class="step-name">${esc(spec.name)}</span>
+      <span class="step-fn">${esc(spec.fn)}</span>
+      <span class="step-ms">运行中</span>
+    </div>
+    <div class="step-body">${esc(spec.arg)}\n\n${esc(spec.out || '')}</div>`;
+  a.stepsBody.appendChild(row);
+  a.shText.textContent = '执行中 · ' + spec.fn;
+  scrollBottom();
+
+  await wait(spec.ms || 700);
+  if (!alive()) return;
+
+  if (spec.fail) row.classList.add('fail');
+
+  const sec = ((spec.ms || 700) / 1000).toFixed(2) + 's';
+  row.querySelector('.st').outerHTML = `<span class="st ${spec.fail ? 'fail' : 'done'}">${spec.fail ? '✗' : '✓'}</span>`;
+  row.querySelector('.step-ms').textContent = sec;
+  a.list.push({ name: spec.name, fn: spec.fn, arg: spec.arg, out: spec.out, ms: sec, fail: !!spec.fail });
+
+  // 有失败就把详情自动摊开，别藏在折叠里
+  if (spec.fail) {
+    a.stepsEl.classList.remove('fold');
+    a.stepsEl.classList.add('has-fail');
+  }
+  scrollBottom();
+}
+
+function demoFinish(a, html, refs) {
+  a.answer.innerHTML = html;
+  if (refs && refs.length) a.refs.innerHTML = refsHTML(refs);
+  const fails = a.list.filter(s => s.fail).length;
+  a.shText.textContent = a.list.length
+    ? `执行了 ${a.list.length} 步${fails ? ' · ' + fails + ' 步失败' : ''}`
+    : '';
+  if (fails) a.stepsEl.classList.add('has-fail');
+  a.tagEl.className = 'tag';
+  a.tagEl.textContent = 'Agent';
+  a.timeEl.textContent = '刚刚';
+
+  const m = MSGS[DEMO_SID] = MSGS[DEMO_SID] || [];
+  m.push({ role: 'assistant', tag: 'Agent', time: '刚刚', think: a.thinkText, steps: a.list, html, refs });
+  renderHead();
+  scrollBottom();
+}
+
+function demoWait() {
+  return new Promise(r => { demo.resume = r; });
+}
+
+/* ---------- 启动 / 中止 ---------- */
+function startDemo() {
+  abortRun();
+  demo.token++;
+  demo.resume = null;
+  demo.running = true;
+
+  // 槽位状态复位
+  demoSlots.subject = '产品评审会';
+  demoSlots.edited = false;
+  demoSlots.people = '张三、李四';
+  demoSlots.dur = null;
+  demoSlots.loc = null;
+  demoSlots.time = null;
+  qSel.dur = null;
+  qSel.loc = null;
+
+  state.ws = 'default';
+  const ws = currentWs();
+  let s = ws.sessions.find(x => x.id === DEMO_SID);
+  if (!s) {
+    s = { id: DEMO_SID, title: '预约产品评审会', time: '刚刚', day: '今天' };
+    ws.sessions.unshift(s);
+  }
+  state.session = DEMO_SID;
+  MSGS[DEMO_SID] = [];
+
+  renderWsRow(); renderSidebar(); showChat();
+  $('#stream').innerHTML = '';
+
+  demoFlow();
+}
+
+function abortDemo() {
+  demo.token++;
+  demo.running = false;
+  const r = demo.resume;
+  demo.resume = null;
+  if (r) r(null);
+}
+
+/* ---------- 主流程 ---------- */
+/* 选中后把整组选项置灰，避免重复点击 */
+function markChoice(sel, val) {
+  document.querySelectorAll(sel).forEach(el => {
+    el.classList.add('done');
+    if (el.dataset.choice === val) el.classList.add('on');
+  });
+}
+
+async function demoFlow() {
+  demoTk = ++demo.token;
+  const ok = alive;
+  const R = () => curRoom();
+
+  await wait(420); if (!ok()) return;
+  demoUser('帮我约下周三下午和张三、李四开个产品评审会，3 点后，要投屏。');
+  await wait(700); if (!ok()) return;
+
+  /* ===== 段 1：意图识别 → 槽位盘点 → 缺时长/楼层，一张卡问两个 ===== */
+  let a = demoShell();
+  await demoThink(a, '会议预订请求，先路由到 meeting-booking。盘一遍槽位：主题、参会人、设备都有；「下周三下午」落不到钟点，「没说楼层」等于没地点。这两个都是必填项，一张卡一起问，别挤牙膏。');
+  if (!ok()) return;
+  await demoTool(a, {
+    name: '匹配技能', fn: 'skill_route', ms: 660,
+    arg: '{ query: "约 / 评审会 / 会议室" }',
+    out: '命中 meeting-booking v1.0.1\n触发词：约、开会、会议室'
+  });
+  if (!ok()) return;
+  await demoTool(a, {
+    name: '槽位盘点', fn: 'slot_extract', ms: 620,
+    arg: '{ input: "约下周三下午…3 点后…要投屏" }',
+    out: '已填：subject / participants / equipment\n缺失必填：duration_minutes、location\n待定：start_time（只有日期段，没有钟点）'
+  });
+  if (!ok()) return;
+  demoFinish(a, `<p>主题、参会人、设备都拿到了，<strong>缺时长和楼层</strong>两项必填；开始时间也只有「下午」这个区间。缺的两项我一起问：</p>${slotCard()}${clarifyCard()}`);
+
+  const ans = await demoWait();
+  if (!ok() || !ans || !ans.dur) return;
+  demoSlots.dur = ans.dur;
+  demoSlots.loc = ans.loc;
+  demoUser((ans.dur === '60' ? '1 小时' : ans.dur + ' 分钟') + '，' + R().floor + '。');
+  await wait(480); if (!ok()) return;
+
+  /* ===== 段 2：回填槽位 → 参会人重名 ===== */
+  a = demoShell();
+  await demoThink(a, '时长和楼层补上了。接着把参会人落成具体的人：通讯录里「张三」不止一个，这种情况不能自己挑，必须让用户指定。');
+  if (!ok()) return;
+  await demoTool(a, {
+    name: '回填槽位', fn: 'slot_fill', ms: 560,
+    arg: `{ duration_minutes: ${ans.dur}, location: "${R().floor}" }`,
+    out: '槽位已更新\n剩余待确认：participants（重名）'
+  });
+  if (!ok()) return;
+  await demoTool(a, {
+    name: '解析参会人', fn: 'identity.resolve', ms: 740,
+    arg: '{ names: ["张三", "李四"] }',
+    out: '李四 · 产品部 · 唯一匹配\n张三 · 命中 2 人（研发部 0412 / 财务部 1037）'
+  });
+  if (!ok()) return;
+  demoFinish(a, `<p>时长和楼层补上了。但「张三」在通讯录里重名，这种我不猜，你指定一个：</p>${slotCard()}${peopleCard()}`);
+
+  const who = await demoWait();
+  if (!ok() || !who) return;
+  demoSlots.people = who === 'p-rd' ? '张三（研发部）、李四' : '张三（财务部）、李四';
+  markChoice('.pick', who);
+  demoUser(who === 'p-rd' ? '研发部那个张三。' : '财务部那个张三。');
+  await wait(480); if (!ok()) return;
+
+  /* ===== 段 3：开始时间槽位 → 候选时间 ===== */
+  a = demoShell();
+  await demoThink(a, '参会人定了。现在把「下周三下午 3 点后」落到具体钟点：查两个人 10-28 下午的忙闲，按时长找共同空闲。有冲突就给候选，不替用户拍板。');
+  if (!ok()) return;
+  await demoTool(a, {
+    name: '查询忙闲', fn: 'calendar.get_freebusy', ms: 900,
+    arg: '{ users: ["张三", "李四"], date: "2026-10-28", range: "13:00-18:00" }',
+    out: '张三：下午全天空闲\n李四：15:00–15:30 已有会（项目周会）'
+  });
+  if (!ok()) return;
+  await demoTool(a, {
+    name: '查找共同空闲', fn: 'calendar.find_slots', ms: 780,
+    arg: `{ duration: ${ans.dur}, after: "15:00" }`,
+    out: '15:30–16:30 ✓ 全员空闲\n16:00–17:00 ✓ 全员空闲\n16:30–17:30 ✓ 全员空闲'
+  });
+  if (!ok()) return;
+  demoFinish(a, `<p>李四 15:00–15:30 有个项目周会，所以整点 15:00 开不了；张三下午全天空闲。都在工作时间内的候选有三个：</p>${pickCard()}`);
+
+  const t = await demoWait();
+  if (!ok() || !t) return;
+  demoSlots.time = t.replace('t:', '');
+  markChoice('.pick', t);
+  demoUser(demoSlots.time + ' 吧。');
+  await wait(480); if (!ok()) return;
+
+  /* ===== 段 4：房间 → 消歧（默认折叠） + 确认卡 ===== */
+  a = demoShell();
+  await demoThink(a, `时间定了。${R().floor}还要落到具体房间；用户提到的「${R().term}」和自研平台重名，先消歧再搜房，顺序不能反。`);
+  if (!ok()) return;
+  await demoTool(a, {
+    name: '同名实体消歧', fn: 'entity_disambiguate', ms: 760,
+    arg: `{ term: "${R().term}", context: ["${R().floor}", "会议室", "投屏"] }`,
+    out: `判定：${R().term}会议室（${R().floor} · ${R().cap}）\n排除：${SYSNAME[R().term]}`
+  });
+  if (!ok()) return;
+  await demoTool(a, {
+    name: '查找会议室', fn: 'room.search', ms: 860,
+    arg: `{ floor: "${R().floor}", capacity: 3, equipment: ["投屏"], time: "${demoSlots.time}" }`,
+    out: `${R().main} · ${R().cap} · 空闲 · 有投影位\n${R().alt} · ${R().altNote}`
+  });
+  if (!ok()) return;
+  await demoTool(a, {
+    name: '核对设备登记', fn: 'room.get_equipment', ms: 520,
+    arg: `{ room_id: "${R().mainS}" }`,
+    out: '设备登记：投屏 · 状态：未登记（无保养与可用性记录）'
+  });
+  if (!ok()) return;
+  demoFinish(a, `<p>${R().floor}两间都空着：${R().alt.replace('会议室', '')} ${R().altNote}，排除；<strong>${R().main}</strong> 容量 ${R().cap}、有投影位。</p><p>房间台账里没登记投屏，我在确认卡里标成「待人工确认」，不替系统承诺设备可用。</p>${disambCard(R().term)}${confirmCard()}`);
+
+  const decision = await demoWait();
+  if (!ok() || !decision) return;
+  markChoice('.cbtn', decision);
+
+  if (decision === 'edit') {
+    demoUser('先改一下。');
+    await wait(420); if (!ok()) return;
+    a = demoShell();
+    await demoThink(a, '用户要改，先别写。确认要改的是哪一项，改完重新生成确认卡。');
+    demoFinish(a, '<p>没问题，你想改哪一项？<strong>时间、地点还是参会人？</strong>改完我重新生成确认卡给你过目，确认之前不会真的创建。</p>');
+    demo.running = false;
+    return;
+  }
+
+  demoUser('确认创建。');
+  await wait(500); if (!ok()) return;
+
+  /* ===== 段 5：执行失败 → 重试 → 兜底 ===== */
+  a = demoShell();
+  await demoThink(a, '用户确认了，按确认卡执行。写操作只做一次；撞上并发冲突就重试 1 次，还失败就停下来换方案，不能自己反复重试。');
+  if (!ok()) return;
+  await demoTool(a, {
+    name: '创建会议', fn: 'meeting.reserve', ms: 1000, fail: true,
+    arg: `{ subject: "${demoSlots.subject}", start: "2026-10-28T${demoSlots.time}", duration: ${ans.dur}, room: "${R().mainS}", participants: ["张三","李四","陈智龙"] }`,
+    out: `失败：ROOM_CONFLICT\n${R().mainS} 已被「Q4 预算沟通会」占用（15:00–16:00）`
+  });
+  if (!ok()) return;
+  await demoTool(a, {
+    name: '重试一次', fn: 'meeting.reserve', ms: 840, fail: true,
+    arg: `{ retry: 1, room: "${R().mainS}" }`,
+    out: '失败：ROOM_CONFLICT\n同一房间仍被占用，按规则停止重试'
+  });
+  if (!ok()) return;
+  await demoTool(a, {
+    name: '查找备选', fn: 'room.search', ms: 760,
+    arg: `{ floor: "${R().floor}", time: "${demoSlots.time}", need: ["投屏"], exclude: ["${R().mainS}"] }`,
+    out: `${R().bk} · ${R().bkCap} · 空闲`
+  });
+  if (!ok()) return;
+  demoFinish(a, `<p>就在我们确认的这几秒里，${R().mainS} 被「Q4 预算沟通会」订走了。<strong>我按规则重试了 1 次，还是冲突，就停在这里了，没有继续硬顶。</strong></p><p>还有一间能用的，你看要不要换：</p>${backupCard()}`);
+
+  const act = await demoWait();
+  if (!ok() || !act) return;
+  markChoice('.pick', act);
+
+  if (act === 'time') {
+    demoUser('换个时间吧。');
+    await wait(420); if (!ok()) return;
+    a = demoShell();
+    await demoThink(a, '用户要换时间，先别写。把这一层 16:00 之后的空房重新问一遍，再按时间给候选。');
+    if (!ok()) return;
+    await demoTool(a, {
+      name: '重查空房', fn: 'room.search', ms: 820,
+      arg: `{ floor: "${R().floor}", after: "16:00", need: ["投屏"] }`,
+      out: '16:00 后仅剩 1 间，且无投影位'
+    });
+    demoFinish(a, '<p>16:00 之后这层楼只剩一间、还没有投影，跟你的需求对不上。</p><p>你说个时间范围，我按新时段重新排一版候选给你，确认之后才创建。</p>');
+    demo.running = false;
+    return;
+  }
+
+  demoUser('那就用' + R().bkS + '吧。');
+  await wait(480); if (!ok()) return;
+
+  /* ===== 段 6：换房后执行 → 验证 → 回执 ===== */
+  a = demoShell();
+  await demoThink(a, `换到 ${R().bkS}，主题、时间、参会人都不变，只改地点。写完还是要验证三件事：日历事件在不在、房间是不是真被占用、参会人有没有冲突，通过才报成功。`);
+  if (!ok()) return;
+  await demoTool(a, {
+    name: '创建会议', fn: 'meeting.reserve', ms: 940,
+    arg: `{ subject: "${demoSlots.subject}", start: "2026-10-28T${demoSlots.time}", duration: ${ans.dur}, room: "${R().bkS}" }`,
+    out: '创建成功\nmeeting_id: MTG-20261028-0414'
+  });
+  if (!ok()) return;
+  await demoTool(a, {
+    name: '验证结果', fn: 'calendar.verify', ms: 800,
+    arg: '{ meeting_id: "MTG-20261028-0414" }',
+    out: `calendar.event 存在 ✓\nroom.${R().bkS} 已占用 ✓\nparticipants 3 人无冲突 ✓`
+  });
+  if (!ok()) return;
+  demoFinish(
+    a,
+    `<p>换房后一次成功，三项验证都过了。</p>${receiptCard(R().bk, 'MTG-20261028-0414', 14)}` +
+    `<p style="margin-top:12px">原本那间被别的会议占着，我没有去抢占，只换了房。<strong>投屏设备仍未登记</strong>，建议会前 10 分钟去试。` +
+    (demoSlots.edited ? `主题用你改后的「${esc(demoSlots.subject)}」，日历事件标题也已同步。` : '') +
+    `需要我把会议说明和议程也发给参会人吗？</p>`,
+    ['meeting-booking v1.0.1 · §5.2 澄清', 'meeting-booking v1.0.1 · §5.6 确认卡', 'meeting-booking v1.0.1 · §7 失败兜底', 'room-directory.md · 会议室名录']
+  );
+
+  demo.running = false;
+}
+
+/* ---------- 15. 启动 ---------- */
+renderWsRow();
+renderSidebar();
+renderHead();
+renderMessages();
+renderAdminNav();
+
+/* 打开即进入演示会话，自动播一遍端到端流程（关键节点会停下来等操作） */
+setTimeout(startDemo, 520);
+</script>
+
+
+
+
+</body></html>

@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Workspace 路径、文件系统后端与隔离范围</title>
+  <link rel="stylesheet" href="../assets/course.css">
+</head>
+<body><div class="shell">
+<header>
+  <div class="eyebrow">AgentScope Java · Lesson 04</div>
+  <h1>Workspace 路径、文件系统后端与隔离范围</h1>
+  <div class="subtitle">读一段 filesystem 配置，判断文件从哪读写，以及哪些请求共享同一份运行时文件。</div>
+  <div class="meta"><span class="pill">约 6 分钟</span><span class="pill">版本基线：v2.0.4</span><span class="pill">先修：<a href="0003-workspace-call-and-io.html">第 3 课</a></span></div>
+</header>
+<main>
+<section>
+  <p class="lede"><strong>读 Workspace 配置时分开问三件事：</strong>读写哪个逻辑文件？由哪个文件系统处理？哪些调用共享同一桶运行时数据？</p>
+  <table>
+    <thead><tr><th>问题</th><th>API / 概念</th><th>例子</th></tr></thead>
+    <tbody>
+      <tr><td>Agent 访问哪个逻辑文件？</td><td>Workspace 相对路径</td><td><code>memory/2026-10-20.md</code></td></tr>
+      <tr><td>文件操作由谁执行、数据放到哪里？</td><td><code>filesystem(FilesystemSpec)</code> → <code>AbstractFilesystem</code></td><td>Local、Remote、Sandbox</td></tr>
+      <tr><td>哪些调用共享运行时数据？</td><td><code>IsolationScope</code></td><td><code>USER</code> 跨会话共享同一用户的数据</td></tr>
+    </tbody>
+  </table>
+  <p>这三项有关联，但不是同一个设置。相对路径告诉系统“要操作哪个逻辑文件”；后端负责处理 I/O；scope 再决定运行时命名空间如何分桶。Harness 的文件工具和应用侧 Workspace I/O 都经过文件系统抽象。<a href="https://github.com/agentscope-ai/agentscope-java/blob/v2.0.4/docs/v2/zh/docs/harness/filesystem.md#L202-L220">官方 Filesystem 文档</a></p>
+</section>
+<section>
+  <h2>三种常见后端模式</h2>
+  <div class="grid">
+    <div class="card"><h3>Local：本机 + shell</h3><p>不配置时的默认模式。文件和可选命令在运行 Agent 的主机上执行；适合单机开发或受信任的环境。</p></div>
+    <div class="card"><h3>Remote：共享存储</h3><p>把部分 Workspace 文件路由到 Redis、JDBC 等 <code>BaseStore</code>，让多个服务副本看到共享数据。这个模式本身不提供 shell。</p></div>
+    <div class="card"><h3>Sandbox：隔离执行</h3><p>文件操作与 shell 在沙箱环境里执行，适合需要把执行环境和宿主隔开的场景；跨调用如何保留工作区要看沙箱状态、快照或持久卷配置。</p></div>
+    <div class="card"><h3>同一套逻辑路径</h3><p>例如 <code>memory/...</code> 可以交给不同后端处理。应用依赖 Workspace API，而不是把宿主机绝对路径当成唯一位置。</p></div>
+  </div>
+  <p>官方把 <code>filesystem(...)</code> 作为声明式配置入口；完全自管时才使用 <code>abstractFilesystem(...)</code>。三种常见模式和差异见<a href="https://github.com/agentscope-ai/agentscope-java/blob/v2.0.4/docs/v2/zh/docs/harness/filesystem.md#L211-L220">模式总表</a>。</p>
+</section>
+<section>
+  <h2>读配置：Remote + USER</h2>
+  <pre><code>HarnessAgent agent = HarnessAgent.builder()
+    .name("meeting-room")
+    .agentId("meeting-room")
+    .model(model)
+    .workspace(workspaceRoot)
+    .distributedStore(sharedStore)
+    .filesystem(new RemoteFilesystemSpec()
+        .isolationScope(IsolationScope.USER))
+    .build();</code></pre>
+  <p><code>RemoteFilesystemSpec</code> 说明用共享文件系统模式；<code>distributedStore</code> 提供共享存储；<code>USER</code> 说明同一用户跨 Session 的运行时数据落在同一个用户命名空间。Remote 模式按路径规则路由文件：例如 <code>memory/</code>、<code>skills/</code>、<code>knowledge/</code> 会进入共享 KV；未被规则覆盖的路径会落到本地文件系统。因此，“选了 Remote”不等于所有工作区路径都自动变成远端文件。<a href="https://github.com/agentscope-ai/agentscope-java/blob/v2.0.4/docs/v2/zh/docs/harness/filesystem.md#L223-L259">Remote 配置与路径路由规则</a></p>
+  <div class="caution"><strong>再区分运行时文件和静态资产：</strong><code>USER</code> scope 会分桶运行时数据，例如会话日志、任务和记忆；<code>AGENTS.md</code>、<code>knowledge/</code> 等静态资产默认对所有用户共享。需要用户自己的版本时，要使用明确的用户覆盖机制。<a href="https://github.com/agentscope-ai/agentscope-java/blob/v2.0.4/docs/v2/zh/docs/harness/filesystem.md#L576-L585">官方文档：运行时数据与静态资产</a></div>
+</section>
+<section>
+  <h2>把运行时路径映射到后端</h2>
+  <pre><code>WorkspaceManager wm = agent.workspaceFor(userId, sessionId);
+wm.writeUtf8WorkspaceRelative(
+    context,
+    "memory/2026-10-20.md",
+    "偏好：会议室优先选靠窗的。"
+);</code></pre>
+  <div class="flow" aria-label="Workspace 文件路由过程">
+    <div class="flow-item"><b>① 逻辑路径</b><code>memory/2026-10-20.md</code></div>
+    <div class="flow-item"><b>② 请求上下文</b>userId / sessionId</div>
+    <div class="flow-item"><b>③ 分桶规则</b><code>IsolationScope.USER</code> 等</div>
+    <div class="flow-item"><b>④ 物理 I/O</b>Remote 的规则路径 → 共享 KV</div>
+  </div>
+  <p class="small">这条路径是否真的跨机器共享，还取决于该路径是否命中 Remote 路由规则，以及多个副本是否连接同一个共享存储。Scope 决定逻辑分桶，后端和部署决定数据能否被其他副本读到。</p>
+</section>
+<section>
+  <h2>一个项目设计检查点：员工维度在哪里？</h2>
+  <p>Remote 的命名空间会结合 Agent 与 scope 键组织数据。不同 <code>agentId</code> 可以形成不同命名空间；但若两个业务员工实际上共用同一个 Agent 身份、Workspace 根和命名空间，<code>USER</code> 只表达“按用户分”，不会自动多出 <code>employeeId</code> 这一维。</p>
+  <div class="callout"><strong>平台侧检查：</strong>需求若是“同一用户 × 不同员工分别保存偏好”，就要指出员工维度实际由哪个根目录、命名空间前缀或独立 Agent 身份承载。不要只看到 <code>USER</code> 就认为员工隔离也完成了。</div>
+</section>
+<section>
+  <h2>小练习：从需求选配置</h2>
+  <p>一项服务运行三个副本；Alice 的偏好需要跨她的多个 Session 保留、跨副本可见；Agent 不需要执行 shell。你会选择哪种 filesystem 模式和 scope？配置里的哪一部分负责“放到共享后端”，哪一部分负责“同一用户共享”？</p>
+  <details>
+    <summary>展开核对答案</summary>
+    <p>选择共享存储模式 <code>RemoteFilesystemSpec</code>，连接所有副本共用的 <code>BaseStore</code>，再设 <code>IsolationScope.USER</code>。Remote + 共享 store 负责跨副本访问；USER 负责在框架命名空间里按用户跨 Session 分桶。还要确认目标文件路径命中了 Remote 的路由规则。</p>
+  </details>
+  <p class="small">先在聊天里用自己的话回答也可以，我会根据你的回答核对这三层有没有混在一起。</p>
+</section>
+<div class="nav">
+  <a href="0003-workspace-call-and-io.html">← 回到第 3 课</a>
+  <a href="0005-uploaded-and-generated-files.html">继续：上传原件与 Agent 产物 →</a>
+  <a href="../reference/agentscope-workspace-api.html">打开 Workspace API 速查页 →</a>
+  <a href="https://github.com/agentscope-ai/agentscope-java/blob/v2.0.4/docs/v2/zh/docs/harness/filesystem.md">阅读官方 Filesystem 文档 →</a>
+</div>
+</main>
+<footer>课程基于 AgentScope Java v2.0.4 固定标签。源码和文档说明框架 API；跨副本共享与项目级隔离仍须由部署配置和验收证据确认。</footer>
+</div></body>
+</html>

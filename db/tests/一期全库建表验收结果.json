@@ -1,0 +1,357 @@
+{
+  "executed_at": "2026-10-22T15:52:45.383125+08:00",
+  "results": [
+    {
+      "scope": "identity",
+      "mysql_version": "8.0.45",
+      "tables": 7,
+      "expected_rejections": 12,
+      "positive_checks": 2,
+      "inspection_checks": 9,
+      "concurrency_checks": 0,
+      "synthetic_rows_rolled_back": true,
+      "framework_kv_tested": false,
+      "application_integration_tested": false,
+      "probes": {
+        "01_用户与管理员建表验收.sql": {
+          "rejections": 12,
+          "positive_checks": 2
+        }
+      },
+      "column_count": 78,
+      "check_constraints": 16,
+      "trigger_count": 0,
+      "synthetic_rows_remaining": 0
+    },
+    {
+      "scope": "session",
+      "mysql_version": "8.0.45",
+      "tables": 17,
+      "expected_rejections": 25,
+      "positive_checks": 4,
+      "inspection_checks": 9,
+      "concurrency_checks": 0,
+      "synthetic_rows_rolled_back": true,
+      "framework_kv_tested": false,
+      "application_integration_tested": false,
+      "probes": {
+        "03_通用素材与工具操作建表验收.sql": {
+          "rejections": 25,
+          "positive_checks": 4
+        }
+      },
+      "column_count": 239,
+      "check_constraints": 60,
+      "trigger_count": 0,
+      "synthetic_rows_remaining": 0
+    },
+    {
+      "scope": "memory",
+      "mysql_version": "8.0.45",
+      "tables": 21,
+      "expected_rejections": 85,
+      "positive_checks": 18,
+      "inspection_checks": 11,
+      "concurrency_checks": 3,
+      "synthetic_rows_rolled_back": true,
+      "framework_kv_tested": false,
+      "application_integration_tested": false,
+      "probes": {
+        "03_通用素材与工具操作建表验收.sql": {
+          "rejections": 25,
+          "positive_checks": 4
+        },
+        "04_记忆控制建表验收.sql": {
+          "rejections": 21,
+          "positive_checks": 7
+        },
+        "06_记忆扩展与会话运行资料验收.sql": {
+          "rejections": 39,
+          "positive_checks": 7
+        }
+      },
+      "column_count": 327,
+      "check_constraints": 91,
+      "trigger_count": 0,
+      "synthetic_rows_remaining": 0
+    },
+    {
+      "scope": "full",
+      "mysql_version": "8.0.45",
+      "tables": 29,
+      "expected_rejections": 183,
+      "positive_checks": 29,
+      "inspection_checks": 11,
+      "concurrency_checks": 3,
+      "synthetic_rows_rolled_back": true,
+      "framework_kv_tested": false,
+      "application_integration_tested": false,
+      "probes": {
+        "01_用户与管理员建表验收.sql": {
+          "rejections": 12,
+          "positive_checks": 2
+        },
+        "03_通用素材与工具操作建表验收.sql": {
+          "rejections": 25,
+          "positive_checks": 4
+        },
+        "04_记忆控制建表验收.sql": {
+          "rejections": 21,
+          "positive_checks": 7
+        },
+        "06_记忆扩展与会话运行资料验收.sql": {
+          "rejections": 39,
+          "positive_checks": 7
+        },
+        "08_员工配置发布与授权建表验收.sql": {
+          "rejections": 86,
+          "positive_checks": 9
+        }
+      },
+      "full_inspection_checks": 12,
+      "full_baseline_identity_checks": 9,
+      "full_baseline_memory_checks": 11,
+      "full_inspection_names": [
+        "employee_current_release_invalid",
+        "configuration_actor_orphan",
+        "session_release_or_upgrade_invalid",
+        "run_message_media_invalid",
+        "binding_manifest_or_operation_invalid",
+        "skill_manifest_or_count_invalid",
+        "skill_resource_digest_invalid",
+        "grant_or_authorization_audit_invalid",
+        "confirmation_or_identity_invalid",
+        "memory_employee_or_source_invalid",
+        "workspace_ownership_invalid",
+        "configuration_receipt_release_invalid"
+      ],
+      "directed_anomaly_checks": 29,
+      "directed_positive_checks": 2,
+      "directed_inspection_results": [
+        {
+          "case": "current_release",
+          "expected": "ANOMALY",
+          "target": "employee_current_release_invalid",
+          "target_anomalies": 1
+        },
+        {
+          "case": "draft_actor",
+          "expected": "ANOMALY",
+          "target": "configuration_actor_orphan",
+          "target_anomalies": 1
+        },
+        {
+          "case": "session_release",
+          "expected": "ANOMALY",
+          "target": "session_release_or_upgrade_invalid",
+          "target_anomalies": 1
+        },
+        {
+          "case": "media_owner",
+          "expected": "ANOMALY",
+          "target": "run_message_media_invalid",
+          "target_anomalies": 1
+        },
+        {
+          "case": "operation_binding",
+          "expected": "ANOMALY",
+          "target": "binding_manifest_or_operation_invalid",
+          "target_anomalies": 1
+        },
+        {
+          "case": "resource_count",
+          "expected": "ANOMALY",
+          "target": "skill_manifest_or_count_invalid",
+          "target_anomalies": 1
+        },
+        {
+          "case": "resource_digest",
+          "expected": "ANOMALY",
+          "target": "skill_resource_digest_invalid",
+          "target_anomalies": 1
+        },
+        {
+          "case": "grant_owner",
+          "expected": "ANOMALY",
+          "target": "grant_or_authorization_audit_invalid",
+          "target_anomalies": 1
+        },
+        {
+          "case": "confirmation_actor",
+          "expected": "ANOMALY",
+          "target": "confirmation_or_identity_invalid",
+          "target_anomalies": 2
+        },
+        {
+          "case": "memory_employee",
+          "expected": "ANOMALY",
+          "target": "memory_employee_or_source_invalid",
+          "target_anomalies": 1
+        },
+        {
+          "case": "workspace_source",
+          "expected": "ANOMALY",
+          "target": "workspace_ownership_invalid",
+          "target_anomalies": 1
+        },
+        {
+          "case": "publish_receipt",
+          "expected": "ANOMALY",
+          "target": "configuration_receipt_release_invalid",
+          "target_anomalies": 1
+        },
+        {
+          "case": "session_self_cycle",
+          "expected": "ANOMALY",
+          "target": "session_release_or_upgrade_invalid",
+          "target_anomalies": 1
+        },
+        {
+          "case": "session_parent_missing",
+          "expected": "ANOMALY",
+          "target": "session_release_or_upgrade_invalid",
+          "target_anomalies": 1
+        },
+        {
+          "case": "session_parent_other_employee",
+          "expected": "ANOMALY",
+          "target": "session_release_or_upgrade_invalid",
+          "target_anomalies": 1
+        },
+        {
+          "case": "session_parent_other_user",
+          "expected": "ANOMALY",
+          "target": "session_release_or_upgrade_invalid",
+          "target_anomalies": 1
+        },
+        {
+          "case": "session_two_node_cycle",
+          "expected": "ANOMALY",
+          "target": "session_release_or_upgrade_invalid",
+          "target_anomalies": 2
+        },
+        {
+          "case": "upgrade_requester",
+          "expected": "ANOMALY",
+          "target": "session_release_or_upgrade_invalid",
+          "target_anomalies": 1
+        },
+        {
+          "case": "first_run_missing",
+          "expected": "ANOMALY",
+          "target": "session_release_or_upgrade_invalid",
+          "target_anomalies": 1
+        },
+        {
+          "case": "first_run_other_session",
+          "expected": "ANOMALY",
+          "target": "session_release_or_upgrade_invalid",
+          "target_anomalies": 1
+        },
+        {
+          "case": "activation_run_missing",
+          "expected": "ANOMALY",
+          "target": "session_release_or_upgrade_invalid",
+          "target_anomalies": 1
+        },
+        {
+          "case": "activation_run_other_session",
+          "expected": "ANOMALY",
+          "target": "session_release_or_upgrade_invalid",
+          "target_anomalies": 1
+        },
+        {
+          "case": "ready_without_confirmation",
+          "expected": "ANOMALY",
+          "target": "confirmation_or_identity_invalid",
+          "target_anomalies": 1
+        },
+        {
+          "case": "sent_without_confirmation",
+          "expected": "ANOMALY",
+          "target": "confirmation_or_identity_invalid",
+          "target_anomalies": 1
+        },
+        {
+          "case": "succeeded_without_confirmation",
+          "expected": "ANOMALY",
+          "target": "confirmation_or_identity_invalid",
+          "target_anomalies": 1
+        },
+        {
+          "case": "unknown_without_confirmation",
+          "expected": "ANOMALY",
+          "target": "confirmation_or_identity_invalid",
+          "target_anomalies": 1
+        },
+        {
+          "case": "confirmation_not_consumed",
+          "expected": "ANOMALY",
+          "target": "confirmation_or_identity_invalid",
+          "target_anomalies": 1
+        },
+        {
+          "case": "platform_identity_other_user",
+          "expected": "ANOMALY",
+          "target": "confirmation_or_identity_invalid",
+          "target_anomalies": 1
+        },
+        {
+          "case": "confirmation_identity_version",
+          "expected": "ANOMALY",
+          "target": "confirmation_or_identity_invalid",
+          "target_anomalies": 2
+        },
+        {
+          "case": "historical_workspace_revision",
+          "expected": "CLEAN",
+          "target": "all",
+          "target_anomalies": 0
+        },
+        {
+          "case": "platform_identity_actor",
+          "expected": "CLEAN",
+          "target": "all",
+          "target_anomalies": 0
+        }
+      ],
+      "column_count": 415,
+      "check_constraints": 115,
+      "trigger_count": 0,
+      "synthetic_rows_remaining": 0,
+      "additional_concurrency_checks": 5,
+      "additional_concurrency_names": [
+        "draft_revision_cas",
+        "source_draft_revision_unique",
+        "successful_receipt_unique",
+        "failed_receipts_nonunique",
+        "authorization_version_transaction"
+      ],
+      "transactional_probes_rolled_back": true,
+      "concurrency_rows_committed_then_removed": true,
+      "canonical_package_fingerprints_tested": false,
+      "external_storage_tested": false,
+      "real_mcp_tested": false
+    }
+  ],
+  "fingerprints": {
+    "db/schema/01_用户与管理员建表.sql": "D10B03A1D7A8C918856B63E20780A4883674FD03D63EDA17AE566B1F799118C0",
+    "db/schema/02_会话运行消息建表.sql": "552E6075B85A797FA4C3E6951F2484B61121A0AE6FF2A817E62F8F9EB2130434",
+    "db/schema/03_记忆控制建表.sql": "C4066D952684C4A1D87A1DD87D965C263B5891090BA6C599EFC97999A68A137A",
+    "db/schema/04_会话运行资料建表.sql": "6B4A4BA064E0DDCB0AE0A4CFF6132291821258DD8363271B7513F8C874F7AA64",
+    "db/schema/05_员工配置发布与授权建表.sql": "0DE9F44AFC934D669E0AEBF129A8C005177FB0AB2CCFD7CADD876B7CA8AF4118",
+    "db/tests/01_用户与管理员建表验收.sql": "B7F44D704BF5FF83409126EC072DAE085E5FDC366D82B2EBEB0338F0630E4489",
+    "db/tests/02_身份关联巡检.sql": "AF59F660592FB5F474DE7B120779980A7B8F028E54E099EA182871A8378F2780",
+    "db/tests/03_通用素材与工具操作建表验收.sql": "63AA3A891658F5DFB9C8153E71CFDA5A6BFE964C794600400B24E38C38983537",
+    "db/tests/04_记忆控制建表验收.sql": "000D86F7E2E88ED4617E8029D0F39D7CD3EE365ADEF562E70C4D08A43909E83D",
+    "db/tests/05_记忆控制关联巡检.sql": "1DB10203AD09097963D5B8488CE316EEF285ECBD72B41839BC93A7E4A3E848C7",
+    "db/tests/06_记忆扩展与会话运行资料验收.sql": "FD48F72ADE4780EB5FC975B2AD2827ADB9B9AEF1DEC3C2F45A0360EF57EEC7EC",
+    "db/tests/07_记忆控制巡检种子.sql": "4FDA782C1038B24215E88240248740936E89CD9569B907E5350B081561C993A3",
+    "db/tests/08_员工配置发布与授权建表验收.sql": "5ED4F333860DF6C71ECA4411231BB18143725A6516A2032717E27ED3605F7661",
+    "db/tests/09_一期全库关联巡检.sql": "30CBE4AA301711CAE1B94F8B857C0EDED55E722C74A4BFFD4B094BF7E1D98524",
+    "db/tests/10_一期全库巡检种子.sql": "E9C10AE8001DF54C2DC221E474A30DCD7F5D63882124E6DB3339EADD69371489",
+    "db/tests/11_一期全库定向异常验收.sql": "04F04EB155E54B4FF28E0C9D60483028B3DC7A3346D3CD028164F4AF703954A8",
+    "db/tests/执行一期全库隔离验收.py": "5752B484EC9DFBCFEFAA1CE389AAB5E51633FD344FDDA285861922836417F8E4",
+    "db/tests/执行记忆控制隔离验收.py": "2A082740BAA685E072D51ECBF026D964614F61B562D376DBF125881085F65FB5"
+  }
+}

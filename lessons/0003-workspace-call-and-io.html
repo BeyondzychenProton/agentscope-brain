@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>一次 Agent 调用里，Workspace 内容怎样进出</title>
+  <link rel="stylesheet" href="../assets/course.css">
+</head>
+<body><div class="shell">
+<header>
+  <div class="eyebrow">AgentScope Java · Lesson 03</div>
+  <h1>一次 Agent 调用里，Workspace 内容怎样进出</h1>
+  <div class="subtitle">分清 Agent 自动装载上下文，和应用代码直接读写工作区文件。</div>
+  <div class="meta"><span class="pill">约 5 分钟</span><span class="pill">版本基线：v2.0.4</span><span class="pill">先修：<a href="0001-workspace-api-runtime-flow.html">第 1 课</a> · <a href="0002-workspace-isolation-scope.html">第 2 课</a></span></div>
+</header>
+<main>
+<section>
+  <p class="lede"><strong>同一个请求上下文，可以有两条用法：</strong>传给 Agent，让 Harness 在推理前装载工作区上下文；或者传给 <code>workspaceFor(...)</code>，让应用代码直接操作文件。</p>
+  <p><code>workspaceFor</code> 不会启动模型推理，也不替平台保存一条永久的“用户/会话 → Workspace”业务关系。它返回一个供后续文件 I/O 使用的 <code>WorkspaceManager</code> 视图，并把传入的用户与会话信息交给该视图的文件系统/命名空间绑定。单是取得这个视图，不代表已经创建文件或物理目录。<a href="https://github.com/agentscope-ai/agentscope-java/blob/v2.0.4/agentscope-harness/src/main/java/io/agentscope/harness/agent/HarnessAgent.java#L2636-L2665">HarnessAgent 源码</a></p>
+  <p class="small">实际分桶还要看配置的 <code>IsolationScope</code>：例如 <code>USER</code> 让同一用户跨会话共享，<code>SESSION</code> 则按会话分开。因此“带着 userId 和 sessionId”不等于这两个值总会同时成为存储键。<a href="https://github.com/agentscope-ai/agentscope-java/blob/v2.0.4/docs/v2/zh/docs/harness/filesystem.md#L525-L539">IsolationScope 的键规则</a></p>
+</section>
+<section>
+  <h2>场景：先记下用户偏好，再让 Agent 使用它</h2>
+  <p>会议室员工已经由 Builder 建好。Alice 登录后，平台从可信登录态取出 <code>userId</code>，再为当前业务 Session 选出 Harness 使用的 <code>sessionId</code>。</p>
+  <pre><code>RuntimeContext context = RuntimeContext.builder()
+    .userId(authenticatedUserId)
+    .sessionId(harnessSessionId)
+    .build();
+
+// 路径 A：让 Harness 执行 Agent 调用
+agent.streamEvents(new UserMessage(userText), context).blockLast();
+
+// 路径 B：应用代码自己写工作区文件
+WorkspaceManager workspace = agent.workspaceFor(
+    authenticatedUserId, harnessSessionId);
+workspace.writeUtf8WorkspaceRelative(
+    context,
+    "memory/2026-10-20.md",
+    "偏好：预订会议室时优先选择靠窗房间。"
+);</code></pre>
+  <div class="flow" aria-label="Workspace 文件如何进出一次调用">
+    <div class="flow-item"><b>① 已建好的 Agent</b>Builder 持有员工配置、逻辑根目录和 filesystem。</div>
+    <div class="flow-item"><b>② 本次 RuntimeContext</b>带入平台确认的 userId 与当前 sessionId。</div>
+    <div class="flow-item"><b>③ 两种入口</b>Agent 调用由 Harness 装载上下文；应用直写用 workspaceFor 取得请求级视图。</div>
+    <div class="flow-item"><b>④ 文件系统</b>WorkspaceManager 用相对路径交给 AbstractFilesystem，由后端决定物理落点。</div>
+  </div>
+</section>
+<section>
+  <h2>Agent 调用时，哪些文件会进提示词？</h2>
+  <p>v2.0.4 的 <code>WorkspaceContextMiddleware</code> 在每次 <code>call()</code> 进入推理阶段时拼装工作区上下文。已配置文件的修改会在下一次调用重新读取；这不是 Agent 启动时只读一次。</p>
+  <table>
+    <thead><tr><th>工作区内容</th><th>进入模型上下文的方式</th></tr></thead>
+    <tbody>
+      <tr><td><code>AGENTS.md</code></td><td>正文注入为 Agent 规则。</td></tr>
+      <tr><td><code>MEMORY.md</code></td><td>按上下文预算注入；更早内容可由记忆工具继续查询。</td></tr>
+      <tr><td><code>knowledge/</code></td><td>注入入口文件和其他文件的路径清单；领域资料正文按需读取，不会全量塞入提示词。</td></tr>
+      <tr><td>其他文件</td><td>不会因为它们“在 Workspace 目录里”就自动全部注入；Agent 或应用需要通过文件能力读取。</td></tr>
+    </tbody>
+  </table>
+  <p>读取关键文件时，<code>WorkspaceManager</code> 先问当前 <code>AbstractFilesystem</code>，没有覆盖内容时再回退到本地 Workspace 模板。写入走当前 filesystem；写入后，下一次 <code>call()</code> 会按配置重新装载相关上下文。<a href="https://github.com/agentscope-ai/agentscope-java/blob/v2.0.4/docs/v2/zh/docs/harness/workspace.md#L341-L373">官方文档：推理时装载与两层读</a></p>
+</section>
+<section>
+  <h2>三个容易混淆的名词</h2>
+  <table>
+    <thead><tr><th>名词</th><th>它是什么</th><th>它不是</th></tr></thead>
+    <tbody>
+      <tr><td><code>RuntimeContext</code></td><td>本次调用携带的运行上下文。</td><td>用户认证系统；可信 userId 仍由应用提供。</td></tr>
+      <tr><td><code>workspaceFor(userId, sessionId)</code></td><td>绑定该请求身份的 WorkspaceManager 视图，适合 Controller 或服务层做显式文件 I/O。</td><td>创建 Agent、发起推理，或改变共享 Agent 的全局绑定。</td></tr>
+      <tr><td><code>writeUtf8WorkspaceRelative(context, path, text)</code></td><td>以 Workspace 相对路径写 UTF-8 文件，并路由到当前 filesystem。</td><td>写入 AgentState，或替业务数据库提交事务。</td></tr>
+    </tbody>
+  </table>
+  <p class="small">工作区相对路径例如 <code>memory/2026-10-20.md</code>；它不是把 <code>C:\</code> 或宿主机绝对路径交给 Agent。</p>
+</section>
+<section>
+  <h2>小练习：给这行 API 定位</h2>
+  <p>你在 Web Controller 中调用 <code>agent.workspaceFor(userId, sessionId)</code>。这一步属于“调用 Agent”，还是“应用直接取一个可用于文件 I/O 的视图”？再说出真正触发一次推理的那行代码。</p>
+  <details>
+    <summary>展开核对答案</summary>
+    <p>这是应用直接取得请求级文件 I/O 视图，不会触发推理。真正触发 Agent 推理的是例如 <code>agent.streamEvents(message, context)</code>；Harness 随后在推理阶段按上下文和文件系统配置装载需要的工作区内容。</p>
+  </details>
+  <p class="small">你可以先不展开答案，直接回复我你的判断；我会按你的答案继续讲下一步。</p>
+</section>
+<div class="nav">
+  <a href="0002-workspace-isolation-scope.html">← 回到第 2 课</a>
+  <a href="0004-workspace-path-backend-scope.html">继续：路径、后端和隔离范围 →</a>
+  <a href="../reference/agentscope-workspace-api.html">打开 Workspace API 速查页 →</a>
+  <a href="https://github.com/agentscope-ai/agentscope-java/blob/v2.0.4/docs/v2/zh/docs/harness/workspace.md#L341-L373">阅读官方 Workspace 文档 →</a>
+</div>
+</main>
+<footer>课程基于 AgentScope Java v2.0.4 固定标签。官方文档与源码用于解释框架 API；本课程不表示当前项目已经完成 Workspace 集成验收。</footer>
+</div></body>
+</html>

@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>读懂 Workspace API：从 Builder 到文件读写</title>
+  <link rel="stylesheet" href="../assets/course.css">
+</head>
+<body><div class="shell">
+<header>
+  <div class="eyebrow">AgentScope Java · Lesson 01</div>
+  <h1>读懂 Workspace API：从 Builder 到文件读写</h1>
+  <div class="subtitle">看一遍会议室员工怎样装载定义、识别当前请求，并把一份工作资料写到正确的存储位置。</div>
+  <div class="meta"><span class="pill">约 7 分钟</span><span class="pill">版本基线：v2.0.4</span><span class="pill">目标：读懂一次 Workspace API 调用</span></div>
+</header>
+<main>
+<section>
+  <p class="lede"><strong>先记住一句话：</strong>Workspace 是 HarnessAgent 的逻辑文件空间；Builder 选它的根和文件系统，RuntimeContext 带入本次用户与会话，WorkspaceManager 再把相对路径交给配置好的文件系统。</p>
+  <p>这三个位置回答的是不同问题：<code>.workspace(...)</code> 回答“从哪棵工作区树开始”，<code>RuntimeContext</code> 回答“谁正在以哪个会话运行”，<code>WorkspaceManager</code> 回答“怎样按当前配置读写文件”。官方把 Workspace 定义为 Agent 定义与运行产物的逻辑布局，而不是固定的一条磁盘路径。<a href="https://github.com/agentscope-ai/agentscope-java/blob/v2.0.4/docs/v2/zh/docs/harness/workspace.md">Workspace 官方文档</a></p>
+</section>
+<section>
+  <h2>一个请求经过哪些地方？</h2>
+  <p>设想登录用户林岚正在 Web 上让会议室员工保存一条“会议默认安排 30 分钟”的偏好。</p>
+  <div class="flow" aria-label="Workspace API 调用顺序">
+    <div class="flow-item"><b>① Builder</b>配置员工身份、工作区根目录和文件系统后端。</div>
+    <div class="flow-item"><b>② RuntimeContext</b>本次调用带入平台认证得到的 userId 与稳定的框架 sessionId。</div>
+    <div class="flow-item"><b>③ WorkspaceManager</b>按工作区相对路径处理文件读写，并应用覆盖规则。</div>
+    <div class="flow-item"><b>④ AbstractFilesystem</b>把逻辑文件放到本机、共享存储或沙箱对应的位置。</div>
+  </div>
+  <p class="small">注意：工作区路径与用户/会话命名空间不是同一个参数。<code>IsolationScope</code> 决定文件系统怎样用运行上下文生成共享桶。</p>
+</section>
+<section>
+  <h2>先读懂调用形状</h2>
+  <pre><code>var builder = HarnessAgent.builder()
+    .name("meeting-room")
+    .agentId("meeting-room")
+    .model(model)
+    .workspace(Path.of("/srv/agents/meeting-room"));
+
+try (var agent = builder.build()) {
+    var context = RuntimeContext.builder()
+        .userId(authenticatedUserId)
+        .sessionId(harnessSessionId)
+        .build();
+
+    agent.streamEvents(new UserMessage(userText), context).blockLast();
+}</code></pre>
+  <div class="grid">
+    <div class="card"><h3>Builder 上的 workspace</h3><p><code>.workspace(Path)</code> 设的是工作区根。v2.0.4 的解析顺序是显式 Builder 值 → 系统属性 → <code>AGENTSCOPE_WORKSPACE</code> 环境变量 → 默认的 <code>&#36;{user.dir}/.agentscope/workspace</code>。显式值优先。</p></div>
+    <div class="card"><h3>调用上的 RuntimeContext</h3><p>平台认证身份决定可信的 <code>userId</code>，平台 Session 绑定决定 <code>sessionId</code>。不要让模型输出或浏览器请求参数替代这两个身份来源。</p></div>
+  </div>
+</section>
+<section>
+  <h2>从 API 名称追到读写实现</h2>
+  <table>
+    <thead><tr><th>读到的入口</th><th>它解决的问题</th><th>接着看哪里</th></tr></thead>
+    <tbody>
+      <tr><td><code>HarnessAgent.builder().workspace(...)</code></td><td>设置逻辑工作区根目录。</td><td><a href="https://github.com/agentscope-ai/agentscope-java/blob/v2.0.4/docs/v2/zh/docs/harness/workspace.md#L290-L319">Workspace 文档：Builder 与路径优先级</a></td></tr>
+      <tr><td><code>RuntimeContext.userId / sessionId</code></td><td>把本次调用的身份与会话传进 Harness，供状态恢复和文件命名空间使用。</td><td><a href="https://github.com/agentscope-ai/agentscope-java/blob/v2.0.4/docs/v2/zh/docs/harness/workspace.md#L374-L403">Workspace 文档：多用户覆盖</a></td></tr>
+      <tr><td><code>agent.workspaceFor(userId, sessionId)</code></td><td>为应用侧单次请求拿到绑定用户/会话的 WorkspaceManager 视图，避免改动共享 Agent 上的可变绑定。</td><td><a href="https://github.com/agentscope-ai/agentscope-java/blob/v2.0.4/agentscope-harness/src/main/java/io/agentscope/harness/agent/HarnessAgent.java#L2644-L2664">HarnessAgent 源码</a></td></tr>
+      <tr><td><code>writeUtf8WorkspaceRelative(context, path, text)</code></td><td>用工作区相对路径写入，并路由到当前 AbstractFilesystem。</td><td><a href="https://github.com/agentscope-ai/agentscope-java/blob/v2.0.4/agentscope-harness/src/main/java/io/agentscope/harness/agent/workspace/WorkspaceManager.java#L3448-L3474">WorkspaceManager 源码</a></td></tr>
+    </tbody>
+  </table>
+  <pre><code>var workspace = agent.workspaceFor(authenticatedUserId, harnessSessionId);
+workspace.writeUtf8WorkspaceRelative(
+    context,
+    "notes/preferences.md",
+    "默认会议时长：30 分钟"
+);</code></pre>
+  <p>同一 WorkspaceManager 在本机模式下可能写本地文件，在 Remote 或 Sandbox 模式下则写远端 KV 或沙箱。运行时读写应经过 WorkspaceManager；直接调用 <code>java.nio.Files</code> 在 Remote/Sandbox 模式会写错到宿主机器。例外是启动前创建本地模板文件。<a href="https://github.com/agentscope-ai/agentscope-java/blob/v2.0.4/docs/v2/zh/docs/harness/workspace.md#L613-L617">官方写入规则</a></p>
+</section>
+<section>
+  <h2>别把三个数据面合并成一个</h2>
+  <div class="grid">
+    <div class="card"><h3>Workspace 文件</h3><p>静态定义、知识、技能，以及长期记忆、会话日志、计划和任务等文件产物。</p></div>
+    <div class="card"><h3>AgentState</h3><p>Harness 运行中恢复 Agent 所需的结构化上下文，由独立的 AgentStateStore 管理，不属于 Workspace 文件树。</p></div>
+    <div class="card"><h3>平台业务事实</h3><p>在本项目中，预约 ID、预约状态、用户授权和审计由平台的业务存储负责。Workspace 或 AgentState 都不能替代它们的业务事务。</p></div>
+    <div class="card"><h3>本机、共享存储、沙箱</h3><p>同一份逻辑 Workspace 布局可落在不同后端；物理路径不是 Workspace API 的全部含义。</p></div>
+  </div>
+  <p>前三者的边界在官方 Workspace 文档和本仓库的 v2.0.4 调研中分别核对过。项目文档中的业务责任是本项目设计约束，不是 AgentScope 自动提供的功能。<a href="https://github.com/agentscope-ai/agentscope-java/blob/v2.0.4/docs/v2/zh/docs/harness/workspace.md#L232-L256">官方数据生命周期说明</a> · <a href="../docs/调研/状态与持久化/AgentScope状态记忆工作区持久化.md">本项目静态调研</a></p>
+</section>
+<section>
+  <h2>试着沿调用链复述</h2>
+  <p>如果林岚换了一个 Web Session：哪些信息应该仍属于她，哪些信息应属于新会话？先用自己的话说，再展开核对。</p>
+  <details>
+    <summary>展开一个核对答案</summary>
+    <p>若文件系统选用 <code>IsolationScope.USER</code> 且工作区/员工根相同，她跨 Session 的个人偏好可以仍在同一个用户 Workspace 命名空间中；新的 <code>sessionId</code> 仍是另一个 AgentState 恢复槽。会议预约状态属于平台业务记录，并由会议系统核验。Workspace 的范围和 AgentState 的键各自独立。</p>
+  </details>
+  <p class="small">有不清楚的 API 名称、路径或边界，直接追问我；下一课会专门比较 IsolationScope 与文件系统后端。</p>
+</section>
+<div class="nav">
+  <a href="../reference/agentscope-workspace-api.html">打开 Workspace API 速查页 →</a>
+  <a href="0002-workspace-isolation-scope.html">继续：选择 Workspace 隔离范围 →</a>
+  <a href="../docs/数据库设计/状态记忆与工作区/状态记忆与工作区隔离存储设计规格.md">本项目隔离设计规格 →</a>
+</div>
+</main>
+<footer>课程基于 AgentScope Java v2.0.4 固定标签。该标签是本仓库的调研基线；本仓库当前没有 Maven 依赖，因此本课讲的是可核对的框架 API，不宣称已有运行集成。</footer>
+</div></body>
+</html>

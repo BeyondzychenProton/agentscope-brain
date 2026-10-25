@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Workspace 的隔离范围：USER 和 SESSION 到底隔离什么</title>
+  <link rel="stylesheet" href="../assets/course.css">
+</head>
+<body><div class="shell">
+<header>
+  <div class="eyebrow">AgentScope Java · Lesson 02</div>
+  <h1>Workspace 的隔离范围：USER 和 SESSION 到底隔离什么</h1>
+  <div class="subtitle">同一个员工要服务多人，而用户又可能跨多个会话工作。Workspace 如何决定哪些文件可以共享？</div>
+  <div class="meta"><span class="pill">约 6 分钟</span><span class="pill">版本基线：v2.0.4</span><span class="pill">先修：<a href="0001-workspace-api-runtime-flow.html">第 1 课</a></span></div>
+</header>
+<main>
+<section>
+  <p class="lede"><strong><code>IsolationScope</code> 只决定 Workspace/filesystem 的数据分桶。</strong>它不替应用认证用户，也不把 Workspace 隔离自动扩展成业务授权、AgentState 和数据库事务。</p>
+  <p>可以先把它理解为“哪些运行上下文共享同一个文件命名空间”。实际放到哪里由 filesystem 后端决定：路径前缀、KV 命名空间，或沙箱状态槽。<a href="https://github.com/agentscope-ai/agentscope-java/blob/v2.0.4/docs/v2/zh/docs/harness/filesystem.md">Filesystem 官方文档</a></p>
+</section>
+<section>
+  <h2>四种共享范围</h2>
+  <table>
+    <thead><tr><th>范围</th><th>谁共享一桶</th><th>适合先想到的场景</th></tr></thead>
+    <tbody>
+      <tr><td><code>SESSION</code></td><td>同一个 sessionId</td><td>每段对话完全独立的工作资料或一次性沙箱</td></tr>
+      <tr><td><code>USER</code></td><td>同一个 userId 的多个 Session</td><td>用户个人偏好跨 Web 会话延续；v2.0.4 默认范围</td></tr>
+      <tr><td><code>AGENT</code></td><td>同一个 Agent 的所有用户与会话</td><td>所有用户共用的一组知识或技能</td></tr>
+      <tr><td><code>GLOBAL</code></td><td>同一个 store 实例中的所有调用</td><td>只有明确需要全局共享时考虑；竞争面最大</td></tr>
+    </tbody>
+  </table>
+  <p>当 <code>USER</code> 没有收到 <code>userId</code> 时，v2.0.4 会退回按 <code>sessionId</code> 分桶。遗漏可信身份会改变数据可见范围，所以平台必须把已认证的用户 ID 放进 RuntimeContext。<a href="https://github.com/agentscope-ai/agentscope-java/blob/v2.0.4/agentscope-harness/src/main/java/io/agentscope/harness/agent/IsolationScope.java#L521-L660">IsolationScope 源码</a></p>
+</section>
+<section>
+  <h2>同一个逻辑工作区，后端可以不同</h2>
+  <div class="grid">
+    <div class="card"><h3>Local</h3><p>读写落本机目录。适合本地开发或可信的单机进程。</p></div>
+    <div class="card"><h3>Remote</h3><p>通过共享 BaseStore 使用 KV 命名空间。多个副本看到一致的运行时文件；本地文件可作为团队维护的只读模板。</p></div>
+    <div class="card"><h3>Sandbox</h3><p>文件与执行环境落入沙箱。跨调用保留还要看快照、沙箱状态或持久卷配置。</p></div>
+    <div class="card"><h3>统一点</h3><p>Agent 面向逻辑路径和 WorkspaceManager，不应把宿主机文件路径当作唯一事实。</p></div>
+  </div>
+  <pre><code>.distributedStore(distributedStore)
+.filesystem(new RemoteFilesystemSpec()
+    .isolationScope(IsolationScope.USER))</code></pre>
+  <p><code>RemoteFilesystemSpec</code> 选择共享存储路由，<code>IsolationScope.USER</code> 选择用户维度命名空间。它们回答不同问题：一个选“后端”，一个选“分桶”。<a href="https://github.com/agentscope-ai/agentscope-java/blob/v2.0.4/docs/v2/zh/docs/harness/filesystem.md#L261-L279">官方 Remote 示例</a></p>
+</section>
+<section>
+  <h2>映射到会议室数字员工</h2>
+  <p>如果同一个业务用户开两个 Session，个人偏好跨 Session 延续通常需要 <code>USER</code>。但本项目还要区分“同一用户 × 不同数字员工”。若不同员工共享相同 Agent 与 Workspace 根，仅配置 <code>USER</code> 不会自然多出 employeeId 这一维。</p>
+  <div class="callout"><strong>项目侧设计推论：</strong>为满足“用户 × 员工”隔离，平台仍须为员工选择独立根目录/命名空间，或使用其他明确、可验收的绑定；可信 userId 由登录态提供。AgentScope 的 Workspace scope 不会替平台创建数字员工身份与授权规则。</div>
+  <p>这条推论来自框架公开的分桶键与本项目已经确认的隔离要求。它是平台设计建议，不是官方保证。需要跨副本或跨重启保存时，还须验证所选后端的实际恢复行为。<a href="../docs/数据库设计/状态记忆与工作区/状态记忆与工作区隔离存储设计规格.md">本项目隔离规格</a> · <a href="../docs/调研/状态与持久化/AgentScope状态记忆工作区持久化.md">框架静态核对与待验项</a></p>
+</section>
+<section>
+  <h2>小练习：预测可见范围</h2>
+  <p>Alice 在 Session A 写入一个偏好文件。她在 Session B 再次调用同一员工；Bob 也用同一个员工。若 scope 为 <code>USER</code>，谁能读到这份文件？换成 <code>SESSION</code> 又会怎样？</p>
+  <details>
+    <summary>展开核对</summary>
+    <p><code>USER</code> 下，Alice 的两个 Session 共享 Alice 的文件命名空间，Bob 使用另一个用户命名空间；<code>SESSION</code> 下，Session A 与 B 各自隔离，Alice 在 B 也读不到 A 的工作区文件。这个结论只针对 Workspace/filesystem 命名空间，不代表 AgentState 或业务数据存储的相同键。</p>
+  </details>
+  <p class="small">再问自己：如果未来要给不同员工分别保存记忆，当前 Workspace 根与分桶键中，哪一处明确包含 employeeId？这就是从读懂 API 走到验证平台设计的检查点。</p>
+</section>
+<div class="nav">
+  <a href="0001-workspace-api-runtime-flow.html">← 回到第 1 课</a>
+  <a href="0003-workspace-call-and-io.html">继续：一次调用中的上下文装载与文件读写 →</a>
+  <a href="../reference/agentscope-workspace-api.html">打开 Workspace API 速查页 →</a>
+  <a href="https://github.com/agentscope-ai/agentscope-java/blob/v2.0.4/docs/v2/zh/docs/harness/filesystem.md">阅读官方 Filesystem 文档 →</a>
+</div>
+</main>
+<footer>课程基于 AgentScope Java v2.0.4 固定标签。使用任何范围前，都应同时核对后端键、可信身份、恢复方式和项目级验收证据。</footer>
+</div></body>
+</html>

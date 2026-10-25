@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>上传文件、Workspace 工作副本与 Agent 产物</title>
+  <link rel="stylesheet" href="../assets/course.css">
+</head>
+<body><div class="shell">
+<header>
+  <div class="eyebrow">AgentScope Java · Lesson 05</div>
+  <h1>上传文件、Workspace 工作副本与 Agent 产物</h1>
+  <div class="subtitle">分清原件、临时工作文件和正式交付文件，才能知道保存在哪一层、由谁负责恢复。</div>
+  <div class="meta"><span class="pill">约 7 分钟</span><span class="pill">版本基线：AgentScope Java v2.0.4</span><span class="pill">项目映射：当前会话/消息设计规格</span></div>
+</header>
+<main>
+<section>
+  <p class="lede"><strong>先分成三种东西：</strong>用户上传的原件是正式历史素材；Workspace 里的文件是 Agent 执行时的工作资料；要给用户下载的 Agent 产物，则要被平台登记成正式附件或 Run 产物。</p>
+  <table>
+    <thead><tr><th>是什么</th><th>权威保存位置</th><th>Workspace 的角色</th></tr></thead>
+    <tbody>
+      <tr><td>用户上传原件</td><td>平台控制的私有对象存储；SQL 保存所属消息、类型、大小、摘要和对象定位。</td><td>需要路径式处理时，可提供受控工作副本；不是原件的唯一副本。</td></tr>
+      <tr><td>Agent 的中间文件</td><td>当前调用所用的 Workspace/filesystem 后端。</td><td>临时输入、解析结果、草稿或运行过程文件；可依保留策略清理或从权威数据重建。</td></tr>
+      <tr><td>正式交付文件</td><td>私有对象存储保存不可变文件；平台记录它属于哪个已完成回复/Run。</td><td>可作为生成与暂存位置，不能单靠 Workspace 路径证明用户拥有可下载的正式附件。</td></tr>
+    </tbody>
+  </table>
+  <p>这是本项目当前素材设计的责任划分：对象存储保存原件，SQL 保存可查询、可鉴权、可恢复的关联元数据；AgentScope 的 Workspace 是运行资料层。<a href="../docs/数据库设计/会话运行与消息/通用素材与工具操作设计.md#L7-L37">项目素材与对象存储设计</a> · <a href="../docs/调研/状态与持久化/AgentScope状态记忆工作区持久化.md">Workspace 与平台责任边界</a></p>
+</section>
+<section>
+  <h2>用户上传：先成为正式素材，再交给 Agent</h2>
+  <div class="flow" aria-label="用户上传文件接纳流程">
+    <div class="flow-item"><b>① 认证与校验</b>确认当前用户、目标员工、文件类型与大小。</div>
+    <div class="flow-item"><b>② 上传原件</b>服务端分配不复用的对象键，写入私有对象存储并核对长度与 SHA-256。</div>
+    <div class="flow-item"><b>③ 接纳消息</b>SQL 事务写正式消息、MEDIA 内容块、素材元数据和 Run。</div>
+    <div class="flow-item"><b>④ 提供模型输入</b>Adapter 按授权重新读取原件，再转换为模型支持的输入或受控工作副本。</div>
+  </div>
+  <p>对象上传与 SQL 事务不是一个原子提交：先把全部原件准备并验证好，再接纳正式消息和 Run；只有明确未被引用的失败上传才能延迟清理。若 SQL 提交结果不明，要先核对引用状态，不能马上删对象。<a href="../docs/数据库设计/会话运行与消息/通用素材与工具操作设计.md#L41-L58">项目的接纳、失败、读取与清理规则</a></p>
+  <div class="callout"><strong>保存什么：</strong>原始字节放私有对象存储；SQL 保存稳定 <code>storage_profile + object_key</code>、可选对象版本、MIME、字节数、SHA-256、消息归属和展示文件名。不要把文件内容 Base64 塞进 SQL，也不要把临时签名 URL 当成永久定位。</div>
+</section>
+<section>
+  <h2>Agent 处理文件：Workspace 是工作区</h2>
+  <p>如果 Agent 需要用 <code>read_file</code> 等工具按路径处理输入，平台可以把已鉴权素材投影或复制到某个受控的 Workspace 相对路径，例如 <code>inputs/current/image-01.png</code>。文件操作走当前 <code>AbstractFilesystem</code>，这样 Remote 或 Sandbox 模式也会路由到正确后端。运行时不要把宿主机路径当作通用工作区路径。<a href="https://github.com/agentscope-ai/agentscope-java/blob/v2.0.4/docs/v2/zh/docs/harness/filesystem.md#L202-L220">官方 Filesystem 抽象</a> · <a href="https://github.com/agentscope-ai/agentscope-java/blob/v2.0.4/docs/v2/zh/docs/harness/workspace.md#L613-L617">官方 I/O 规则</a></p>
+  <pre><code>// 这是 UTF-8 文本文件写入，不是任意二进制文件上传
+workspace.writeUtf8WorkspaceRelative(
+    context,
+    "outputs/summary.md",
+    markdownText
+);</code></pre>
+  <p><code>writeUtf8WorkspaceRelative</code> 接收字符串并按 UTF-8 编码，再交给 filesystem 写入，所以适合 Markdown、JSON 等文本。PDF、图片、压缩包等二进制内容不能先转成普通文本再调用它；应由文件工具/后端的字节 I/O 能力或平台素材 Adapter 处理。<a href="https://github.com/agentscope-ai/agentscope-java/blob/v2.0.4/agentscope-harness/src/main/java/io/agentscope/harness/agent/workspace/WorkspaceManager.java#L3447-L3483">WorkspaceManager 写入实现</a></p>
+</section>
+<section>
+  <h2>Agent 生成文件：工作产物怎样变成正式附件？</h2>
+  <p>Harness 可以让 Agent 在 Workspace/filesystem 中创建文件；这只表示文件出现在运行工作区。要作为正式回复附件供用户回看或下载，平台还要执行一次“收集并登记”的交付流程：</p>
+  <ol>
+    <li>Run 在受控的输出目录生成文件，例如 <code>outputs/report.md</code>。</li>
+    <li>平台从配置的 filesystem 读取该相对路径，校验允许的路径、格式、大小和内容摘要。</li>
+    <li>把原始字节上传到私有对象存储，使用新的不可变对象键。</li>
+    <li>正式员工消息的有序内容块引用素材元数据；消息关联成功 Run。确认对象与 SQL 记录一致后，再显示下载入口。</li>
+  </ol>
+  <p class="small">对象存储和 SQL 仍是两个系统。若对象已上传但消息事务失败，先核对是否已被引用，再清理孤儿对象；若保存状态不明，不要给用户一个看似成功但实际不可恢复的下载链接。</p>
+  <div class="caution"><strong>项目规格边界：</strong>当前建模可表达正式员工回复携带通用 <code>FILE</code> 素材，但交付文件的收集、扫描/校验策略和恢复生命周期还没有单独形成验收契约。一期产品验收范围仍是文字与图片，不能据此宣称任意文件上传、解析、生成和下载已经实现。</div>
+  <p>如果产物属于正式员工回复，优先考虑复用 <code>business_message</code> + 有序 <code>MEDIA</code> 内容块 + <code>message_media</code>；这样文件跟着正式消息和 Run 回看。如果要做独立的文件库、跨消息引用或工作区外的 Run 下载中心，需要单独设计其业务记录与权限，不能只保存一条路径。<a href="../docs/数据库设计/会话运行与消息/一期会话运行消息建表规格.md#L19-L23">消息素材表职责</a> · <a href="../docs/数据库设计/会话运行与消息/一期会话运行消息建表规格.md#L37-L48">消息、Run 与提交顺序</a></p>
+</section>
+<section>
+  <h2>把三个存储层记成一句话</h2>
+  <div class="callout"><strong>原件进私有对象存储，归属和引用进平台 SQL，Agent 工作副本进 Workspace/filesystem。</strong>当 Workspace 文件要变成对用户承诺的正式产物，平台再把它收集到私有对象存储并建立正式消息或 Run 引用。</div>
+</section>
+<section>
+  <h2>小练习：同一个文件会经过哪几层？</h2>
+  <p>用户上传了一张图片，Agent 要读取它，并最终生成一份可下载的 Markdown 报告。请分别说出：图片原件放哪里？Agent 的工作副本放哪里？报告以什么条件成为正式可下载回复？</p>
+  <details>
+    <summary>展开核对答案</summary>
+    <p>图片原件放私有对象存储，消息和 <code>message_media</code> 在 SQL 中保存关联；Agent 需要路径访问时，受控地投影到 Workspace/filesystem。报告先在受控工作路径生成，再由平台收集、校验并保存为新的私有对象，最后在成功 Run 对应的正式员工消息中登记媒体引用。当前项目的一期图片可进入产品验收；Markdown 作为正式文件附件的端到端交付仍需单独验收。</p>
+  </details>
+  <p class="small">先用自己的话答也可以。下一步我们可以沿一张图片，逐段看从上传到转成 AgentScope <code>DataBlock</code> 的运行链路。</p>
+</section>
+<div class="nav">
+  <a href="0004-workspace-path-backend-scope.html">← 回到第 4 课</a>
+  <a href="../reference/agentscope-workspace-api.html">打开 Workspace API 速查页 →</a>
+  <a href="../docs/数据库设计/会话运行与消息/通用素材与工具操作设计.md">项目通用素材设计 →</a>
+</div>
+</main>
+<footer>项目素材保存方案来自仓库中已确认的设计规格；Agent 输出附件的收集与发布步骤是教学映射和设计建议，不代表已经实现或验收。</footer>
+</div></body>
+</html>

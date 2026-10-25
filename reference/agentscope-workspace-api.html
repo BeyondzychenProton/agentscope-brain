@@ -1,0 +1,136 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>AgentScope Workspace API 速查</title>
+  <link rel="stylesheet" href="../assets/course.css">
+</head>
+<body><div class="shell">
+<header>
+  <div class="eyebrow">Reference · AgentScope Java v2.0.4</div>
+  <h1>Workspace API 速查</h1>
+  <div class="subtitle">定位入口、理解路径和分桶、判断写入后端。依据固定版本官方文档与源码。</div>
+  <div class="nav">
+    <a href="../lessons/0001-workspace-api-runtime-flow.html">第 1 课：API 调用链</a>
+    <a href="../lessons/0002-workspace-isolation-scope.html">第 2 课：隔离范围</a>
+    <a href="../lessons/0003-workspace-call-and-io.html">第 3 课：调用时装载与应用直写</a>
+    <a href="../lessons/0004-workspace-path-backend-scope.html">第 4 课：路径、后端与分桶</a>
+    <a href="../lessons/0005-uploaded-and-generated-files.html">第 5 课：上传文件与 Agent 产物</a>
+  </div>
+</header>
+<main>
+<section id="builder">
+  <h2>1. 关键入口</h2>
+  <table>
+    <thead><tr><th>API</th><th>用途</th></tr></thead>
+    <tbody>
+      <tr><td><code>HarnessAgent.builder().workspace(Path)</code></td><td>设置逻辑工作区根目录。</td></tr>
+      <tr><td><code>.filesystem(FilesystemSpec)</code></td><td>选择本机、远端共享存储或沙箱文件后端。</td></tr>
+      <tr><td><code>RuntimeContext.userId / sessionId</code></td><td>提供当前运行身份与会话上下文；用户身份应由平台认证层提供。</td></tr>
+      <tr><td><code>agent.workspaceFor(userId, sessionId)</code></td><td>应用侧按请求取得绑定该用户/会话的 WorkspaceManager view。</td></tr>
+      <tr><td><code>WorkspaceManager.writeUtf8WorkspaceRelative(...)</code></td><td>通过 workspace-relative path 写入；按当前 AbstractFilesystem 路由。</td></tr>
+      <tr><td><code>WorkspaceContextMiddleware</code></td><td>每次进入推理阶段时，根据当前上下文和配置重新装载需要注入的 Workspace 内容。</td></tr>
+    </tbody>
+  </table>
+</section>
+<section id="path-resolution">
+  <h2>2. Workspace 根目录的解析顺序</h2>
+  <ol>
+    <li>Builder 显式设置的 <code>workspace(Path/String)</code></li>
+    <li>系统属性 <code>agentscope.workspace</code></li>
+    <li>环境变量 <code>AGENTSCOPE_WORKSPACE</code></li>
+    <li>默认值 <code>&#36;{user.dir}/.agentscope/workspace</code></li>
+  </ol>
+  <p>路径指定根目录；它本身不等于用户授权策略，也不单独定义 AgentState 的持久化位置。</p>
+</section>
+<section id="layout">
+  <h2>3. 常见逻辑目录</h2>
+  <pre><code>workspace/
+├── AGENTS.md                 # Agent 人格与规则
+├── tools.json                # 可选的工具/MCP 配置
+├── knowledge/                # 领域知识入口与参考资料
+├── skills/&lt;name&gt;/SKILL.md   # 可复用技能
+├── subagents/&lt;id&gt;.md        # 子 Agent 声明
+├── MEMORY.md                 # 长期记忆
+├── memory/YYYY-MM-DD.md      # 记忆流水
+├── plans/                    # Plan Mode 工作产物
+└── agents/&lt;agentId&gt;/         # Session log、Task 等运行文件</code></pre>
+  <p>目录是逻辑布局，可以映射到本机、Remote KV 或沙箱。Workspace 内容按生命周期有静态资产、运行产物和长期记忆；AgentState 不在这棵 Workspace 树中。</p>
+</section>
+<section id="scope">
+  <h2>4. IsolationScope</h2>
+  <table>
+    <thead><tr><th>Scope</th><th>命名空间共享者</th><th>备注</th></tr></thead>
+    <tbody>
+      <tr><td><code>SESSION</code></td><td>同一 sessionId</td><td>按对话隔离</td></tr>
+      <tr><td><code>USER</code></td><td>同一 userId 的所有会话</td><td>v2.0.4 默认；缺 userId 时退到 sessionId</td></tr>
+      <tr><td><code>AGENT</code></td><td>同一 Agent 的所有用户与会话</td><td>适合明确共享的知识</td></tr>
+      <tr><td><code>GLOBAL</code></td><td>同一个 store 实例</td><td>共享最大；谨慎选择</td></tr>
+    </tbody>
+  </table>
+  <p><code>IsolationScope</code> 控制 Workspace/filesystem 分桶；不要把它推导成平台授权、业务 Session 或 AgentState 隔离已经全部满足。</p>
+</section>
+<section id="separation">
+  <h2>5. 三个数据面</h2>
+  <table>
+    <thead><tr><th>数据面</th><th>典型内容</th><th>主要责任</th></tr></thead>
+    <tbody>
+      <tr><td>Workspace</td><td>定义文件、知识、技能、计划、长期记忆、会话日志</td><td>Harness 文件能力与 filesystem 后端</td></tr>
+      <tr><td>AgentState</td><td>当前 Agent 执行恢复用的结构化上下文</td><td>AgentStateStore</td></tr>
+      <tr><td>平台业务存储</td><td>账号授权、业务 Session/Run、预约与审计</td><td>本项目数据库与业务服务</td></tr>
+    </tbody>
+  </table>
+  <p>会议预约事实应以会议系统或平台业务记录为准；Workspace Memory 适合表达可更正的个人偏好，不能作为交易事实来源。</p>
+</section>
+<section id="io-boundary">
+  <h2>6. I/O 边界</h2>
+  <ul>
+    <li>运行时文件读写走 WorkspaceManager 的相对路径方法，避免后端路由失效。</li>
+    <li>在 Remote/Sandbox 模式中，直接用 <code>java.nio.Files</code> 可能落到宿主磁盘。</li>
+    <li>启动前写本地模板文件是例外；那时没有运行时 filesystem binding。</li>
+    <li>路径 traversal 校验不等于业务授权；仍要在应用边界检查当前用户能否访问目标内容。</li>
+  </ul>
+</section>
+<section id="call-vs-io">
+  <h2>7. Agent 调用与应用直写是两条入口</h2>
+  <ul>
+    <li><code>agent.streamEvents(message, context)</code> 发起一次 Agent 调用；Harness 在推理阶段装载相应的 Workspace 上下文。</li>
+    <li><code>agent.workspaceFor(userId, sessionId)</code> 返回请求级 WorkspaceManager 视图；用于应用代码显式读写文件，本身不触发推理。</li>
+    <li><code>writeUtf8WorkspaceRelative(context, relativePath, content)</code> 使用逻辑相对路径，并通过当前 filesystem 写入。</li>
+  </ul>
+  <p>关键文件会在后续调用中重新装载。知识目录通常注入入口和路径清单，具体文件由需要它的 Agent/应用按需读取；目录存在不等于其中全部正文已进入模型提示词。</p>
+</section>
+<section id="filesystem-backends">
+  <h2>8. 文件系统后端与 scope 分开读</h2>
+  <ul>
+    <li><code>filesystem(FilesystemSpec)</code> 选择 Local、Remote 或 Sandbox 等文件 I/O 模式。</li>
+    <li><code>IsolationScope</code> 选择 Workspace/filesystem 运行时数据如何分桶。</li>
+    <li>RemoteFilesystem 默认只把规则指定的路径路由到共享 KV；其他路径可以仍走本地文件系统。</li>
+    <li>跨副本可见性还要求各副本连接同一个共享后端；仅配置同一个 scope 不会自动创建共享存储。</li>
+  </ul>
+</section>
+<section id="file-materials">
+  <h2>9. 上传素材与 Agent 生成文件</h2>
+  <ul>
+    <li>正式上传原件由平台私有对象存储保存，SQL 保存消息归属和稳定对象元数据。</li>
+    <li>Workspace/filesystem 可提供 Agent 的受控工作副本或生成暂存区。</li>
+    <li><code>writeUtf8WorkspaceRelative</code> 适合 UTF-8 文本；不要拿它存任意二进制。</li>
+    <li>用户可下载的产物还需由平台收集、校验、写入私有对象存储，并建立正式消息或 Run 引用。</li>
+  </ul>
+</section>
+<section id="sources">
+  <h2>一手来源</h2>
+  <ul class="source-list">
+    <li><a href="https://github.com/agentscope-ai/agentscope-java/blob/v2.0.4/docs/v2/zh/docs/harness/workspace.md">Workspace 文档</a></li>
+    <li><a href="https://github.com/agentscope-ai/agentscope-java/blob/v2.0.4/docs/v2/zh/docs/harness/filesystem.md">Filesystem 文档</a></li>
+    <li><a href="https://github.com/agentscope-ai/agentscope-java/blob/v2.0.4/agentscope-harness/src/main/java/io/agentscope/harness/agent/HarnessAgent.java">HarnessAgent 源码</a></li>
+    <li><a href="https://github.com/agentscope-ai/agentscope-java/blob/v2.0.4/agentscope-harness/src/main/java/io/agentscope/harness/agent/workspace/WorkspaceManager.java">WorkspaceManager 源码</a></li>
+    <li><a href="https://github.com/agentscope-ai/agentscope-java/blob/v2.0.4/agentscope-harness/src/main/java/io/agentscope/harness/agent/IsolationScope.java">IsolationScope 源码</a></li>
+    <li><a href="../docs/调研/状态与持久化/AgentScope状态记忆工作区持久化.md">本项目静态调研</a></li>
+  </ul>
+</section>
+</main>
+<footer>范围声明：本速查针对 AgentScope Java v2.0.4。文档/源码存在不代表当前项目已构建、配置或完成集成验收。</footer>
+</div></body>
+</html>
