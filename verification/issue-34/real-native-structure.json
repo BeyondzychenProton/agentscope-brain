@@ -1,0 +1,81 @@
+{
+  "issue": 34,
+  "approvedScope": "five native tables and real restricted login; explicit user reply 2026-10-26",
+  "database": "agentscope_brain",
+  "startedAt": "2026-10-26T14:40:45.762568+00:00",
+  "mysqlVersion": "8.4.11",
+  "serverUuid": "d0323e25-915a-11f1-ae5c-5add86bf7d78",
+  "ddlSha256": {
+    "db/vendor/agentscope-2.0.4-mysql.sql": "b8c37a260bcdb26b9d63d4aa6c84f5b6dcfab9620771e9c292f6449f28273b39",
+    "db/vendor/spring-session-4.1.1-mysql.sql": "12681613b92971e864acd78fd83f4124fa84a167585c09286ecafcc5aaa7a5f9"
+  },
+  "beforeTableCount": 30,
+  "bootstrapManifestSha256": "7c3b58cb4b61a57905bec78e17a3821825c400785f0dfb0fd7147a008e70764f",
+  "statements": [
+    {
+      "file": "db/vendor/agentscope-2.0.4-mysql.sql",
+      "statement": 1,
+      "sha256": "889cbd447af31d09a34093750632593ce15df96717dc4739b8021f96e97916e4",
+      "state": "APPLIED"
+    },
+    {
+      "file": "db/vendor/agentscope-2.0.4-mysql.sql",
+      "statement": 2,
+      "sha256": "84bdeee4e9440bf7b8588ef1a6bdfa3391e5ad56406e0c7725886fc73e039f3a",
+      "state": "APPLIED"
+    },
+    {
+      "file": "db/vendor/agentscope-2.0.4-mysql.sql",
+      "statement": 3,
+      "sha256": "674c6aa51d3f1eddbe5721ea536f5640bbb00691c0350d5451ab678a03b8a82d",
+      "state": "APPLIED"
+    },
+    {
+      "file": "db/vendor/spring-session-4.1.1-mysql.sql",
+      "statement": 1,
+      "sha256": "bbc7f59f7e01e2b2e6e85c8beaff6d6ea9a3b2b50944ead40c375f1b092a0779",
+      "state": "APPLIED"
+    },
+    {
+      "file": "db/vendor/spring-session-4.1.1-mysql.sql",
+      "statement": 2,
+      "sha256": "fd42912ecdc5f177bb0bef8047257a7a0664558b5def3cd83c090c2b3e24211c",
+      "state": "APPLIED"
+    },
+    {
+      "file": "db/vendor/spring-session-4.1.1-mysql.sql",
+      "statement": 3,
+      "sha256": "af4f905867d69c9d769a190f08a03bfa47c4f8ecf7e41964ea47b7bd5538c217",
+      "state": "APPLIED"
+    },
+    {
+      "file": "db/vendor/spring-session-4.1.1-mysql.sql",
+      "statement": 4,
+      "sha256": "a0f0edea30c3ab30d686caf7ea2df2d17a5d847088d73347a59ab053828136d4",
+      "state": "APPLIED"
+    },
+    {
+      "file": "db/vendor/spring-session-4.1.1-mysql.sql",
+      "statement": 5,
+      "sha256": "43636ff6f25b45132f98cc35dc6f72b9a76a851d047c384c35b1bc835fec1559",
+      "state": "APPLIED"
+    }
+  ],
+  "state": "VERIFIED",
+  "completedAt": "2026-10-26T14:40:53.452416+00:00",
+  "afterTableCount": 35,
+  "nativeRowCounts": {
+    "agentscope_store": 0,
+    "agentscope_sessions": 0,
+    "agentscope_snapshots": 0,
+    "SPRING_SESSION": 0,
+    "SPRING_SESSION_ATTRIBUTES": 0
+  },
+  "platformRowsUnchanged": true,
+  "platformRowCount": 22,
+  "metadataExpectationMatches": true,
+  "independentReadback": true,
+  "modelCalls": 0,
+  "mcpCalls": 0,
+  "minioCalls": 0
+}

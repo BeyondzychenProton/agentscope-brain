@@ -2,7 +2,7 @@
 
 单 Spring Boot 应用、单 Maven 模块、一个生产 Java 进程。按业务能力组织代码，完整规则见 [后端开发规范](开发规范.md)；领域术语沿用 [GLOSSARY.md](../GLOSSARY.md)。
 
-当前交付是正式开发骨架：唯一启动类、模块目录、共用资源 YAML、构建入口和最小隔离测试。登录、业务数据库初始化、对话、会议和在线存储仍按各自工单实施。登录链实现前，HTTP 全部拒绝且不会生成默认用户。
+当前已实现 #34 的普通用户登录、CSRF、Session JDBC、当前受限身份、受限页面及启动只读检查；唯一启动类和九模块布局保持不变。首次改密提交由 #35 承担，对话、会议和在线存储仍按各自工单实施。缺必要结构／预置／配置时 `/readyz` 和认证 API 返回 503，不会生成默认用户或修复数据。
 
 ```text
 backend/
@@ -25,6 +25,8 @@ backend/
 
 在 PowerShell 中，从 `backend/` 执行，显式选择已核验 Java 17：
 
+先按 [正式前端说明](../frontend/README.md) 完成精确运行时下的安装、类型检查与生产构建；Maven 把 `frontend/dist` 打入同源 JAR，缺少前端产物时拒绝正式打包。
+
 ```powershell
 $env:JAVA_HOME = 'D:\code environment\jdk\jdk-17.0.9'
 .\scripts\检查工程规范.ps1
@@ -35,7 +37,7 @@ $env:JAVA_HOME = 'D:\code environment\jdk\jdk-17.0.9'
 
 ## 运行配置
 
-直接编辑 [config/application.yaml](config/application.yaml)：已有连接、账号、密码已填写，运行环境由 `spring.profiles.active` 的 `dev`／`prod` 切换，不需要设置资源环境变量。确认其中标注的数据库名、bucket 等未提供项后，从本目录运行：
+直接编辑 [config/application.yaml](config/application.yaml)：已有连接、账号、密码已填写，运行环境由 `spring.profiles.active` 的 `dev`／`prod` 切换，不需要设置资源环境变量。从本目录运行：
 
 ```powershell
 & "$env:JAVA_HOME\bin\java.exe" -jar .\target\agentscope-brain-backend-0.1.0-SNAPSHOT.jar
@@ -43,7 +45,11 @@ $env:JAVA_HOME = 'D:\code environment\jdk\jdk-17.0.9'
 
 Spring Boot 自动读取本目录下的 `config/application.yaml`；不再使用模板或额外 import。实际文件已被 Git 忽略且不打入 JAR；从其他工作目录启动须用 `--spring.config.additional-location=file:/绝对路径/application.yaml` 明确位置。更多说明见 [配置说明](config/README.md)。
 
-该命令是后续运行入口说明，本次没有连接共用资源启动业务应用。当前启动仍需补齐真实数据库名；数据库结构／初始化和正式登录尚待阶段 1。自动 SQL 初始化、Session 建表和 Session 清理保持关闭。
+真实 `agentscope_brain` 已完成 #29 预置，#34 按用户补充授权新增 SDK／Spring Session 原生表，并完成真实账号 Web 受限登录与后端重启恢复；证据见 [#34 验收记录](../verification/issue-34/验收记录.md)。初始化、自动建表和 Session 清理仍关闭；JDBC 会话使用 IMMEDIATE 保存，固定绝对期限另由可信认证时间检查。
+
+启动把平台 01～06 登录结构基线、SDK 和 Session 三类实际元数据分别与 `readiness/structure-v1.tsv` 核对，再核验普通用户、来源／凭据／号码、授权／当前发布、发布／绑定／Skill／资源摘要以及本机受控引用。文件 `config/release-catalog.private.json` 保存 #29 冻结引用清单，已被 Git 忽略、不打包；也可用私有 YAML 的 `brain.bootstrap.reference-catalog` 指向受控本地文件。合法停用／撤权是策略状态，不是数据缺失。检查不连接模型、MCP 或 MinIO。
+
+默认 `verify` 的 23 项测试只用 H2／合成数据。MySQL 与生产 JAR 的受限登录验收显式运行仓库根目录 `python db/tests/执行Web受限登录隔离验收.py`，它只创建并清理自己核验过的回环 MySQL；不读取共用 YAML。真实数据集不用该故障执行器。
 
 ## 历史验证
 

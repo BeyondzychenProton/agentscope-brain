@@ -1,0 +1,23 @@
+{
+  "observedAt": "2026-10-26T14:32:12.540267+00:00",
+  "database": "agentscope_brain",
+  "version": "8.4.11",
+  "tableCount": 30,
+  "missingNativeTables": [
+    "agentscope_store",
+    "agentscope_sessions",
+    "agentscope_snapshots",
+    "SPRING_SESSION",
+    "SPRING_SESSION_ATTRIBUTES"
+  ],
+  "bootstrapBatchId": "1",
+  "manifestSha256": "7c3b58cb4b61a57905bec78e17a3821825c400785f0dfb0fd7147a008e70764f",
+  "structureMismatchTables": [
+    "agentscope_sessions",
+    "agentscope_snapshots",
+    "agentscope_store",
+    "spring_session",
+    "spring_session_attributes"
+  ],
+  "writes": 0
+}

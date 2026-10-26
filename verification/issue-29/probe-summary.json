@@ -1,0 +1,381 @@
+{
+  "mysql_version": "8.0.45",
+  "tables": 30,
+  "synthetic_rows_rolled_back": false,
+  "framework_kv_tested": false,
+  "application_integration_tested": false,
+  "cases": [
+    {
+      "case": "1-06/single-user",
+      "expected": "PASS",
+      "observed": "一名普通用户、零管理员、首次改密、完整固定发布及独立读回",
+      "facts": {
+        "batchId": "1",
+        "manifestSha256": "9396c9b99f6f4aa949aca5cdd7884f4dd5f60a56f0bb3f80589b6cbb5da87374"
+      },
+      "modelCalls": 0,
+      "mcpCalls": 0,
+      "minioCalls": 0
+    },
+    {
+      "case": "1-06/same-source",
+      "expected": "PASS",
+      "observed": "在 READ ONLY 事务中同来源同内容返回原批次、目标和收据，行数不变",
+      "facts": {},
+      "modelCalls": 0,
+      "mcpCalls": 0,
+      "minioCalls": 0
+    },
+    {
+      "case": "1-06/different-content",
+      "expected": "PASS",
+      "observed": "SOURCE_CONTENT_CONFLICT",
+      "facts": {},
+      "modelCalls": 0,
+      "mcpCalls": 0,
+      "minioCalls": 0
+    },
+    {
+      "case": "1-06/different-source",
+      "expected": "PASS",
+      "observed": "SCOPE_CONFLICT",
+      "facts": {},
+      "modelCalls": 0,
+      "mcpCalls": 0,
+      "minioCalls": 0
+    },
+    {
+      "case": "1-06/preserve-later-state",
+      "expected": "PASS",
+      "observed": "改密、首次改密标记、安全／授权版本、停用及撤权不被重置；原 manifest 仍有效",
+      "facts": {},
+      "modelCalls": 0,
+      "mcpCalls": 0,
+      "minioCalls": 0
+    },
+    {
+      "case": "1-06/atomic-rollback",
+      "expected": "PASS",
+      "observed": "预置和成功审计全部回滚；原来源安全重做",
+      "facts": {},
+      "modelCalls": 0,
+      "mcpCalls": 0,
+      "minioCalls": 0
+    },
+    {
+      "case": "1-06/commit-unknown-true",
+      "expected": "PASS",
+      "observed": "独立连接按原来源核对已应用／未应用；无第二份成功收据",
+      "facts": {},
+      "modelCalls": 0,
+      "mcpCalls": 0,
+      "minioCalls": 0
+    },
+    {
+      "case": "1-06/commit-unknown-false",
+      "expected": "PASS",
+      "observed": "独立连接按原来源核对已应用／未应用；无第二份成功收据",
+      "facts": {},
+      "modelCalls": 0,
+      "mcpCalls": 0,
+      "minioCalls": 0
+    },
+    {
+      "case": "1-06/race-same",
+      "expected": "PASS",
+      "observed": "唯一 scope 串行化：只产生一套完整事实与一份成功收据",
+      "facts": {},
+      "modelCalls": 0,
+      "mcpCalls": 0,
+      "minioCalls": 0
+    },
+    {
+      "case": "1-06/race-different-content",
+      "expected": "PASS",
+      "observed": "唯一 scope 串行化：只产生一套完整事实与一份成功收据",
+      "facts": {},
+      "modelCalls": 0,
+      "mcpCalls": 0,
+      "minioCalls": 0
+    },
+    {
+      "case": "1-06/race-different-source",
+      "expected": "PASS",
+      "observed": "唯一 scope 串行化：只产生一套完整事实与一份成功收据",
+      "facts": {},
+      "modelCalls": 0,
+      "mcpCalls": 0,
+      "minioCalls": 0
+    },
+    {
+      "case": "1-06/stuck-preparing",
+      "expected": "PASS",
+      "observed": "拒绝接管未证实批次，要求核对",
+      "facts": {},
+      "modelCalls": 0,
+      "mcpCalls": 0,
+      "minioCalls": 0
+    },
+    {
+      "case": "1-06/stuck-failed",
+      "expected": "PASS",
+      "observed": "拒绝接管未证实批次，要求核对",
+      "facts": {},
+      "modelCalls": 0,
+      "mcpCalls": 0,
+      "minioCalls": 0
+    },
+    {
+      "case": "1-06/stuck-reconciling",
+      "expected": "PASS",
+      "observed": "拒绝接管未证实批次，要求核对",
+      "facts": {},
+      "modelCalls": 0,
+      "mcpCalls": 0,
+      "minioCalls": 0
+    },
+    {
+      "case": "1-06/nonempty",
+      "expected": "PASS",
+      "observed": "拒绝已有事实的目标库，不覆盖、不补齐",
+      "facts": {},
+      "modelCalls": 0,
+      "mcpCalls": 0,
+      "minioCalls": 0
+    },
+    {
+      "case": "1-06/negative-constraints",
+      "expected": "PASS",
+      "observed": "8 项来源／状态 CHECK 拒绝、身份与配置重复成功收据唯一拒绝；重复失败审计允许",
+      "facts": {},
+      "modelCalls": 0,
+      "mcpCalls": 0,
+      "minioCalls": 0
+    },
+    {
+      "case": "1-06/anomaly-1",
+      "expected": "PASS",
+      "observed": "RESOURCE_DIGEST_MISMATCH",
+      "facts": {},
+      "modelCalls": 0,
+      "mcpCalls": 0,
+      "minioCalls": 0
+    },
+    {
+      "case": "1-06/anomaly-2",
+      "expected": "PASS",
+      "observed": "SKILL_MISMATCH",
+      "facts": {},
+      "modelCalls": 0,
+      "mcpCalls": 0,
+      "minioCalls": 0
+    },
+    {
+      "case": "1-06/anomaly-3",
+      "expected": "PASS",
+      "observed": "BINDING_REFERENCE_MISMATCH",
+      "facts": {},
+      "modelCalls": 0,
+      "mcpCalls": 0,
+      "minioCalls": 0
+    },
+    {
+      "case": "1-06/anomaly-4",
+      "expected": "PASS",
+      "observed": "RELEASE_MANIFEST_MISMATCH",
+      "facts": {},
+      "modelCalls": 0,
+      "mcpCalls": 0,
+      "minioCalls": 0
+    },
+    {
+      "case": "1-06/anomaly-5",
+      "expected": "PASS",
+      "observed": "RELEASE_OWNER_MISMATCH",
+      "facts": {},
+      "modelCalls": 0,
+      "mcpCalls": 0,
+      "minioCalls": 0
+    },
+    {
+      "case": "1-06/anomaly-6",
+      "expected": "PASS",
+      "observed": "GRANT_OWNER_MISMATCH",
+      "facts": {},
+      "modelCalls": 0,
+      "mcpCalls": 0,
+      "minioCalls": 0
+    },
+    {
+      "case": "1-06/anomaly-7",
+      "expected": "PASS",
+      "observed": "RESOURCE_REFERENCE_MISMATCH",
+      "facts": {},
+      "modelCalls": 0,
+      "mcpCalls": 0,
+      "minioCalls": 0
+    },
+    {
+      "case": "1-06/anomaly-8",
+      "expected": "PASS",
+      "observed": "BOOTSTRAP_MANIFEST_MISMATCH",
+      "facts": {},
+      "modelCalls": 0,
+      "mcpCalls": 0,
+      "minioCalls": 0
+    },
+    {
+      "case": "1-06/anomaly-9",
+      "expected": "PASS",
+      "observed": "INVALID_IDENTITY_AUDIT",
+      "facts": {},
+      "modelCalls": 0,
+      "mcpCalls": 0,
+      "minioCalls": 0
+    },
+    {
+      "case": "1-06/anomaly-10",
+      "expected": "PASS",
+      "observed": "INVALID_RECEIPT",
+      "facts": {},
+      "modelCalls": 0,
+      "mcpCalls": 0,
+      "minioCalls": 0
+    },
+    {
+      "case": "1-06/anomaly-11",
+      "expected": "PASS",
+      "observed": "MISSING_TARGET",
+      "facts": {},
+      "modelCalls": 0,
+      "mcpCalls": 0,
+      "minioCalls": 0
+    },
+    {
+      "case": "1-06/anomaly-12",
+      "expected": "PASS",
+      "observed": "MISSING_CURRENT_PHONE",
+      "facts": {},
+      "modelCalls": 0,
+      "mcpCalls": 0,
+      "minioCalls": 0
+    },
+    {
+      "case": "1-06/anomaly-13",
+      "expected": "PASS",
+      "observed": "MISSING_TARGET",
+      "facts": {},
+      "modelCalls": 0,
+      "mcpCalls": 0,
+      "minioCalls": 0
+    },
+    {
+      "case": "1-06/anomaly-14",
+      "expected": "PASS",
+      "observed": "MISSING_TARGET",
+      "facts": {},
+      "modelCalls": 0,
+      "mcpCalls": 0,
+      "minioCalls": 0
+    },
+    {
+      "case": "1-06/anomaly-15",
+      "expected": "PASS",
+      "observed": "MISSING_TARGET",
+      "facts": {},
+      "modelCalls": 0,
+      "mcpCalls": 0,
+      "minioCalls": 0
+    },
+    {
+      "case": "1-06/source-patrol",
+      "expected": "PASS",
+      "observed": "12 项只读巡检基线为零，完整但悬空系统来源命中",
+      "facts": {},
+      "modelCalls": 0,
+      "mcpCalls": 0,
+      "minioCalls": 0
+    },
+    {
+      "case": "1-06/legal-state-patrol",
+      "expected": "PASS",
+      "observed": "改密／撤权／停用后来源巡检仍为零",
+      "facts": {},
+      "modelCalls": 0,
+      "mcpCalls": 0,
+      "minioCalls": 0
+    },
+    {
+      "case": "1-06/image-profile",
+      "expected": "PASS",
+      "observed": "图片限额及存储引用随固定发布落库，独立读回与 manifest 中存储摘要一致",
+      "facts": {},
+      "modelCalls": 0,
+      "mcpCalls": 0,
+      "minioCalls": 0
+    },
+    {
+      "case": "1-06/image-policy-conflict",
+      "expected": "PASS",
+      "observed": "同内容返回原结果；同来源更改图片限额拒绝，不创建新版或覆盖原发布",
+      "facts": {},
+      "modelCalls": 0,
+      "mcpCalls": 0,
+      "minioCalls": 0
+    },
+    {
+      "case": "1-06/image-profile-anomaly",
+      "expected": "PASS",
+      "observed": "存储清单损坏即使重算发布正文摘要仍被独立关联核对检出；回滚后正常",
+      "facts": {},
+      "modelCalls": 0,
+      "mcpCalls": 0,
+      "minioCalls": 0
+    }
+  ],
+  "unit_checks": 40,
+  "synthetic_dataset_disposal": "entire owned temporary MySQL instance removed after verification",
+  "real_user_seeded": false,
+  "shared_resources_accessed": false,
+  "source_patrol_checks": 12,
+  "single_user_dataset": "issue29_single_user",
+  "anomaly_dataset": "issue29_anomaly_probes",
+  "manifest_sha256": "9396c9b99f6f4aa949aca5cdd7884f4dd5f60a56f0bb3f80589b6cbb5da87374",
+  "release_fingerprints": {
+    "manifestSha256": "1f5c9a4334e395f8eb1069e3a4df44ae982b7ca532f5cd5230aecb02264a78c8",
+    "configSha256": "889b6dd04ead6bbba019da2b483923e727076734c205019bd3561000a9cfed5d",
+    "dependencySha256": "910265e32bf1728022c7105563e7a018cbed801679df289a73950d7aabfd76c7"
+  },
+  "structure_sha256": "53611bdd2ea3578c30904be246dd686c1af4824a0ed03020456c06f2b046161b",
+  "sql_expected_rejections": 10,
+  "race_scenarios": 3,
+  "controlled_bootstrap_execution_tested": true,
+  "isolation": {
+    "bound_to_loopback": true,
+    "random_port": true,
+    "datadir_verified_before_ddl": true,
+    "default_client_config_and_login_path_bypassed": true
+  },
+  "contract": "Issue #29; #22 数据契约 §12/§13; #23 阶段1/06",
+  "case_count": 36,
+  "ddl_sha256": {
+    "db/schema/01_用户与管理员建表.sql": "d10b03a1d7a8c918856b63e20780a4883674fd03d63eda17ae566b1f799118c0",
+    "db/schema/02_会话运行消息建表.sql": "e6bfb1578156caf05ff6abd3e3f98252748d00bde3766c6c757edf6077718f56",
+    "db/schema/03_记忆控制建表.sql": "c4066d952684c4a1d87a1dd87d965c263b5891090ba6c599efc97999a68a137a",
+    "db/schema/04_会话运行资料建表.sql": "6b4a4ba064e0ddcb0ae0a4cff6132291821258dd8363271b7513f8c874f7aa64",
+    "db/schema/05_员工配置发布与授权建表.sql": "68f14e20ff3e201e4c3d0aa1c84cb6510274d8c1d0405837150ba1c7961f8e7a",
+    "db/schema/06_初始化来源与批次.sql": "6e41ce447073eef126b0398c0d8a5c41e5a11690b5c5830b9a058bce0bbbcf8e"
+  },
+  "implementation_sha256": "7994c1f5e80f6513ec61ba7abc2bd8e6ec1cf2a55d6ec5d42d541140fffb07fd",
+  "probe_sha256": "4a56bade0cffc55ee21074eb25d93e9fac892c287dbc7a5257a1cb6198dd145e",
+  "patrol_sha256": "77a37717ccde749db26a8a0ea7250c11d3dd8b0f39ff5f3e6c9dacadfd3354b8",
+  "isolated_lifecycle_sha256": "2a082740baa685e072d51ecbf026d964614f61b562d376dbf125881085f65fb5",
+  "ddl_snapshot_verified_unchanged": true,
+  "executed_at": "2026-10-26T08:51:41.283211+00:00",
+  "python_version": "3.14.3",
+  "pymysql_version": "1.2.0",
+  "bcrypt_version": "5.0.0",
+  "yaml_version": "6.0.3",
+  "temporary_instance_stopped_and_removed": true,
+  "real_acceptance": "PENDING: target database, trusted identity/credential source and complete real release inputs"
+}

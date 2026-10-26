@@ -1,0 +1,5 @@
+# 受控 SQL 初始化：运行时只有 YAML 解析器；mysql 连接由显式调用者提供。
+PyYAML==6.0.3
+# 隔离验收使用的 DB-API 驱动与合成密码编码器，不进入后端 Maven 构建。
+PyMySQL==1.2.0
+bcrypt==5.0.0

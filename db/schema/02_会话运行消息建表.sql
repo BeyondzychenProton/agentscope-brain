@@ -83,7 +83,7 @@ CREATE TABLE business_message (
     sender_kind VARCHAR(16) CHARACTER SET ascii COLLATE ascii_bin NOT NULL COMMENT 'USER 或 ASSISTANT',
     submission_key BINARY(16) NULL COMMENT 'Web 用户提交 UUID；员工回复为空',
     submission_sha256 BINARY(32) NULL COMMENT '稳定提交语义的 SHA-256；员工回复为空',
-    initial_run_id BIGINT UNSIGNED NULL COMMENT '用户输入首次创建的 RunId；插入 Run 后在同一事务回填',
+    initial_run_id BIGINT UNSIGNED NULL COMMENT '用户输入首次接纳所属 RunId；普通输入创建 Run 后回填，FORM 回答归原 Run',
     produced_by_run_id BIGINT UNSIGNED NULL COMMENT '产出完整员工回复的成功 RunId',
     accepted_at DATETIME(6) NOT NULL COMMENT '正式消息接纳或完成时间，UTC',
     gmt_create DATETIME(6) NOT NULL COMMENT '记录创建时间，UTC',
@@ -158,9 +158,10 @@ CREATE TABLE business_run (
     run_request_key BINARY(16) NOT NULL COMMENT '一次 Run 请求的 UUID 幂等键',
     request_sha256 BINARY(32) NOT NULL COMMENT '输入消息与执行动作的稳定语义摘要',
     retry_of_run_id BIGINT UNSIGNED NULL COMMENT '显式重试所接续的旧 RunId',
-    status VARCHAR(24) CHARACTER SET ascii COLLATE ascii_bin NOT NULL DEFAULT 'ACCEPTED' COMMENT 'Run 生命周期状态',
+    status VARCHAR(24) CHARACTER SET ascii COLLATE ascii_bin NOT NULL DEFAULT 'ACCEPTED' COMMENT 'Run 生命周期状态；WAITING_INPUT 仍属活动 Run',
     busy_session_id BIGINT UNSIGNED GENERATED ALWAYS AS
         (CASE WHEN status IN ('SUCCEEDED', 'FAILED', 'CANCELLED') THEN NULL ELSE session_id END) STORED COMMENT '同一 Session 活动 Run 的唯一键',
+    row_version BIGINT UNSIGNED NOT NULL DEFAULT 1 COMMENT 'expectedRunVersion 真实 CAS 依据，从 1 开始',
     started_at DATETIME(6) NULL COMMENT '开始执行时间，UTC',
     ended_at DATETIME(6) NULL COMMENT '终态时间，UTC',
     reconcile_reason VARCHAR(64) CHARACTER SET ascii COLLATE ascii_bin NULL COMMENT '状态或外部写操作待核对的受控原因码',
@@ -175,7 +176,8 @@ CREATE TABLE business_run (
     KEY idx_session_id_gmt_create (session_id, gmt_create),
     KEY idx_input_message_id (input_message_id),
     KEY idx_retry_of_run_id (retry_of_run_id),
-    CONSTRAINT chk_business_run_status CHECK (status IN ('ACCEPTED', 'RUNNING', 'WAITING_CONFIRMATION', 'CANCEL_REQUESTED', 'RECONCILING', 'SUCCEEDED', 'FAILED', 'CANCELLED')),
+    CONSTRAINT chk_business_run_status CHECK (status IN ('ACCEPTED', 'RUNNING', 'WAITING_INPUT', 'WAITING_CONFIRMATION', 'CANCEL_REQUESTED', 'RECONCILING', 'SUCCEEDED', 'FAILED', 'CANCELLED')),
+    CONSTRAINT chk_business_run_row_version CHECK (row_version > 0),
     CONSTRAINT chk_business_run_memory_snapshot CHECK (memory_generation_at_start > 0 AND memory_revision_at_start > 0 AND CHAR_LENGTH(TRIM(memory_policy_version)) > 0)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='一次数字员工执行及其恢复状态';
 

@@ -1,0 +1,152 @@
+{
+  "mysql_version": "8.0.45",
+  "tables": 30,
+  "expected_rejections": 0,
+  "positive_checks": 0,
+  "inspection_checks": 0,
+  "concurrency_checks": 0,
+  "framework_kv_tested": false,
+  "application_integration_tested": true,
+  "probes": {},
+  "cases": [
+    {
+      "case": "11-01-anonymous-me-denied",
+      "result": "PASS"
+    },
+    {
+      "case": "11-02-login-requires-csrf",
+      "result": "PASS"
+    },
+    {
+      "case": "11-03-unknown-and-wrong-password-identical",
+      "result": "PASS"
+    },
+    {
+      "case": "11-04-real-http-login-server-selected-user",
+      "result": "PASS"
+    },
+    {
+      "case": "11-05-cookie-no-cache-and-fixation",
+      "result": "PASS"
+    },
+    {
+      "case": "11-06-csrf-rotated-after-login",
+      "result": "PASS"
+    },
+    {
+      "case": "11-07-minimal-trusted-me",
+      "result": "PASS"
+    },
+    {
+      "case": "11-08-restricted-read:/api/sessions",
+      "result": "PASS"
+    },
+    {
+      "case": "11-08-restricted-read:/api/media/1/content",
+      "result": "PASS"
+    },
+    {
+      "case": "11-08-restricted-read:/api/sessions/1/events",
+      "result": "PASS"
+    },
+    {
+      "case": "11-08-restricted-read:/api/employees/1/capabilities",
+      "result": "PASS"
+    },
+    {
+      "case": "11-09-restricted-run-create",
+      "result": "PASS"
+    },
+    {
+      "case": "11-10-context-persisted-in-mysql",
+      "result": "PASS"
+    },
+    {
+      "case": "11-11-jvm-restart-restores-original-session-deadline",
+      "result": "PASS"
+    },
+    {
+      "case": "11-12-production-html:/login",
+      "result": "PASS"
+    },
+    {
+      "case": "11-12-production-html:/password/initial",
+      "result": "PASS"
+    },
+    {
+      "case": "11-12-production-html:/workbench",
+      "result": "PASS"
+    },
+    {
+      "case": "11-13-missing-auth-data-is-unavailable",
+      "result": "PASS"
+    },
+    {
+      "case": "11-14-login-data-failure-is-not-password-error",
+      "result": "PASS"
+    },
+    {
+      "case": "11-15-session-infrastructure-failure-controlled",
+      "result": "PASS"
+    },
+    {
+      "case": "11-16-security-version-revokes-old-context",
+      "result": "PASS"
+    },
+    {
+      "case": "11-17-logout-clears-current-context",
+      "result": "PASS"
+    },
+    {
+      "case": "11-18-startup-refuses-platform-index",
+      "result": "PASS"
+    },
+    {
+      "case": "11-18-startup-refuses-sdk-column",
+      "result": "PASS"
+    },
+    {
+      "case": "11-18-startup-refuses-session-table",
+      "result": "PASS"
+    },
+    {
+      "case": "11-18-startup-refuses-bootstrap-state",
+      "result": "PASS"
+    },
+    {
+      "case": "11-18-startup-refuses-skill-resource",
+      "result": "PASS"
+    },
+    {
+      "case": "11-19-legal-policy-state-does-not-break-readiness",
+      "result": "PASS"
+    },
+    {
+      "case": "11-20-disabled-user-cannot-login",
+      "result": "PASS"
+    },
+    {
+      "case": "11-21-production-host-cookie",
+      "result": "PASS"
+    },
+    {
+      "case": "11-23-no-model-mcp-minio-probes",
+      "result": "PASS"
+    },
+    {
+      "case": "11-24-no-business-or-credential-mutation",
+      "result": "PASS"
+    }
+  ],
+  "upstreamCalls": 0,
+  "packagedJarSha256": "4a82400232795c2641dc151d9b9b8eb7717fdad19a819e724deb6cc1da9dd775",
+  "sharedDatasetUsed": false,
+  "issue": 34,
+  "executedAt": "2026-10-26T14:55:45.700479+00:00",
+  "temporaryInstanceRemoved": true,
+  "realAcceptance": "Tracked separately in verification/issue-34/real-login.json; this run uses only synthetic data",
+  "platformTables": 30,
+  "nativeTables": 5,
+  "runtimeTotalTables": 35,
+  "syntheticDataRemovedWithOwnedInstance": true
+}

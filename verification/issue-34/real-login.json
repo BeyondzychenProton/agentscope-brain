@@ -1,0 +1,91 @@
+{
+  "issue": 34,
+  "database": "agentscope_brain",
+  "mysqlVersion": "8.4.11",
+  "startedAt": "2026-10-26T14:54:36.692314+00:00",
+  "jarSha256": "4a82400232795c2641dc151d9b9b8eb7717fdad19a819e724deb6cc1da9dd775",
+  "bootstrapManifestSha256": "7c3b58cb4b61a57905bec78e17a3821825c400785f0dfb0fd7147a008e70764f",
+  "cases": [
+    {
+      "case": "11-R01-actual-metadata-preset-and-config-ready",
+      "result": "PASS"
+    },
+    {
+      "case": "11-R02-anonymous-me-denied",
+      "result": "PASS"
+    },
+    {
+      "case": "11-R03-real-preset-password-authenticated",
+      "result": "PASS"
+    },
+    {
+      "case": "11-R04-dev-cookie-no-cache",
+      "result": "PASS"
+    },
+    {
+      "case": "11-R05-trusted-restricted-me",
+      "result": "PASS"
+    },
+    {
+      "case": "11-R06-real-jdbc-security-context-persisted",
+      "result": "PASS"
+    },
+    {
+      "case": "11-R07-restricted-direct-read:/api/sessions",
+      "result": "PASS"
+    },
+    {
+      "case": "11-R07-restricted-direct-read:/api/media/1/content",
+      "result": "PASS"
+    },
+    {
+      "case": "11-R07-restricted-direct-read:/api/sessions/1/events",
+      "result": "PASS"
+    },
+    {
+      "case": "11-R07-restricted-direct-read:/api/employees/1/capabilities",
+      "result": "PASS"
+    },
+    {
+      "case": "11-R08-restricted-run-create",
+      "result": "PASS"
+    },
+    {
+      "case": "11-R09-real-process-restart-restores-session",
+      "result": "PASS"
+    },
+    {
+      "case": "11-R10-real-browser-login-refresh-route-and-logout",
+      "result": "PASS"
+    },
+    {
+      "case": "11-R11-current-session-logout",
+      "result": "PASS"
+    },
+    {
+      "case": "11-R12-platform-identity-credential-release-rows-unchanged",
+      "result": "PASS"
+    },
+    {
+      "case": "11-R13-no-run-created",
+      "result": "PASS"
+    },
+    {
+      "case": "11-R14-initial-password-change-still-required",
+      "result": "PASS"
+    }
+  ],
+  "authenticatedAt": "2026-10-26T14:54:52.481277500Z",
+  "absoluteExpiresAt": "2026-10-27T14:54:52.481277500Z",
+  "sessionContextCountObserved": 1,
+  "finalSessionRows": 0,
+  "finalContextRows": 0,
+  "state": "VERIFIED",
+  "completedAt": "2026-10-26T15:02:58.515635+00:00",
+  "platformRowsUnchanged": true,
+  "platformRowCount": 22,
+  "realCredentialChanged": false,
+  "realPolicyFaultsInjected": false,
+  "businessWrites": 0,
+  "deployment": false
+}

@@ -37,7 +37,10 @@ class ApplicationAssemblyTest {
             var request = HttpRequest.newBuilder(URI.create("http://127.0.0.1:" + port + "/api/me"))
                     .timeout(Duration.ofSeconds(5)).GET().build();
             var response = client.send(request, HttpResponse.BodyHandlers.discarding());
-            assertThat(response.statusCode()).isEqualTo(403);
+            assertThat(response.statusCode()).isEqualTo(503);
+            assertThat(context.getBean(com.agentscope.brain.identity.internal.readiness.StartupReadiness.class).ready()).isFalse();
+            assertThat(context.getBean(org.springframework.boot.availability.ApplicationAvailability.class).getReadinessState())
+                    .isEqualTo(org.springframework.boot.availability.ReadinessState.REFUSING_TRAFFIC);
             assertThat(response.headers().allValues("Set-Cookie")).isEmpty();
         }
     }

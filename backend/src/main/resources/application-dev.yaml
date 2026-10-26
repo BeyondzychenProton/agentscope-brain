@@ -6,3 +6,10 @@ server:
       cookie:
         name: ASSESSION_DEV
         secure: false
+spring:
+  session:
+    timeout: 24h
+    jdbc:
+      initialize-schema: never
+      cleanup-cron: "-"
+      flush-mode: immediate

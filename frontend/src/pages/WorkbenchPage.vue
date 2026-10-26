@@ -1,0 +1,1 @@
+<template><main class="restricted-layout"><header class="topbar"><div class="brand"><span class="brand-mark">A</span> AgentScope</div></header><section class="restricted-card"><h1>数字员工工作台</h1><p class="muted">工作台功能尚未开放。</p></section></main></template>

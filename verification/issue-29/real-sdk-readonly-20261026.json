@@ -1,0 +1,18 @@
+{
+  "observedAtUtc" : "2026-10-26T08:54:35.991048200Z",
+  "sdkVersion" : "2.0.4",
+  "modelId" : "qwen3.8-max",
+  "modelApiStyle" : "openai-chat-completions",
+  "networkRequests" : 0,
+  "skillName" : "meeting-booking",
+  "skillVersion" : "1.1.0",
+  "skillMetadataMatchesPreparedSnapshot" : true,
+  "skillResourceCount" : 1,
+  "readOnlySaveAndDeleteRejected" : true,
+  "frozenFileSha256" : {
+    "SKILL.md" : "44c62c1becad775a1788d0399c1b8671ad672e5cd849e112c969deca72be5e4b",
+    "references/room-directory.md" : "1b340bd05f835796b987b21d11bd878b0f4c2fac742f6fcd3d6311aec648213e"
+  },
+  "passed" : true,
+  "limits" : [ "No live model invocation", "Not the formal MySQL ReleaseSkillRepository or application startup", "No SQL, meeting writes or object-storage operations" ]
+}

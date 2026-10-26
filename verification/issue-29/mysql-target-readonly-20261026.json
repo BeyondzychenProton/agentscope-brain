@@ -1,0 +1,14 @@
+{
+  "observedAtUtc": "2026-10-26T07:54:23.443107+00:00",
+  "targetDatabase": "agentscope_brain",
+  "scope": "read-only server and exact target schema inspection",
+  "sqlWrites": 0,
+  "server": {
+    "version": "8.4.11",
+    "version_comment": "MySQL Community Server - GPL",
+    "server_charset": "utf8mb4",
+    "server_collation": "utf8mb4_0900_ai_ci"
+  },
+  "targetExists": false,
+  "passed": true
+}

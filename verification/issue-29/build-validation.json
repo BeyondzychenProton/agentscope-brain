@@ -1,0 +1,20 @@
+{
+  "baseline_commit": "72068bd779d7a44850b7d853beaa5aa42a659431",
+  "java_version": "17.0.9",
+  "maven_version": "3.9.16",
+  "maven_verify": {
+    "tests": 14,
+    "failures": 0,
+    "errors": 0
+  },
+  "jar_sha256": "0b2822c5cd7b206cf2479d1b854a090dd93183b5426440f006203197fd38cc4a",
+  "jar_forbidden_resource_scan": "PASS",
+  "isolated_instance_guard_tests": 5,
+  "backend_layout_check": "PASS",
+  "shared_resources_accessed": false,
+  "committed": false,
+  "pushed": false,
+  "deployed": false,
+  "issue_progress_comment": "https://github.com/BeyondzychenProton/agentscope-brain/issues/29#issuecomment-6407529487",
+  "issue_state": "OPEN"
+}

@@ -1,0 +1,37 @@
+{
+  "caseGroup": "1-06/mcp-real-readonly",
+  "observedAtUtc": "2026-10-26T07:39:02.744387+00:00",
+  "endpoint": "https://cms-test.shsets.com/stage-api/mcp",
+  "requestedProtocol": "2025-03-26",
+  "identity": {
+    "displayName": "田沐阳",
+    "phoneMasked": "*******8157"
+  },
+  "source": "docs/对接文档/MCP身份查询联调说明 (2).md",
+  "scope": "HTTP MCP handshake, tools discovery and one explicit self identity lookup",
+  "cases": [
+    {
+      "id": "initialize",
+      "expected": "matching JSON-RPC result",
+      "elapsedMs": 5504
+    }
+  ],
+  "calls": {
+    "httpAttempts": 1,
+    "initialize": 1,
+    "notifications/initialized": 0,
+    "tools/list": 0,
+    "identity.resolve": 0,
+    "meetingWrites": 0,
+    "model": 0,
+    "sql": 0
+  },
+  "passed": false,
+  "errorClass": "URLError",
+  "completedAtUtc": "2026-10-26T07:39:08.249666+00:00",
+  "limitations": [
+    "Standalone HTTP probe; not formal Web authentication or SDK adapter acceptance",
+    "No booking/cancellation executed; available tool names do not prove write permission",
+    "No SQL initialization or model execution"
+  ]
+}

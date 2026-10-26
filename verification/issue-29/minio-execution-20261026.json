@@ -1,0 +1,15 @@
+{
+  "observedAtUtc" : "2026-10-26T09:22:43.392985100Z",
+  "bucket" : "agentscope-brain",
+  "objectPrefix" : "originals/",
+  "sdk" : "MinIO Java 9.0.3",
+  "makeBucketCalls" : 1,
+  "objectUploadsOrDeletes" : 0,
+  "bucketExists" : true,
+  "passed" : true,
+  "creationOutcome" : "CREATED",
+  "bucketPolicyPresent" : false,
+  "prefixObjectCountObserved" : 0,
+  "anonymousListHttpStatus" : 403,
+  "completedAtUtc" : "2026-10-26T09:22:44.051013400Z"
+}

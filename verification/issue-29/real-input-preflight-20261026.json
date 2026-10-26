@@ -1,0 +1,39 @@
+{
+  "sourceRef": "formal-web-phase1-initial-v1",
+  "bootstrapScope": "formal-web-phase1",
+  "employeeCode": "meeting-assistant",
+  "employeeName": "会议助手",
+  "modelId": "qwen3.8-max",
+  "images": {
+    "storageProfile": "minio-originals-v1",
+    "mimeTypes": [
+      "image/jpeg",
+      "image/png"
+    ],
+    "maxCount": 4,
+    "maxBytesPerImage": 5242880,
+    "maxBytesPerMessage": 10485760,
+    "maxPixelsPerImage": 16000000
+  },
+  "toolCount": 9,
+  "skillCount": 1,
+  "skillResourceCount": 1,
+  "storageProfileCount": 1,
+  "catalogueEntryCount": 26,
+  "stableInputSha256": "b79921492a1c4020f6dc405e3f6736463f14a362c87711095e7e3633977f552c",
+  "catalogueSha256": "3b8ac197eb3e336c78b50b62796c80bdc2bec0ef14e23214188f29e569ff3ffe",
+  "skillPackageSha256": "d1fd7506846051956f51297f0cd2a555a45e9b33facbf30141f727150ebbdf1c",
+  "catalogueReferencesResolved": true,
+  "bootstrapPreparePassed": true,
+  "capabilityEvidence": {
+    "mcpReadOnly": "passed",
+    "formalJavaAdapter": "not yet assembled",
+    "realModel": "not called",
+    "realImageRoundtrip": "not tested",
+    "realDatabase": "not created",
+    "realBucket": "not created",
+    "sdkOfflineLoad": "passed"
+  },
+  "externalCalls": 0,
+  "imagesPolicyUserConfirmed": true
+}

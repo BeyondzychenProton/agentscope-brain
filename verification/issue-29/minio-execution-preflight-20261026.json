@@ -1,0 +1,10 @@
+{
+  "observedAtUtc" : "2026-10-26T09:21:51.640926800Z",
+  "bucket" : "agentscope-brain",
+  "objectPrefix" : "originals/",
+  "sdk" : "MinIO Java 9.0.3",
+  "makeBucketCalls" : 0,
+  "objectUploadsOrDeletes" : 0,
+  "bucketExists" : false,
+  "passed" : true
+}

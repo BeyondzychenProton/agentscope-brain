@@ -9,3 +9,10 @@ backend/mvnw text eol=lf
 backend/mvnw.cmd text eol=crlf
 # Historical evidence fingerprints refer to original bytes, including line endings.
 archive/stage0-backend/** -text -whitespace
+# Vendor DDL is checked against the pinned JAR byte-for-byte (including CRLF).
+db/vendor/*.sql -text -whitespace
+# The third TSV field is intentionally empty when a metadata query expects no rows.
+backend/src/main/resources/readiness/*.tsv whitespace=-blank-at-eol
+# Preserve already-verified bootstrap SQL inputs, including their final blank line.
+db/schema/06_初始化来源与批次.sql whitespace=-blank-at-eof
+db/tests/12_初始化来源巡检.sql whitespace=-blank-at-eof

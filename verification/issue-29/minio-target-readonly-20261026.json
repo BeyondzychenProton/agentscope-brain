@@ -1,0 +1,12 @@
+{
+  "observedAtUtc": "2026-10-26T07:54:24.187102+00:00",
+  "targetAlias": "configured-minio",
+  "bucket": "agentscope-brain",
+  "prefix": "originals/",
+  "scope": "read-only exact bucket inspection",
+  "objectStorageWrites": 0,
+  "readRequests": 1,
+  "bucketExists": false,
+  "bucketLookupCode": "NoSuchBucket",
+  "passed": true
+}

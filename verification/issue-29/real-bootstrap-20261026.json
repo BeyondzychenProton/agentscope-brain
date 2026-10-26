@@ -1,0 +1,156 @@
+{
+  "observedAtUtc": "2026-10-26T09:23:42.932642+00:00",
+  "targetDatabase": "agentscope_brain",
+  "mysqlVersion": "8.4.11",
+  "tableCount": 30,
+  "ddlSha256": {
+    "db/schema/01_用户与管理员建表.sql": "d10b03a1d7a8c918856b63e20780a4883674fd03d63eda17ae566b1f799118c0",
+    "db/schema/02_会话运行消息建表.sql": "e6bfb1578156caf05ff6abd3e3f98252748d00bde3766c6c757edf6077718f56",
+    "db/schema/03_记忆控制建表.sql": "c4066d952684c4a1d87a1dd87d965c263b5891090ba6c599efc97999a68a137a",
+    "db/schema/04_会话运行资料建表.sql": "6b4a4ba064e0ddcb0ae0a4cff6132291821258dd8363271b7513f8c874f7aa64",
+    "db/schema/05_员工配置发布与授权建表.sql": "68f14e20ff3e201e4c3d0aa1c84cb6510274d8c1d0405837150ba1c7961f8e7a",
+    "db/schema/06_初始化来源与批次.sql": "6e41ce447073eef126b0398c0d8a5c41e5a11690b5c5830b9a058bce0bbbcf8e"
+  },
+  "structureSha256": "0b81a79d20f8c499eed05fb54bb19cd99fe9cad6f8fe2b338059c9dc485564df",
+  "sourceRef": "formal-web-phase1-initial-v1",
+  "bootstrapScope": "formal-web-phase1",
+  "batchStatus": "APPLIED",
+  "batchId": "1",
+  "manifestSha256": "7c3b58cb4b61a57905bec78e17a3821825c400785f0dfb0fd7147a008e70764f",
+  "stableInputSha256": "b79921492a1c4020f6dc405e3f6736463f14a362c87711095e7e3633977f552c",
+  "resultReferences": {
+    "skills": [
+      {
+        "id": "1",
+        "resources": [
+          "1"
+        ]
+      }
+    ],
+    "userId": "1",
+    "draftId": "1",
+    "grantId": "1",
+    "phoneId": "1",
+    "bindings": [
+      {
+        "id": "1",
+        "version": "meeting-mcp.calendar.find_slots.v1"
+      },
+      {
+        "id": "2",
+        "version": "meeting-mcp.calendar.get_freebusy.v1"
+      },
+      {
+        "id": "3",
+        "version": "meeting-mcp.calendar.verify.v1"
+      },
+      {
+        "id": "4",
+        "version": "meeting-mcp.department.search.v1"
+      },
+      {
+        "id": "5",
+        "version": "meeting-mcp.identity.resolve.v1"
+      },
+      {
+        "id": "6",
+        "version": "meeting-mcp.meeting.cancel.v1"
+      },
+      {
+        "id": "7",
+        "version": "meeting-mcp.meeting.list_mine.v1"
+      },
+      {
+        "id": "8",
+        "version": "meeting-mcp.room.reserve.v1"
+      },
+      {
+        "id": "9",
+        "version": "meeting-mcp.room.search.v1"
+      }
+    ],
+    "releaseId": "1",
+    "employeeId": "1",
+    "inputSha256": "b79921492a1c4020f6dc405e3f6736463f14a362c87711095e7e3633977f552c",
+    "credentialId": "1",
+    "storageProfiles": [
+      {
+        "id": "minio-originals-v1",
+        "sha256": "d882317e49442ad13b98aa829af8e89e0ca1df5260d82e2d310ca34c2d249f6c"
+      }
+    ],
+    "identityAuditIds": [
+      "1",
+      "2"
+    ],
+    "configurationAuditId": "1",
+    "credentialRefVersion": "issue29-initial-credential/v1"
+  },
+  "rowCounts": {
+    "bootstrap_batch": 1,
+    "business_message": 0,
+    "business_run": 0,
+    "business_session": 0,
+    "conversation_audit_event": 0,
+    "digital_employee": 1,
+    "employee_configuration_audit_event": 1,
+    "employee_draft": 1,
+    "employee_release": 1,
+    "employee_release_skill": 1,
+    "employee_release_skill_resource": 1,
+    "employee_use_grant": 1,
+    "fixed_admin_assignment": 0,
+    "identity_audit_event": 2,
+    "meeting_identity_check_attempt": 0,
+    "meeting_identity_check_state": 0,
+    "memory_profile": 0,
+    "memory_update_job": 0,
+    "message_content_block": 0,
+    "message_media": 0,
+    "operation_confirmation": 0,
+    "phone_reservation": 1,
+    "platform_user": 1,
+    "run_progress": 0,
+    "session_upgrade_attempt": 0,
+    "tool_binding_revision": 9,
+    "tool_operation": 0,
+    "user_credential": 1,
+    "workspace_entry": 0,
+    "workspace_snapshot_reference": 0
+  },
+  "ordinaryUserCount": 1,
+  "administratorCount": 0,
+  "firstPasswordChangeRequired": true,
+  "initialCredentialVerifiedWithoutLogging": true,
+  "grantStatus": "ACTIVE",
+  "employeeName": "会议助手",
+  "independentReadonlyVerification": true,
+  "repeatExecutedInReadonlyTransaction": true,
+  "sameSourceReturnedOriginalResult": true,
+  "allRowsUnchangedAfterRepeat": true,
+  "sourcePatrol": {
+    "source_1": 0,
+    "source_2": 0,
+    "source_3": 0,
+    "source_4": 0,
+    "source_5": 0,
+    "source_6": 0,
+    "source_7": 0,
+    "source_8": 0,
+    "source_9": 0,
+    "source_10": 0,
+    "receipt_scope": 0,
+    "batch_result": 0
+  },
+  "modelCalls": 0,
+  "mcpCalls": 0,
+  "meetingWrites": 0,
+  "objectUploadsOrDeletes": 0,
+  "unknownCommitReconciled": false,
+  "passed": true,
+  "limitations": [
+    "No formal Web login/startup verification",
+    "No SDK or Spring Session native tables initialized",
+    "Fault and concurrency cases use separate synthetic datasets, not this real user dataset"
+  ]
+}

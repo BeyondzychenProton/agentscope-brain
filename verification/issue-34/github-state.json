@@ -1,0 +1,13 @@
+{
+  "number": 34,
+  "title": "阶段 1 / 11：普通平台用户从真实 Web 登录后进入受限改密页",
+  "state": "CLOSED",
+  "stateReason": "COMPLETED",
+  "closedAt": "2026-10-26T15:06:10Z",
+  "completionComment": "https://github.com/BeyondzychenProton/agentscope-brain/issues/34#issuecomment-6419406344",
+  "checkedAcceptanceCriteria": 7,
+  "sourceMapsModified": false,
+  "committed": false,
+  "pushed": false,
+  "deployed": false
+}

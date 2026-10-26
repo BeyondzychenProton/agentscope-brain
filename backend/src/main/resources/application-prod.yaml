@@ -5,3 +5,10 @@ server:
       cookie:
         name: __Host-ASSESSION
         secure: true
+spring:
+  session:
+    timeout: 24h
+    jdbc:
+      initialize-schema: never
+      cleanup-cron: "-"
+      flush-mode: immediate

@@ -1,0 +1,32 @@
+{
+  "observedAtUtc": "2026-10-26T09:00:38.489940+00:00",
+  "baselineCommit": "72068bd779d7a44850b7d853beaa5aa42a659431",
+  "isolatedMySqlCases": 36,
+  "inputChecks": 40,
+  "backendTests": {
+    "tests": 16,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "backendLayoutCheck": "PASS",
+  "productionJarSha256": "72cd3b87a8d801f24e20f31574a1fb4365fb313542b6565a2c578c653f212674",
+  "agentscopeArtifactsInJar": [
+    "agentscope-core-2.0.4.jar",
+    "agentscope-extensions-jdbc-2.0.4.jar",
+    "agentscope-extensions-model-dashscope-2.0.4.jar",
+    "agentscope-extensions-model-openai-2.0.4.jar",
+    "agentscope-harness-2.0.4.jar"
+  ],
+  "privateInputsAndTestsExcludedFromJar": true,
+  "realSdkOfflineLoad": "PASS",
+  "sharedSqlWrites": 0,
+  "objectStorageWrites": 0,
+  "modelCalls": 0,
+  "meetingWrites": 0,
+  "limitations": [
+    "Real SQL dataset and bucket not created",
+    "Formal startup/authentication and MySQL ReleaseSkillRepository pending their stages",
+    "No real model or image roundtrip"
+  ]
+}

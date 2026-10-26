@@ -1,0 +1,143 @@
+{
+  "caseGroup": "1-06/mcp-real-readonly",
+  "observedAtUtc": "2026-10-26T07:40:13.450574+00:00",
+  "endpoint": "https://cms-test.shsets.com/stage-api/mcp",
+  "requestedProtocol": "2025-03-26",
+  "networkRoute": "direct intranet connection; default TLS verification enabled",
+  "identity": {
+    "displayName": "田沐阳",
+    "phoneMasked": "*******8157"
+  },
+  "source": "docs/对接文档/MCP身份查询联调说明 (2).md",
+  "scope": "HTTP MCP handshake, tools discovery and one explicit self identity lookup",
+  "cases": [
+    {
+      "id": "initialize",
+      "expected": "matching JSON-RPC result",
+      "httpStatus": 200,
+      "contentType": "application/json",
+      "passed": true,
+      "elapsedMs": 238
+    },
+    {
+      "id": "notifications/initialized",
+      "expected": "accepted notification",
+      "httpStatus": 202,
+      "contentType": "text/plain",
+      "passed": true,
+      "elapsedMs": 86
+    },
+    {
+      "id": "tools/list",
+      "expected": "matching JSON-RPC result",
+      "httpStatus": 200,
+      "contentType": "text/event-stream",
+      "passed": true,
+      "elapsedMs": 111
+    },
+    {
+      "id": "identity.resolve",
+      "expected": "documented identity result with one exact match for previously confirmed name and phone",
+      "httpStatus": 200,
+      "contentType": "text/event-stream",
+      "passed": true,
+      "elapsedMs": 119,
+      "businessStatus": "CANDIDATES"
+    }
+  ],
+  "calls": {
+    "httpAttempts": 4,
+    "initialize": 1,
+    "notifications/initialized": 1,
+    "tools/list": 1,
+    "identity.resolve": 1,
+    "meetingWrites": 0,
+    "model": 0,
+    "sql": 0
+  },
+  "negotiatedProtocol": "2025-03-26",
+  "serverInfo": {
+    "name": "mtx-mcp-server",
+    "version": "1.0.0"
+  },
+  "toolsListSha256": "dfa188ad45ac92a12dbcac27f6a3663bbdbf82a84d9668d2fc21ed34a054b3fb",
+  "tools": [
+    {
+      "name": "department.search",
+      "definitionSha256": "774744233b6424b06aa27bbf63575a545723b00c52d97766b82f0ea38a500262",
+      "inputSchemaSha256": "3e1eb75af2abb12a035cdaabba9b9e5a985730f556961f2a3707f2719e3e743f"
+    },
+    {
+      "name": "identity.resolve",
+      "definitionSha256": "0e56bfe9462deae5c718ac36cf6bf89a09abec8021a3367427061e0aa6cfd22f",
+      "inputSchemaSha256": "2ac03f638bba324b65ad9d57a10e5789e2e7e9b72b7f022fa27fc67a1fcea15f"
+    },
+    {
+      "name": "calendar.find_slots",
+      "definitionSha256": "69c7b3704c8511e1e00485c5cbe0b617084996e82eda106ef39183a2b4e58a5e",
+      "inputSchemaSha256": "548d3aa60a4f2821c9563fe1a2a0154615f61c1f9f6d81566f0455c153a76e3d"
+    },
+    {
+      "name": "calendar.get_freebusy",
+      "definitionSha256": "14344dceb98b079151e3f2d1f2854d73814fa458433b671bdf2c158869941ed8",
+      "inputSchemaSha256": "e7f008a34c3bee665d36c56760aede4d98b83d2f27c90d963206071496a9e17f"
+    },
+    {
+      "name": "calendar.verify",
+      "definitionSha256": "d8a1a4228f784c0f127d50fefa90bba06b4346b77efd33e3cd573afd4c4f0ed6",
+      "inputSchemaSha256": "0bc854c38380e16b213e573466775b29d3da1ce1334df0d8ea034011a1c58842"
+    },
+    {
+      "name": "meeting.list_mine",
+      "definitionSha256": "38cd627e7e120f28e1b4678a113b4d2f742064d3e43934c908f3e512a131815a",
+      "inputSchemaSha256": "dc9d65d23aacf34c00911ea1d25c8b5ff81ffeaa2a7599814ac83ddc9da4f49e"
+    },
+    {
+      "name": "meeting.cancel",
+      "definitionSha256": "aae7161bd0b7cb8bc7ab8736ffc25c9d56b1217fac8b6954d49fddeece0646f6",
+      "inputSchemaSha256": "4d21a8fe19eac794aa72def510d076dc22aaed05393a126445a081e5c8a3d194"
+    },
+    {
+      "name": "room.reserve",
+      "definitionSha256": "54835e1759c74a8c3fef8d2043614fd2dd2495a0203860297fa8f0c5ecc088ec",
+      "inputSchemaSha256": "ee0816a0a224479bbaca4183d306bbca8d98621ddaf3e2778d46606bd03ab440"
+    },
+    {
+      "name": "room.search",
+      "definitionSha256": "bdd23aabc5fd86005f22d4b5582f1e4d579ed4f28105ace01aebe1191e4922df",
+      "inputSchemaSha256": "c69bf5e779c3594f2d44b91872ee64cec95b7ba6e8a5973d428c87e6276ffa7e"
+    }
+  ],
+  "toolsListComplete": true,
+  "identityLookup": {
+    "resolutionStatus": "CANDIDATES",
+    "total": 2,
+    "nameAndPhoneMatch": true,
+    "exactMatchCount": 1,
+    "selectionSource": "previous explicit user confirmation of name and phone"
+  },
+  "passed": true,
+  "completedAtUtc": "2026-10-26T07:40:14.006082+00:00",
+  "limitations": [
+    "Standalone HTTP probe; not formal Web authentication or SDK adapter acceptance",
+    "No booking/cancellation executed; available tool names do not prove write permission",
+    "No SQL initialization or model execution"
+  ],
+  "assessmentCorrection": {
+    "initialClientAssertion": "incorrectly required RESOLVED for a name-only query",
+    "correctedRule": "CANDIDATES is documented; previously confirmed exact name/phone must appear exactly once",
+    "method": "reassessed saved original response; no additional HTTP request",
+    "assessedAtUtc": "2026-10-26T07:41:26.358121+00:00"
+  },
+  "diagnostics": {
+    "initialAuthenticatedProxyAttempt": 1,
+    "unauthenticatedProxyGetAttempt": 1,
+    "proxyFailure": "SSLEOFError before any HTTP response",
+    "dnsAddresses": [
+      "172.16.1.14"
+    ],
+    "directTlsVerification": "enabled",
+    "totalNetworkAttemptsIncludingDiagnostics": 6,
+    "successfulServerHttpResponses": 4
+  }
+}
