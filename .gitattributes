@@ -3,3 +3,9 @@
 
 # Keep imported reference HTML byte-for-byte identical to its source.
 reference/正式Web应用/*.html -whitespace
+
+# Maven Wrapper scripts must keep the line endings expected by their shells.
+backend/mvnw text eol=lf
+backend/mvnw.cmd text eol=crlf
+# Historical evidence fingerprints refer to original bytes, including line endings.
+archive/stage0-backend/** -text -whitespace

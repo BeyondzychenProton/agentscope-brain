@@ -1,0 +1,38 @@
+[
+  {
+    "file": "核验本机Jdk与官方制品.ps1",
+    "sha256": "10d21747ec6864f23c4b3e108bd8372d907ba69dc6ee062eb5ee5fdd7617dce2"
+  },
+  {
+    "file": "blocking-after-close.json",
+    "sha256": "bafe1513fb09fc736fe1a0ccfb62f71ae0696b47b448414cf5cb015018637ed2"
+  },
+  {
+    "file": "final-verification.json",
+    "sha256": "fc4d1d984b824ef2bf5c62cbbf0e2588206c61abb037cdaca04da44774decb9e"
+  },
+  {
+    "file": "installed-jdk-files.json",
+    "sha256": "5611e2b1e34ee13439615bf7fb0c3c572bd8b0927c0406e5646f8f86489e1b53"
+  },
+  {
+    "file": "issue24-after-close.json",
+    "sha256": "db333981480ae199d6de95941f202eef270daa458a2c76e1c2d9769023f00fe4"
+  },
+  {
+    "file": "issue24-before-update.json",
+    "sha256": "73522ce32c386aa0d83d8630c196430643710a7495f9e7a24ae4cb82650150d6"
+  },
+  {
+    "file": "jdk-artifact-verification.json",
+    "sha256": "1d62b2b92991160e102abcd15b16fa75cc64e1e24a278a1ea87fc9f214943915"
+  },
+  {
+    "file": "official-jdk-sha256.txt",
+    "sha256": "8482321514f1b91b3eb3ff768eb30489590164f641cdca2e6ff2801d9e94405e"
+  },
+  {
+    "file": "source-comparison.json",
+    "sha256": "91ef41ec54b0ee6a87a94293011f70ba92e0be77ff828f403d3183fb37fdc44a"
+  }
+]

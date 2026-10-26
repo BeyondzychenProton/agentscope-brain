@@ -32,3 +32,11 @@ logs/
 .codex-local/
 __pycache__/
 *.py[cod]
+
+# Backend private resource handoff and runtime configuration
+/backend/resource.txt
+/backend/config/*.yaml
+/backend/config/*.yml
+/backend/config/*.properties
+/backend/config/*.env
+/backend/config/*.local

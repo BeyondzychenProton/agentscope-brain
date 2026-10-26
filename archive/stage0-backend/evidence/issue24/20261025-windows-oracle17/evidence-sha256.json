@@ -1,0 +1,138 @@
+[
+  {
+    "file": "autoconfiguration.txt",
+    "sha256": "a49514d187e63290734abf7d375debb4d9ae69ec9ae9ab38595a2dbaf6e8fef5"
+  },
+  {
+    "file": "build-distribution.json",
+    "sha256": "b2edb9f33580b7324a7ed63dfd251c3f3b27ad1f033ccea3965aac147a459093"
+  },
+  {
+    "file": "bytecode.json",
+    "sha256": "662233ad15a5e39ab6cb248e6e150ff021eedb346b28570c6a2cd61b648c29cd"
+  },
+  {
+    "file": "classpath-command.txt",
+    "sha256": "41d7cb73823a17582d1b3d47a3911afcd8d24c6dd4d310b09c5bad4e5a360f90"
+  },
+  {
+    "file": "classpath.txt",
+    "sha256": "838b5f1a33f5849e78adc418c7a9ee8af8c8168c277abefff68a531f2544bcec"
+  },
+  {
+    "file": "clean-verify.txt",
+    "sha256": "dd031b6d3e1abced3d66b96b78cd8d00d2994d7ef2d1705e73e1626fdba0d9c4"
+  },
+  {
+    "file": "commands.json",
+    "sha256": "0531c80cc0ed9e7bfb4c4f5cc7b16526b16ce10475551dd7223ad1ed53bec8ea"
+  },
+  {
+    "file": "dependency-sha256.json",
+    "sha256": "1b7b5f68ee5736309bce9e9b08fce0e2ce7d0d4177715379cf2ecd8d824e3cca"
+  },
+  {
+    "file": "dependency-tree-command.txt",
+    "sha256": "c9b8b9e0b49caaf92103039247fbc7cc1dc5d8fd5c605634008f02d6ce044d27"
+  },
+  {
+    "file": "dependency-tree.txt",
+    "sha256": "929b9d193dc8e6ecdb06d58b102156018474c9d02b66cf5f3496242b27f7657a"
+  },
+  {
+    "file": "effective-pom-command.txt",
+    "sha256": "83770756cfcba40a0d46a15d6674d06b834057b5994ec1bdc896be31f2cf081e"
+  },
+  {
+    "file": "effective-pom.xml",
+    "sha256": "f17981e29a160da88c4abfc6358c1503b0fd963e1bb9ec654488c95834876194"
+  },
+  {
+    "file": "environment.json",
+    "sha256": "6e9dc17d75ab9d9de684d8f8d7603fdc7b9e7e947dc6587776249bf907951940"
+  },
+  {
+    "file": "final-verification.json",
+    "sha256": "168381a82b3c7a9c65168e6219324024d09d83d92d12b11f6bddd91bd1686d0c"
+  },
+  {
+    "file": "issue24-after-result.json",
+    "sha256": "73522ce32c386aa0d83d8630c196430643710a7495f9e7a24ae4cb82650150d6"
+  },
+  {
+    "file": "issue24-before-result.json",
+    "sha256": "fa1f862f5a9fe6f71690d3d0978cb36634d6a217deb7bf0293b319fef0764d9b"
+  },
+  {
+    "file": "issue24-blocked-by.json",
+    "sha256": "a5338d955b09046ec0b16f3a9625b7955c763aae07dc722e474e6078745f932f"
+  },
+  {
+    "file": "issue24-blocking.json",
+    "sha256": "bafe1513fb09fc736fe1a0ccfb62f71ae0696b47b448414cf5cb015018637ed2"
+  },
+  {
+    "file": "java-version.txt",
+    "sha256": "1fb1eb8f7d558f88d490ea885a0db08682d7451b8c79db7e708192bdfbfa0caa"
+  },
+  {
+    "file": "jdk-release.txt",
+    "sha256": "252f064aa016573cd587a7397df6804301cff411498a052ed44847fd443ea41b"
+  },
+  {
+    "file": "maven-version.txt",
+    "sha256": "bd317ac7028b7d59169df07712512434dcd04e37f0a254b922709927cd23dfc5"
+  },
+  {
+    "file": "rebuild-package.txt",
+    "sha256": "1f33837b982e40f3bac6640218ac92c0bfbf8b5849e1831b14e174a44dfb58f6"
+  },
+  {
+    "file": "reproducible-jar.json",
+    "sha256": "0179adcebd9901f2e7930cba390d3ec1565588427914f2bf7425ecf318ff958f"
+  },
+  {
+    "file": "review-fix-sha256.json",
+    "sha256": "970197397ea1a0a571314f827420edb603624d2b7ee495ac9e203c0525f61a98"
+  },
+  {
+    "file": "runtime-class-origins.tsv",
+    "sha256": "2b0449c9bfb5fbec5d81de92ab1b5f4940f48e7ff27b1ad11ba16856f8e6ac12"
+  },
+  {
+    "file": "source-sha256.json",
+    "sha256": "79d29d75077f3f138fb5dea8ec405b977e2b7d46c470154f0a8781969035dc55"
+  },
+  {
+    "file": "target-jdk-assets.json",
+    "sha256": "a248103bdf79f710dd078498ebe573680306cf7354a5d267bde442c048a08cb6"
+  },
+  {
+    "file": "tdd-app-red.txt",
+    "sha256": "cb5ba1a39bb48d34e5c4a3a5bdb7831103e5c7fe8f1545585679e724562c7e7d"
+  },
+  {
+    "file": "TEST-com.agentscope.brain.baseline.IsolatedAssemblyTest.xml",
+    "sha256": "6881dab5b99d841cd5623a37408ea06638fa905801b1fbb99fff67d2d908f1ba"
+  },
+  {
+    "file": "TEST-com.agentscope.brain.validation.ClosedDraft7ValidatorTest.xml",
+    "sha256": "2d9a83e7beedfbad8e60a890eb628019bebe2636c57eadb0490bb01cef9fbb32"
+  },
+  {
+    "file": "TEST-com.agentscope.brain.validation.SdkToolValidatorTest.xml",
+    "sha256": "8fff1188c823472091db413fa0045762a5cbb0676b392f3ec2370601ceb74503"
+  },
+  {
+    "file": "test-results.json",
+    "sha256": "e86e9869a5882aa07253a1325c69b1c80722934126917075d1c37e1cd8895009"
+  },
+  {
+    "file": "wrapper-bad-checksum-rejected.txt",
+    "sha256": "4ca2dfb0877fdab76cd1326af3270bccd1583371ade12084e058bfc7d4cd0220"
+  },
+  {
+    "file": "wrapper-fresh-success.txt",
+    "sha256": "2d2a8be96633405830d70bbee0e8c966d50ee8f3840133dd52e8bfb406d88a95"
+  }
+]

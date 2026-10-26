@@ -1,0 +1,16 @@
+# 自动化测试独立装配；不导入 application.yaml 或本地共用资源配置。
+spring:
+  datasource:
+    url: jdbc:h2:mem:backend-assembly;DB_CLOSE_DELAY=0
+    username: sa
+    password: ""
+  sql:
+    init:
+      mode: never
+  session:
+    jdbc:
+      initialize-schema: never
+      cleanup-cron: "-"
+server:
+  address: 127.0.0.1
+  port: 0

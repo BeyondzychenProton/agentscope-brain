@@ -1,0 +1,15 @@
+{
+  "capturedAt": "2026-10-25T22:30:30.6046764+08:00",
+  "selectedJdk": "Oracle JDK 17.0.9+11-LTS-201, Windows x64",
+  "authorization": "User accepted existing JDK 17 and authorized updating Issue 24",
+  "archiveUrl": "https://download.oracle.com/java/17/archive/jdk-17.0.9_windows-x64_bin.zip",
+  "checksumUrl": "https://download.oracle.com/java/17/archive/jdk-17.0.9_windows-x64_bin.zip.sha256",
+  "archiveLength": 180797351,
+  "officialSha256": "68852a21156dc51471e5692c0c4d0b6177a3e7fefa2da4950a14e8a13e326d5c",
+  "actualArchiveSha256": "68852a21156dc51471e5692c0c4d0b6177a3e7fefa2da4950a14e8a13e326d5c",
+  "installedJdk": "D:\\code environment\\jdk\\jdk-17.0.9\\",
+  "comparedFiles": 416,
+  "mismatchedFiles": 0,
+  "unexpectedLocalFiles": [],
+  "allFilesMatch": true
+}

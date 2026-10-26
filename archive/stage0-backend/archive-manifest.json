@@ -1,0 +1,350 @@
+[
+  {
+    "path": ".mvn/wrapper/maven-wrapper.properties",
+    "sha256": "51b221ede4e074d19bb44d6d485bb7b298e77874572a09697aba0a9e234e0745"
+  },
+  {
+    "path": "mvnw",
+    "sha256": "cae96cef89ebea3531221f4ae17c23cf8edf67d00eae8306d4186ae1bbed4d02"
+  },
+  {
+    "path": "mvnw.cmd",
+    "sha256": "46eedb8419bd14fe70d5bb2916d7b6f51806e51b39d5b76a42610384ca929c1c"
+  },
+  {
+    "path": "pom.xml",
+    "sha256": "8232df1d611ada5d2044bf1f02d3b8810804281e134fdb5aafd28bc98e6c75d0"
+  },
+  {
+    "path": "README.md",
+    "sha256": "f2014fd0e27ddbb6a8ef3943df8fa9420cb37fb97d97acac42badcf52c30db44"
+  },
+  {
+    "path": "src/main/java/com/agentscope/brain/interaction/PendingInteractionProbe.java",
+    "sha256": "9136900bcbb3c1e782676def841618c02efd32b6370f6584e97e957b0c4a20ab"
+  },
+  {
+    "path": "src/main/java/com/agentscope/brain/interaction/PendingTerminationProbe.java",
+    "sha256": "dee17d42a07036d483e26ad148542a8bff7ca7916c8fa66441710190850d61a2"
+  },
+  {
+    "path": "src/main/java/com/agentscope/brain/memoryseam/ControlledKvStore.java",
+    "sha256": "dcfeb75fc6f92898b2dffa07592de6ab90463ada9a8e6acc2fb5a6f4cf4002ce"
+  },
+  {
+    "path": "src/main/java/com/agentscope/brain/memoryseam/DiaryKeys.java",
+    "sha256": "5210bab8f0311628d3345325302b4690a92b3903124dfada8728ab92aa5c0253"
+  },
+  {
+    "path": "src/main/java/com/agentscope/brain/memoryseam/DocumentPresence.java",
+    "sha256": "c0d49f26f3994ed62cd19507211a728d49e85a217d05f9fd5c938a6d8b7745d8"
+  },
+  {
+    "path": "src/main/java/com/agentscope/brain/memoryseam/KvDocuments.java",
+    "sha256": "ddf53c6187bcee0be64ee351414df0a8c8fffe463914f75b27e08f1d27e8e17b"
+  },
+  {
+    "path": "src/main/java/com/agentscope/brain/memoryseam/KvNamespaces.java",
+    "sha256": "5e66bb300413e3ded6b9284c0a34a6883f7f3737cd2eb8aeeb6b88c7cee16988"
+  },
+  {
+    "path": "src/main/java/com/agentscope/brain/memoryseam/PlatformNamespaceFactory.java",
+    "sha256": "2528980750e0c5739c3d49cf49c6f15bbff18f8511ec2525e1fe4bc40852f7e9"
+  },
+  {
+    "path": "src/main/java/com/agentscope/brain/memoryseam/SdkLayout.java",
+    "sha256": "45793a930b7eba61eb62595c46659478b312d6c85235ce8d189d81ac56046100"
+  },
+  {
+    "path": "src/main/java/com/agentscope/brain/memoryseam/TrustedBinding.java",
+    "sha256": "584b5687c5c6713259f35685f52d7462c58134cd47ee597b4d0991c705e0d5fb"
+  },
+  {
+    "path": "src/main/java/com/agentscope/brain/memoryseam/WriteAdmission.java",
+    "sha256": "3be3a4699d2818f2acfa1a9dca3359b59979bb111d01708e366887df81b0f8ab"
+  },
+  {
+    "path": "src/main/java/com/agentscope/brain/state/BoundAgentStateProbe.java",
+    "sha256": "6a8be84eb8a0edda851ce7dc51e83d22d8835def1b1c42bdac26bf7401bf699e"
+  },
+  {
+    "path": "src/main/java/com/agentscope/brain/validation/ClosedDraft7Validator.java",
+    "sha256": "891dbc3b50264c0855a902a5c556e25d29ff9df0c8f81c9138c10d39ceb08d35"
+  },
+  {
+    "path": "src/test/java/com/agentscope/brain/baseline/IsolatedAssemblyTest.java",
+    "sha256": "c6894044aed2a1dc5004d03e003dd61ce5d4b4bc221133932b29aff70cb8905c"
+  },
+  {
+    "path": "src/test/java/com/agentscope/brain/interaction/PendingInteractionProbeTest.java",
+    "sha256": "1e990c54f0af02021d8a6e99b4b08b2813813426a9e1be9f92477db40d3fba06"
+  },
+  {
+    "path": "src/test/java/com/agentscope/brain/interaction/PendingTerminationProbeTest.java",
+    "sha256": "e64a7e02f05fcd07bfda727aae12149d88460fa343ea99ad1740fe5dc98425fb"
+  },
+  {
+    "path": "src/test/java/com/agentscope/brain/memoryseam/MemorySeamTest.java",
+    "sha256": "f826f1e891762eba8088b44ca20e9c7b1ba3bf67675dabd31f89e8bafe583466"
+  },
+  {
+    "path": "src/test/java/com/agentscope/brain/state/BoundAgentStateProbeTest.java",
+    "sha256": "7b5bb13d7080224268186622161b403ff5d9e51ae5972bb6512441ffb0c2e9b0"
+  },
+  {
+    "path": "src/test/java/com/agentscope/brain/state/IsolatedMysql.java",
+    "sha256": "fb2b1afc73705fa8fa97f594a895554392fda0e52348a444bd55a57d43129262"
+  },
+  {
+    "path": "src/test/java/com/agentscope/brain/state/SessionStateSchemaTest.java",
+    "sha256": "1d962ca59d3446168e9dd822ddf6ecb23394c4e31f85e88b903f5142ed7a5e55"
+  },
+  {
+    "path": "src/test/java/com/agentscope/brain/validation/ClosedDraft7ValidatorTest.java",
+    "sha256": "e9e57910245b530b765a74631469e1f00bc8a5a8da4751e6799870ff79cd6736"
+  },
+  {
+    "path": "src/test/java/com/agentscope/brain/validation/SdkToolValidatorTest.java",
+    "sha256": "d47afdf9535b4ef866baa2cdc1f62bdc0aa0a13ae0f3ee12e51ceb59af4511e5"
+  },
+  {
+    "path": "scripts/验证依赖基线.ps1",
+    "sha256": "442206f59b2bee35abe8c2f9bc5fe4a99706243b5b13e0617d8581049d371984"
+  },
+  {
+    "path": "evidence/issue24/代码审查.md",
+    "sha256": "920fe4a7690fcf9da416a86ee4cdc0ccfac1a5a7f613b6fa1698671fff85d9bf"
+  },
+  {
+    "path": "evidence/issue24/验收记录.md",
+    "sha256": "2e05b2cbee9642fc43599b3af1bcd66a32fb56737c431430f48d96612145e2f5"
+  },
+  {
+    "path": "evidence/issue24/20261025-jdk17-correction/核验本机Jdk与官方制品.ps1",
+    "sha256": "10d21747ec6864f23c4b3e108bd8372d907ba69dc6ee062eb5ee5fdd7617dce2"
+  },
+  {
+    "path": "evidence/issue24/20261025-jdk17-correction/blocking-after-close.json",
+    "sha256": "bafe1513fb09fc736fe1a0ccfb62f71ae0696b47b448414cf5cb015018637ed2"
+  },
+  {
+    "path": "evidence/issue24/20261025-jdk17-correction/evidence-sha256.json",
+    "sha256": "c1987741e972d45fa7e9179b2e63f45097d2689119a4593795e171f23e266bfe"
+  },
+  {
+    "path": "evidence/issue24/20261025-jdk17-correction/final-verification.json",
+    "sha256": "fc4d1d984b824ef2bf5c62cbbf0e2588206c61abb037cdaca04da44774decb9e"
+  },
+  {
+    "path": "evidence/issue24/20261025-jdk17-correction/installed-jdk-files.json",
+    "sha256": "5611e2b1e34ee13439615bf7fb0c3c572bd8b0927c0406e5646f8f86489e1b53"
+  },
+  {
+    "path": "evidence/issue24/20261025-jdk17-correction/issue24-after-close.json",
+    "sha256": "db333981480ae199d6de95941f202eef270daa458a2c76e1c2d9769023f00fe4"
+  },
+  {
+    "path": "evidence/issue24/20261025-jdk17-correction/issue24-before-update.json",
+    "sha256": "73522ce32c386aa0d83d8630c196430643710a7495f9e7a24ae4cb82650150d6"
+  },
+  {
+    "path": "evidence/issue24/20261025-jdk17-correction/jdk-artifact-verification.json",
+    "sha256": "1d62b2b92991160e102abcd15b16fa75cc64e1e24a278a1ea87fc9f214943915"
+  },
+  {
+    "path": "evidence/issue24/20261025-jdk17-correction/official-jdk-sha256.txt",
+    "sha256": "8482321514f1b91b3eb3ff768eb30489590164f641cdca2e6ff2801d9e94405e"
+  },
+  {
+    "path": "evidence/issue24/20261025-jdk17-correction/source-comparison.json",
+    "sha256": "91ef41ec54b0ee6a87a94293011f70ba92e0be77ff828f403d3183fb37fdc44a"
+  },
+  {
+    "path": "evidence/issue24/20261025-windows-oracle17/autoconfiguration.txt",
+    "sha256": "a49514d187e63290734abf7d375debb4d9ae69ec9ae9ab38595a2dbaf6e8fef5"
+  },
+  {
+    "path": "evidence/issue24/20261025-windows-oracle17/build-distribution.json",
+    "sha256": "b2edb9f33580b7324a7ed63dfd251c3f3b27ad1f033ccea3965aac147a459093"
+  },
+  {
+    "path": "evidence/issue24/20261025-windows-oracle17/bytecode.json",
+    "sha256": "662233ad15a5e39ab6cb248e6e150ff021eedb346b28570c6a2cd61b648c29cd"
+  },
+  {
+    "path": "evidence/issue24/20261025-windows-oracle17/classpath-command.txt",
+    "sha256": "41d7cb73823a17582d1b3d47a3911afcd8d24c6dd4d310b09c5bad4e5a360f90"
+  },
+  {
+    "path": "evidence/issue24/20261025-windows-oracle17/classpath.txt",
+    "sha256": "838b5f1a33f5849e78adc418c7a9ee8af8c8168c277abefff68a531f2544bcec"
+  },
+  {
+    "path": "evidence/issue24/20261025-windows-oracle17/clean-verify.txt",
+    "sha256": "dd031b6d3e1abced3d66b96b78cd8d00d2994d7ef2d1705e73e1626fdba0d9c4"
+  },
+  {
+    "path": "evidence/issue24/20261025-windows-oracle17/commands.json",
+    "sha256": "0531c80cc0ed9e7bfb4c4f5cc7b16526b16ce10475551dd7223ad1ed53bec8ea"
+  },
+  {
+    "path": "evidence/issue24/20261025-windows-oracle17/dependency-sha256.json",
+    "sha256": "1b7b5f68ee5736309bce9e9b08fce0e2ce7d0d4177715379cf2ecd8d824e3cca"
+  },
+  {
+    "path": "evidence/issue24/20261025-windows-oracle17/dependency-tree-command.txt",
+    "sha256": "c9b8b9e0b49caaf92103039247fbc7cc1dc5d8fd5c605634008f02d6ce044d27"
+  },
+  {
+    "path": "evidence/issue24/20261025-windows-oracle17/dependency-tree.txt",
+    "sha256": "929b9d193dc8e6ecdb06d58b102156018474c9d02b66cf5f3496242b27f7657a"
+  },
+  {
+    "path": "evidence/issue24/20261025-windows-oracle17/effective-pom-command.txt",
+    "sha256": "83770756cfcba40a0d46a15d6674d06b834057b5994ec1bdc896be31f2cf081e"
+  },
+  {
+    "path": "evidence/issue24/20261025-windows-oracle17/effective-pom.xml",
+    "sha256": "f17981e29a160da88c4abfc6358c1503b0fd963e1bb9ec654488c95834876194"
+  },
+  {
+    "path": "evidence/issue24/20261025-windows-oracle17/environment.json",
+    "sha256": "6e9dc17d75ab9d9de684d8f8d7603fdc7b9e7e947dc6587776249bf907951940"
+  },
+  {
+    "path": "evidence/issue24/20261025-windows-oracle17/evidence-sha256.json",
+    "sha256": "53c0895ba19290095aa028c37969d22c126d125c7bed43fd6fb6fd2c2a277da9"
+  },
+  {
+    "path": "evidence/issue24/20261025-windows-oracle17/final-verification.json",
+    "sha256": "168381a82b3c7a9c65168e6219324024d09d83d92d12b11f6bddd91bd1686d0c"
+  },
+  {
+    "path": "evidence/issue24/20261025-windows-oracle17/issue24-after-result.json",
+    "sha256": "73522ce32c386aa0d83d8630c196430643710a7495f9e7a24ae4cb82650150d6"
+  },
+  {
+    "path": "evidence/issue24/20261025-windows-oracle17/issue24-before-result.json",
+    "sha256": "fa1f862f5a9fe6f71690d3d0978cb36634d6a217deb7bf0293b319fef0764d9b"
+  },
+  {
+    "path": "evidence/issue24/20261025-windows-oracle17/issue24-blocked-by.json",
+    "sha256": "a5338d955b09046ec0b16f3a9625b7955c763aae07dc722e474e6078745f932f"
+  },
+  {
+    "path": "evidence/issue24/20261025-windows-oracle17/issue24-blocking.json",
+    "sha256": "bafe1513fb09fc736fe1a0ccfb62f71ae0696b47b448414cf5cb015018637ed2"
+  },
+  {
+    "path": "evidence/issue24/20261025-windows-oracle17/java-version.txt",
+    "sha256": "1fb1eb8f7d558f88d490ea885a0db08682d7451b8c79db7e708192bdfbfa0caa"
+  },
+  {
+    "path": "evidence/issue24/20261025-windows-oracle17/jdk-release.txt",
+    "sha256": "252f064aa016573cd587a7397df6804301cff411498a052ed44847fd443ea41b"
+  },
+  {
+    "path": "evidence/issue24/20261025-windows-oracle17/maven-version.txt",
+    "sha256": "bd317ac7028b7d59169df07712512434dcd04e37f0a254b922709927cd23dfc5"
+  },
+  {
+    "path": "evidence/issue24/20261025-windows-oracle17/rebuild-package.txt",
+    "sha256": "1f33837b982e40f3bac6640218ac92c0bfbf8b5849e1831b14e174a44dfb58f6"
+  },
+  {
+    "path": "evidence/issue24/20261025-windows-oracle17/reproducible-jar.json",
+    "sha256": "0179adcebd9901f2e7930cba390d3ec1565588427914f2bf7425ecf318ff958f"
+  },
+  {
+    "path": "evidence/issue24/20261025-windows-oracle17/review-fix-sha256.json",
+    "sha256": "970197397ea1a0a571314f827420edb603624d2b7ee495ac9e203c0525f61a98"
+  },
+  {
+    "path": "evidence/issue24/20261025-windows-oracle17/runtime-class-origins.tsv",
+    "sha256": "2b0449c9bfb5fbec5d81de92ab1b5f4940f48e7ff27b1ad11ba16856f8e6ac12"
+  },
+  {
+    "path": "evidence/issue24/20261025-windows-oracle17/source-sha256.json",
+    "sha256": "79d29d75077f3f138fb5dea8ec405b977e2b7d46c470154f0a8781969035dc55"
+  },
+  {
+    "path": "evidence/issue24/20261025-windows-oracle17/target-jdk-assets.json",
+    "sha256": "a248103bdf79f710dd078498ebe573680306cf7354a5d267bde442c048a08cb6"
+  },
+  {
+    "path": "evidence/issue24/20261025-windows-oracle17/tdd-app-red.txt",
+    "sha256": "cb5ba1a39bb48d34e5c4a3a5bdb7831103e5c7fe8f1545585679e724562c7e7d"
+  },
+  {
+    "path": "evidence/issue24/20261025-windows-oracle17/TEST-com.agentscope.brain.baseline.IsolatedAssemblyTest.xml",
+    "sha256": "6881dab5b99d841cd5623a37408ea06638fa905801b1fbb99fff67d2d908f1ba"
+  },
+  {
+    "path": "evidence/issue24/20261025-windows-oracle17/TEST-com.agentscope.brain.validation.ClosedDraft7ValidatorTest.xml",
+    "sha256": "2d9a83e7beedfbad8e60a890eb628019bebe2636c57eadb0490bb01cef9fbb32"
+  },
+  {
+    "path": "evidence/issue24/20261025-windows-oracle17/TEST-com.agentscope.brain.validation.SdkToolValidatorTest.xml",
+    "sha256": "8fff1188c823472091db413fa0045762a5cbb0676b392f3ec2370601ceb74503"
+  },
+  {
+    "path": "evidence/issue24/20261025-windows-oracle17/test-results.json",
+    "sha256": "e86e9869a5882aa07253a1325c69b1c80722934126917075d1c37e1cd8895009"
+  },
+  {
+    "path": "evidence/issue24/20261025-windows-oracle17/wrapper-bad-checksum-rejected.txt",
+    "sha256": "4ca2dfb0877fdab76cd1326af3270bccd1583371ade12084e058bfc7d4cd0220"
+  },
+  {
+    "path": "evidence/issue24/20261025-windows-oracle17/wrapper-fresh-success.txt",
+    "sha256": "2d2a8be96633405830d70bbee0e8c966d50ee8f3840133dd52e8bfb406d88a95"
+  },
+  {
+    "path": "evidence/issue25/验收记录.md",
+    "sha256": "9eb97474872f4094f016f3bf8d82ccf17c16cfc6ed9bbf2d86bee6c00e1ba46a"
+  },
+  {
+    "path": "evidence/issue25/schema-fingerprint.json",
+    "sha256": "d753a6f8243e6ff5f7ff04337f2c1e9471eaa917cd9712d7cf48d9b08b51d6ca"
+  },
+  {
+    "path": "evidence/issue26/验收记录.md",
+    "sha256": "aa7adfc3b4916adea09305aefa3f895567bdeacff50b9afc4b7ce008cbcaee4b"
+  },
+  {
+    "path": "evidence/issue26/github-comment.md",
+    "sha256": "cc12ffd41b8155ee5318e543e3bd3dfa442d637e5f14e63de30b38777e9f4fec"
+  },
+  {
+    "path": "evidence/issue26/probe-summary.json",
+    "sha256": "f5a58431f2f14d0210e1767e4d5b4160574360fee5467803602ff60f3234f5c7"
+  },
+  {
+    "path": "evidence/issue27/验收记录.md",
+    "sha256": "6be1c6e5b8914cace11936b44bb3c1dfba3435568aed59d028e2b8fdd90a9559"
+  },
+  {
+    "path": "evidence/issue27/github-comment.md",
+    "sha256": "ba9d261decb7dd747743fd5e279f1a9cb68164d12e38cc9403f7fde95d486ae4"
+  },
+  {
+    "path": "evidence/issue27/probe-summary.json",
+    "sha256": "878da4c66a0fd1bb46d08f7183a934847bbd1bc0628a6214c50f5b565d0f2027"
+  },
+  {
+    "path": "evidence/issue28/接缝核验.md",
+    "sha256": "85c89aa22c100326991bc63c12ce8c5d39273ddbbdd4cb20879d2ad36734ee83"
+  },
+  {
+    "path": "evidence/issue28/验收记录.md",
+    "sha256": "6a1bb50a04302adca8a972fc9130329b42f5f95a7bb6a654c7625b9c2048d3bd"
+  },
+  {
+    "path": "evidence/issue28/github-comment.md",
+    "sha256": "80dc93ca17bdae420626beba88aed90529d66bb6c441f22edf7b88062cac7bcf"
+  },
+  {
+    "path": "evidence/issue28/probe-summary.json",
+    "sha256": "6c551e4eabbd1a432cf1c360bbcbe97d987e3d2da2361d0d3523642ba63df459"
+  }
+]

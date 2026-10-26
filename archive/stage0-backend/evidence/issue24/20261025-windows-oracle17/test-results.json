@@ -1,0 +1,23 @@
+[
+  {
+    "suite": "com.agentscope.brain.baseline.IsolatedAssemblyTest",
+    "tests": 1,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  {
+    "suite": "com.agentscope.brain.validation.ClosedDraft7ValidatorTest",
+    "tests": 10,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  {
+    "suite": "com.agentscope.brain.validation.SdkToolValidatorTest",
+    "tests": 3,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  }
+]

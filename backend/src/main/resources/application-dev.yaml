@@ -1,0 +1,8 @@
+# 仅用于回环开发；数据库、MinIO 仍使用明确指定的共用资源配置。
+server:
+  address: 127.0.0.1
+  servlet:
+    session:
+      cookie:
+        name: ASSESSION_DEV
+        secure: false

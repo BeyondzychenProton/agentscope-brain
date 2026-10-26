@@ -1,0 +1,12 @@
+{
+  "issue": 26,
+  "mysqlVersion": "8.0.45",
+  "table": "issue26_agent_state",
+  "readyStatus": "READY",
+  "readyVersion": 1,
+  "consumeStatus": "CONSUMED",
+  "consumeAfterVersion": 2,
+  "modelCalls": 2,
+  "toolBodyCalls": 1,
+  "validationPasses": 1
+}

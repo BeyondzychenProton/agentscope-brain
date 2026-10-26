@@ -1,0 +1,7 @@
+# 生产经同源 HTTPS 入口访问；可信代理设置在目标部署时核验。
+server:
+  servlet:
+    session:
+      cookie:
+        name: __Host-ASSESSION
+        secure: true

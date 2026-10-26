@@ -1,0 +1,83 @@
+{
+  "issue" : 25,
+  "dialectClass" : "io.agentscope.extensions.jdbc.dialect.vendor.MysqlDialect",
+  "jarName" : "agentscope-extensions-jdbc-2.0.4.jar",
+  "mysqlVersion" : "8.0.45",
+  "tableName" : "issue25_agent_state",
+  "tableCount" : 1,
+  "tableCollation" : "utf8mb4_unicode_ci",
+  "ddlSha256" : "1c65acbb59f08534a75101626e8bb0035f1465eecbbe16d8c81fbe9a6e5938de",
+  "structureSha256" : "e663423b8ce9e3722020076de94d089c96d1f7995418afc6b17f06ce1b4d1a81",
+  "columns" : [ {
+    "name" : "session_id",
+    "columnType" : "varchar(255)",
+    "nullable" : false,
+    "defaultValue" : "",
+    "extra" : "",
+    "columnKey" : "PRI"
+  }, {
+    "name" : "state_key",
+    "columnType" : "varchar(255)",
+    "nullable" : false,
+    "defaultValue" : "",
+    "extra" : "",
+    "columnKey" : "PRI"
+  }, {
+    "name" : "item_index",
+    "columnType" : "int",
+    "nullable" : false,
+    "defaultValue" : "0",
+    "extra" : "",
+    "columnKey" : "PRI"
+  }, {
+    "name" : "state_data",
+    "columnType" : "longtext",
+    "nullable" : false,
+    "defaultValue" : "",
+    "extra" : "",
+    "columnKey" : ""
+  }, {
+    "name" : "version",
+    "columnType" : "bigint",
+    "nullable" : false,
+    "defaultValue" : "0",
+    "extra" : "",
+    "columnKey" : ""
+  }, {
+    "name" : "created_at",
+    "columnType" : "datetime",
+    "nullable" : true,
+    "defaultValue" : "CURRENT_TIMESTAMP",
+    "extra" : "DEFAULT_GENERATED",
+    "columnKey" : ""
+  }, {
+    "name" : "updated_at",
+    "columnType" : "datetime",
+    "nullable" : true,
+    "defaultValue" : "CURRENT_TIMESTAMP",
+    "extra" : "DEFAULT_GENERATED on update CURRENT_TIMESTAMP",
+    "columnKey" : ""
+  } ],
+  "indexes" : [ {
+    "name" : "idx_session",
+    "column" : "session_id",
+    "seq" : 1,
+    "nonUnique" : true
+  }, {
+    "name" : "PRIMARY",
+    "column" : "session_id",
+    "seq" : 1,
+    "nonUnique" : false
+  }, {
+    "name" : "PRIMARY",
+    "column" : "state_key",
+    "seq" : 2,
+    "nonUnique" : false
+  }, {
+    "name" : "PRIMARY",
+    "column" : "item_index",
+    "seq" : 3,
+    "nonUnique" : false
+  } ],
+  "ddl" : "CREATE TABLE IF NOT EXISTS issue25_agent_state (\n  session_id  VARCHAR(255) NOT NULL,\n  state_key   VARCHAR(255) NOT NULL,\n  item_index  INT          NOT NULL DEFAULT 0,\n  state_data  LONGTEXT     NOT NULL,\n  version     BIGINT       NOT NULL DEFAULT 0,\n  created_at  DATETIME     DEFAULT CURRENT_TIMESTAMP,\n  updated_at  DATETIME     DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,\n  PRIMARY KEY (session_id, state_key, item_index),\n  INDEX idx_session (session_id)\n) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci"
+}

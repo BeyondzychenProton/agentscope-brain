@@ -1,0 +1,16 @@
+Picked up JAVA_TOOL_OPTIONS: -Dfile.encoding=UTF-8
+[INFO] Scanning for projects...
+[INFO] 
+[INFO] -----------< com.agentscope.brain:agentscope-brain-backend >------------
+[INFO] Building AgentScope Brain Backend 0.1.0-SNAPSHOT
+[INFO]   from pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- dependency:3.9.0:build-classpath (default-cli) @ agentscope-brain-backend ---
+[INFO] Wrote classpath file 'D:\code project\agentscope\backend\evidence\issue24\20261025-windows-oracle17\classpath.txt'.
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESS
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  2.952 s
+[INFO] Finished at: 2026-10-25T21:58:04+08:00
+[INFO] ------------------------------------------------------------------------

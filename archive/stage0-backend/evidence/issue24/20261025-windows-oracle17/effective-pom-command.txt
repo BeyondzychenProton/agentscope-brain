@@ -1,0 +1,20 @@
+Picked up JAVA_TOOL_OPTIONS: -Dfile.encoding=UTF-8
+[INFO] Scanning for projects...
+[INFO] 
+[INFO] -----------< com.agentscope.brain:agentscope-brain-backend >------------
+[INFO] Building AgentScope Brain Backend 0.1.0-SNAPSHOT
+[INFO]   from pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- help:3.5.1:effective-pom (default-cli) @ agentscope-brain-backend ---
+[INFO] Artifact org.apache.maven.shared:maven-shared-components:pom:43 is present in the local repository, but cached from a remote repository ID that is unavailable in current build context, verifying that is downloadable from [central (https://repo.maven.apache.org/maven2, default, releases), apache.snapshots (https://repository.apache.org/snapshots, default, snapshots)]
+[INFO] Artifact org.apache.maven.shared:maven-shared-components:pom:43 is present in the local repository, but cached from a remote repository ID that is unavailable in current build context, verifying that is downloadable from [central (https://repo.maven.apache.org/maven2, default, releases), apache.snapshots (https://repository.apache.org/snapshots, default, snapshots)]
+[INFO] Artifact xmlpull:xmlpull:pom:1.1.3.1 is present in the local repository, but cached from a remote repository ID that is unavailable in current build context, verifying that is downloadable from [central (https://repo.maven.apache.org/maven2, default, releases), apache.snapshots (https://repository.apache.org/snapshots, default, snapshots)]
+[INFO] Artifact xmlpull:xmlpull:pom:1.1.3.1 is present in the local repository, but cached from a remote repository ID that is unavailable in current build context, verifying that is downloadable from [central (https://repo.maven.apache.org/maven2, default, releases), apache.snapshots (https://repository.apache.org/snapshots, default, snapshots)]
+[INFO] Effective-POM written to: D:\code project\agentscope\backend\evidence\issue24\20261025-windows-oracle17\effective-pom.xml
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESS
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  7.864 s
+[INFO] Finished at: 2026-10-25T21:57:36+08:00
+[INFO] ------------------------------------------------------------------------

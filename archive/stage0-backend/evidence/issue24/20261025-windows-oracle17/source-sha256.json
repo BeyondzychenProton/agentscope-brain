@@ -1,0 +1,38 @@
+[
+  {
+    "path": ".mvn/wrapper/maven-wrapper.properties",
+    "sha256": "51b221ede4e074d19bb44d6d485bb7b298e77874572a09697aba0a9e234e0745"
+  },
+  {
+    "path": "mvnw",
+    "sha256": "cae96cef89ebea3531221f4ae17c23cf8edf67d00eae8306d4186ae1bbed4d02"
+  },
+  {
+    "path": "mvnw.cmd",
+    "sha256": "46eedb8419bd14fe70d5bb2916d7b6f51806e51b39d5b76a42610384ca929c1c"
+  },
+  {
+    "path": "pom.xml",
+    "sha256": "8232df1d611ada5d2044bf1f02d3b8810804281e134fdb5aafd28bc98e6c75d0"
+  },
+  {
+    "path": "scripts\\验证依赖基线.ps1",
+    "sha256": "134115586f2c2bb1f4a24cd2574628ea9f2906463b1e42194f8e4431c129ee30"
+  },
+  {
+    "path": "src\\main\\java\\com\\agentscope\\brain\\validation\\ClosedDraft7Validator.java",
+    "sha256": "891dbc3b50264c0855a902a5c556e25d29ff9df0c8f81c9138c10d39ceb08d35"
+  },
+  {
+    "path": "src\\test\\java\\com\\agentscope\\brain\\baseline\\IsolatedAssemblyTest.java",
+    "sha256": "c6894044aed2a1dc5004d03e003dd61ce5d4b4bc221133932b29aff70cb8905c"
+  },
+  {
+    "path": "src\\test\\java\\com\\agentscope\\brain\\validation\\ClosedDraft7ValidatorTest.java",
+    "sha256": "e9e57910245b530b765a74631469e1f00bc8a5a8da4751e6799870ff79cd6736"
+  },
+  {
+    "path": "src\\test\\java\\com\\agentscope\\brain\\validation\\SdkToolValidatorTest.java",
+    "sha256": "d47afdf9535b4ef866baa2cdc1f62bdc0aa0a13ae0f3ee12e51ceb59af4511e5"
+  }
+]

@@ -1,0 +1,12 @@
+{
+  "capturedAt": "2026-10-25T21:57:25.8406672+08:00",
+  "os": "Microsoft Windows 10.0.26200",
+  "architecture": "X64",
+  "jdkHome": "D:\\code environment\\jdk\\jdk-17.0.9",
+  "baselineCommit": "acfb0dbb7d6a77fc1f11bc30502f71db79a5be82",
+  "branch": "codex/formal-web-implementation",
+  "targetJdk": "Temurin 17.0.21+9; official OS artifact and checksum require separate admission",
+  "targetAdmission": "NOT_PROVEN_BY_THIS_SCRIPT",
+  "database": "Isolated in-memory H2; no business schema or DDL",
+  "externalServices": "No model, MCP, or MinIO network methods invoked"
+}

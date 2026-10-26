@@ -1,0 +1,18 @@
+{
+  "issue": 24,
+  "state": "closed",
+  "stateReason": "completed",
+  "acceptanceCriteriaChecked": 5,
+  "jdkFilesVerified": 416,
+  "remainingScopeGaps": 0,
+  "standardsRemaining": 0,
+  "specRemaining": 0,
+  "originalTestsPassed": 14,
+  "applicationPomAndWrapperUnchanged": true,
+  "nativeDependencyEdgesRetained": true,
+  "successorIssuesRemainOpen": true,
+  "phase0OverallPassed": false,
+  "gitCommitted": false,
+  "gitPushed": false,
+  "deployed": false
+}

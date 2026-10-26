@@ -1,0 +1,2498 @@
+[
+  {
+    "file": "bin/api-ms-win-core-console-l1-1-0.dll",
+    "archiveSha256": "8f8b79150e850acc92fd6aab614f6e3759bea875134a62087d5dd65581e3001f",
+    "installedSha256": "8f8b79150e850acc92fd6aab614f6e3759bea875134a62087d5dd65581e3001f",
+    "equal": true
+  },
+  {
+    "file": "bin/api-ms-win-core-console-l1-2-0.dll",
+    "archiveSha256": "f5025e74de2c1c6ea74e475b57771ac32205e6f1fa6a0390298bbe1f4049ac5d",
+    "installedSha256": "f5025e74de2c1c6ea74e475b57771ac32205e6f1fa6a0390298bbe1f4049ac5d",
+    "equal": true
+  },
+  {
+    "file": "bin/api-ms-win-core-datetime-l1-1-0.dll",
+    "archiveSha256": "913eaaa7997a6aee53574cffb83f9c9c1700b1d8b46744a5e12d76a1e53376fd",
+    "installedSha256": "913eaaa7997a6aee53574cffb83f9c9c1700b1d8b46744a5e12d76a1e53376fd",
+    "equal": true
+  },
+  {
+    "file": "bin/api-ms-win-core-debug-l1-1-0.dll",
+    "archiveSha256": "58a8d69df60ecbee776cd9a74b2a32b14bf2b0bd92d527ec5f19502a0d3eb8e9",
+    "installedSha256": "58a8d69df60ecbee776cd9a74b2a32b14bf2b0bd92d527ec5f19502a0d3eb8e9",
+    "equal": true
+  },
+  {
+    "file": "bin/api-ms-win-core-errorhandling-l1-1-0.dll",
+    "archiveSha256": "46079c0a1b660fc187aafd760707f369d0b60d424d878c57685545a3fce95819",
+    "installedSha256": "46079c0a1b660fc187aafd760707f369d0b60d424d878c57685545a3fce95819",
+    "equal": true
+  },
+  {
+    "file": "bin/api-ms-win-core-file-l1-1-0.dll",
+    "archiveSha256": "5c9bc70586ad538b0df1fcf5d6f1f3527450ae16935aa34bd7eb494b4f1b2db9",
+    "installedSha256": "5c9bc70586ad538b0df1fcf5d6f1f3527450ae16935aa34bd7eb494b4f1b2db9",
+    "equal": true
+  },
+  {
+    "file": "bin/api-ms-win-core-file-l1-2-0.dll",
+    "archiveSha256": "629e52ba4e2dca91b10ef7729a1722888e01284eed7dda6030d0a1ec46c94086",
+    "installedSha256": "629e52ba4e2dca91b10ef7729a1722888e01284eed7dda6030d0a1ec46c94086",
+    "equal": true
+  },
+  {
+    "file": "bin/api-ms-win-core-file-l2-1-0.dll",
+    "archiveSha256": "dac867476caa42ff8df8f5dfe869ffd56a18dadee17d47889afb69ed6519afbf",
+    "installedSha256": "dac867476caa42ff8df8f5dfe869ffd56a18dadee17d47889afb69ed6519afbf",
+    "equal": true
+  },
+  {
+    "file": "bin/api-ms-win-core-handle-l1-1-0.dll",
+    "archiveSha256": "0b3dfb8554ead94d5da7859a12db353942406f9d1dfe3fac3d48663c233ea99d",
+    "installedSha256": "0b3dfb8554ead94d5da7859a12db353942406f9d1dfe3fac3d48663c233ea99d",
+    "equal": true
+  },
+  {
+    "file": "bin/api-ms-win-core-heap-l1-1-0.dll",
+    "archiveSha256": "c43075b1d2386a8a262de628c93a65350e52eae82582b27f879708364b978e29",
+    "installedSha256": "c43075b1d2386a8a262de628c93a65350e52eae82582b27f879708364b978e29",
+    "equal": true
+  },
+  {
+    "file": "bin/api-ms-win-core-interlocked-l1-1-0.dll",
+    "archiveSha256": "c23fe8d5c3ca89189d11ec8df983cc144d168cb54d9eab5d9532767bcb2f1fa3",
+    "installedSha256": "c23fe8d5c3ca89189d11ec8df983cc144d168cb54d9eab5d9532767bcb2f1fa3",
+    "equal": true
+  },
+  {
+    "file": "bin/api-ms-win-core-libraryloader-l1-1-0.dll",
+    "archiveSha256": "f320f9c0463de641b396ce7561af995de32211e144407828b117088cf289df91",
+    "installedSha256": "f320f9c0463de641b396ce7561af995de32211e144407828b117088cf289df91",
+    "equal": true
+  },
+  {
+    "file": "bin/api-ms-win-core-localization-l1-2-0.dll",
+    "archiveSha256": "8664222823e122fca724620fd8b72187fc5336c737d891d3cef85f4f533b8de2",
+    "installedSha256": "8664222823e122fca724620fd8b72187fc5336c737d891d3cef85f4f533b8de2",
+    "equal": true
+  },
+  {
+    "file": "bin/api-ms-win-core-memory-l1-1-0.dll",
+    "archiveSha256": "5d9767d8cca0fbfd5801bff2e0c2adddd1baaaa8175543625609abce1a9257bd",
+    "installedSha256": "5d9767d8cca0fbfd5801bff2e0c2adddd1baaaa8175543625609abce1a9257bd",
+    "equal": true
+  },
+  {
+    "file": "bin/api-ms-win-core-namedpipe-l1-1-0.dll",
+    "archiveSha256": "8e015cdf2561450ed9a0773be1159463163c19eab2b6976155117d16c36519da",
+    "installedSha256": "8e015cdf2561450ed9a0773be1159463163c19eab2b6976155117d16c36519da",
+    "equal": true
+  },
+  {
+    "file": "bin/api-ms-win-core-processenvironment-l1-1-0.dll",
+    "archiveSha256": "058eb7ce88c22d2ff7d3e61e6593ca4e3d6df449f984bf251d9432665e1517d1",
+    "installedSha256": "058eb7ce88c22d2ff7d3e61e6593ca4e3d6df449f984bf251d9432665e1517d1",
+    "equal": true
+  },
+  {
+    "file": "bin/api-ms-win-core-processthreads-l1-1-0.dll",
+    "archiveSha256": "a5b733e3dce21ab62bd4010f151b3578c6f1246da4a96d51ac60817865648dd3",
+    "installedSha256": "a5b733e3dce21ab62bd4010f151b3578c6f1246da4a96d51ac60817865648dd3",
+    "equal": true
+  },
+  {
+    "file": "bin/api-ms-win-core-processthreads-l1-1-1.dll",
+    "archiveSha256": "1ef06c600c451e66e744b2ca356b7f4b7b88ba2f52ec7795858d21525848ac8c",
+    "installedSha256": "1ef06c600c451e66e744b2ca356b7f4b7b88ba2f52ec7795858d21525848ac8c",
+    "equal": true
+  },
+  {
+    "file": "bin/api-ms-win-core-profile-l1-1-0.dll",
+    "archiveSha256": "e63550608dd58040304ea85367e9e0722038ba8e7dc7bf9d91c4d84f0ec65887",
+    "installedSha256": "e63550608dd58040304ea85367e9e0722038ba8e7dc7bf9d91c4d84f0ec65887",
+    "equal": true
+  },
+  {
+    "file": "bin/api-ms-win-core-rtlsupport-l1-1-0.dll",
+    "archiveSha256": "91508ab353b90b30ff2551020e9755d7ab0e860308f16c2f6417dfb2e9a75014",
+    "installedSha256": "91508ab353b90b30ff2551020e9755d7ab0e860308f16c2f6417dfb2e9a75014",
+    "equal": true
+  },
+  {
+    "file": "bin/api-ms-win-core-string-l1-1-0.dll",
+    "archiveSha256": "f3a7a9c98ebe915b1b57c16e27fffd4ddf31a82f0f21c06fe292878e48f5883e",
+    "installedSha256": "f3a7a9c98ebe915b1b57c16e27fffd4ddf31a82f0f21c06fe292878e48f5883e",
+    "equal": true
+  },
+  {
+    "file": "bin/api-ms-win-core-synch-l1-1-0.dll",
+    "archiveSha256": "d6708d1254ed88a948871771d6d1296945e1aa3aeb7e33e16cc378f396c61045",
+    "installedSha256": "d6708d1254ed88a948871771d6d1296945e1aa3aeb7e33e16cc378f396c61045",
+    "equal": true
+  },
+  {
+    "file": "bin/api-ms-win-core-synch-l1-2-0.dll",
+    "archiveSha256": "72c639d1afda32a65143bcbe016fe5d8b46d17924f5f5190eb04efe954c1199a",
+    "installedSha256": "72c639d1afda32a65143bcbe016fe5d8b46d17924f5f5190eb04efe954c1199a",
+    "equal": true
+  },
+  {
+    "file": "bin/api-ms-win-core-sysinfo-l1-1-0.dll",
+    "archiveSha256": "76d8e4ed946deefeefa0d0012c276f0b61f3d1c84af00533f4931546cbb2f99e",
+    "installedSha256": "76d8e4ed946deefeefa0d0012c276f0b61f3d1c84af00533f4931546cbb2f99e",
+    "equal": true
+  },
+  {
+    "file": "bin/api-ms-win-core-timezone-l1-1-0.dll",
+    "archiveSha256": "b0eda99eabd32fefecc478fd9fe7439a3f646a864fdab4ec3c1f18574b5f8b34",
+    "installedSha256": "b0eda99eabd32fefecc478fd9fe7439a3f646a864fdab4ec3c1f18574b5f8b34",
+    "equal": true
+  },
+  {
+    "file": "bin/api-ms-win-core-util-l1-1-0.dll",
+    "archiveSha256": "f28a8fe2cd7e8e00b6d2ec273c16db6e6eea9b6b16f7f69887154b6228af981e",
+    "installedSha256": "f28a8fe2cd7e8e00b6d2ec273c16db6e6eea9b6b16f7f69887154b6228af981e",
+    "equal": true
+  },
+  {
+    "file": "bin/api-ms-win-crt-conio-l1-1-0.dll",
+    "archiveSha256": "e677497c1baefffb33a17d22a99b76b7fa7ae7a0c84e12fda27d9be5c3d104cf",
+    "installedSha256": "e677497c1baefffb33a17d22a99b76b7fa7ae7a0c84e12fda27d9be5c3d104cf",
+    "equal": true
+  },
+  {
+    "file": "bin/api-ms-win-crt-convert-l1-1-0.dll",
+    "archiveSha256": "5cf5bbb861608131b5f560cbf34a3292c80886b7c75357acc779e0bf98e16639",
+    "installedSha256": "5cf5bbb861608131b5f560cbf34a3292c80886b7c75357acc779e0bf98e16639",
+    "equal": true
+  },
+  {
+    "file": "bin/api-ms-win-crt-environment-l1-1-0.dll",
+    "archiveSha256": "b7ee468f5b6c650dada7db3ad9e115a0e97135b3df095c3220dfd22ba277b607",
+    "installedSha256": "b7ee468f5b6c650dada7db3ad9e115a0e97135b3df095c3220dfd22ba277b607",
+    "equal": true
+  },
+  {
+    "file": "bin/api-ms-win-crt-filesystem-l1-1-0.dll",
+    "archiveSha256": "7102f8d9d0f3f689129d7fe071b234077fba4dd3687071d1e2aeaa137b123f86",
+    "installedSha256": "7102f8d9d0f3f689129d7fe071b234077fba4dd3687071d1e2aeaa137b123f86",
+    "equal": true
+  },
+  {
+    "file": "bin/api-ms-win-crt-heap-l1-1-0.dll",
+    "archiveSha256": "f5183b8d7462c01031992267fe85680ab9c5b279bedc0b25ab219f7c2184766f",
+    "installedSha256": "f5183b8d7462c01031992267fe85680ab9c5b279bedc0b25ab219f7c2184766f",
+    "equal": true
+  },
+  {
+    "file": "bin/api-ms-win-crt-locale-l1-1-0.dll",
+    "archiveSha256": "2eb96422375f1a7b687115b132a4005d2e7d3d5dc091fb0eb22a6471e712848e",
+    "installedSha256": "2eb96422375f1a7b687115b132a4005d2e7d3d5dc091fb0eb22a6471e712848e",
+    "equal": true
+  },
+  {
+    "file": "bin/api-ms-win-crt-math-l1-1-0.dll",
+    "archiveSha256": "a768339f0b03674735404248a039ec8591fcba6ff61a3c6812414537badd23b0",
+    "installedSha256": "a768339f0b03674735404248a039ec8591fcba6ff61a3c6812414537badd23b0",
+    "equal": true
+  },
+  {
+    "file": "bin/api-ms-win-crt-multibyte-l1-1-0.dll",
+    "archiveSha256": "7101b3dff525ea47b7a40dd96544c944ae400447df7a6acd07363b6d7968b889",
+    "installedSha256": "7101b3dff525ea47b7a40dd96544c944ae400447df7a6acd07363b6d7968b889",
+    "equal": true
+  },
+  {
+    "file": "bin/api-ms-win-crt-private-l1-1-0.dll",
+    "archiveSha256": "785c49fd9f99c6eb636d78887aa186233e9304921dd835dee8f72e2609ff65c4",
+    "installedSha256": "785c49fd9f99c6eb636d78887aa186233e9304921dd835dee8f72e2609ff65c4",
+    "equal": true
+  },
+  {
+    "file": "bin/api-ms-win-crt-process-l1-1-0.dll",
+    "archiveSha256": "3af38920e767bd9ebc08f88eaf2d08c748a267c7ec60eab41c49b3f282a4cf65",
+    "installedSha256": "3af38920e767bd9ebc08f88eaf2d08c748a267c7ec60eab41c49b3f282a4cf65",
+    "equal": true
+  },
+  {
+    "file": "bin/api-ms-win-crt-runtime-l1-1-0.dll",
+    "archiveSha256": "d899c2f061952b3b97ab9cdbca2450290b0f005909ddd243ed0f4c511d32c198",
+    "installedSha256": "d899c2f061952b3b97ab9cdbca2450290b0f005909ddd243ed0f4c511d32c198",
+    "equal": true
+  },
+  {
+    "file": "bin/api-ms-win-crt-stdio-l1-1-0.dll",
+    "archiveSha256": "f9d3f380023a4c45e74170fe69b32bca506ee1e1fbe670d965d5b50c616da0cb",
+    "installedSha256": "f9d3f380023a4c45e74170fe69b32bca506ee1e1fbe670d965d5b50c616da0cb",
+    "equal": true
+  },
+  {
+    "file": "bin/api-ms-win-crt-string-l1-1-0.dll",
+    "archiveSha256": "1a916c0db285deb02c0b9df4d08dad5ea95700a6a812ea067bd637a91101a9f6",
+    "installedSha256": "1a916c0db285deb02c0b9df4d08dad5ea95700a6a812ea067bd637a91101a9f6",
+    "equal": true
+  },
+  {
+    "file": "bin/api-ms-win-crt-time-l1-1-0.dll",
+    "archiveSha256": "b56bc94e8539603dd2f0fea2f25efd17966315067442507db4bffafcbc2955b0",
+    "installedSha256": "b56bc94e8539603dd2f0fea2f25efd17966315067442507db4bffafcbc2955b0",
+    "equal": true
+  },
+  {
+    "file": "bin/api-ms-win-crt-utility-l1-1-0.dll",
+    "archiveSha256": "dd14133adf5c534539298422f6c4b52739f80aca8c5a85ca8c966dea9964ceb1",
+    "installedSha256": "dd14133adf5c534539298422f6c4b52739f80aca8c5a85ca8c966dea9964ceb1",
+    "equal": true
+  },
+  {
+    "file": "bin/attach.dll",
+    "archiveSha256": "65974de05ebe5e288f97ea263c03a35333bc243259f84ffeb2ecee28edcf4d60",
+    "installedSha256": "65974de05ebe5e288f97ea263c03a35333bc243259f84ffeb2ecee28edcf4d60",
+    "equal": true
+  },
+  {
+    "file": "bin/awt.dll",
+    "archiveSha256": "60d008de2a92d91fd5c3fd4c39eef3f05a05f51b0f4a101f5853be814a4ac20e",
+    "installedSha256": "60d008de2a92d91fd5c3fd4c39eef3f05a05f51b0f4a101f5853be814a4ac20e",
+    "equal": true
+  },
+  {
+    "file": "bin/dt_shmem.dll",
+    "archiveSha256": "4852863de7140094fceaa69f26273b08b6a234169d38b2c86b5e8bd3ff709334",
+    "installedSha256": "4852863de7140094fceaa69f26273b08b6a234169d38b2c86b5e8bd3ff709334",
+    "equal": true
+  },
+  {
+    "file": "bin/dt_socket.dll",
+    "archiveSha256": "b3394b5840fa5d352dd8ee24d6533efd470c164fa432a79defea14728950f944",
+    "installedSha256": "b3394b5840fa5d352dd8ee24d6533efd470c164fa432a79defea14728950f944",
+    "equal": true
+  },
+  {
+    "file": "bin/fontmanager.dll",
+    "archiveSha256": "423250159511a36b6ae5453e4527864583d7fb3703a785e8e9086f10ed478a4c",
+    "installedSha256": "423250159511a36b6ae5453e4527864583d7fb3703a785e8e9086f10ed478a4c",
+    "equal": true
+  },
+  {
+    "file": "bin/freetype.dll",
+    "archiveSha256": "e16ea2d91fb7a8ff38813e1606bd2a66d6046388fd85092050645a1ef76ee7e4",
+    "installedSha256": "e16ea2d91fb7a8ff38813e1606bd2a66d6046388fd85092050645a1ef76ee7e4",
+    "equal": true
+  },
+  {
+    "file": "bin/instrument.dll",
+    "archiveSha256": "93513b46bd7a7ba1f54a797103bbbe625729bfc0877ac89ecb721146a9bd828f",
+    "installedSha256": "93513b46bd7a7ba1f54a797103bbbe625729bfc0877ac89ecb721146a9bd828f",
+    "equal": true
+  },
+  {
+    "file": "bin/j2gss.dll",
+    "archiveSha256": "a18f538343b7cc1e846c29a9f8d17c17a8392773a52d106c637e6bf8de5e826f",
+    "installedSha256": "a18f538343b7cc1e846c29a9f8d17c17a8392773a52d106c637e6bf8de5e826f",
+    "equal": true
+  },
+  {
+    "file": "bin/j2pcsc.dll",
+    "archiveSha256": "159d991453ffcf325757a7ecfb9f7b0a7689d2ccb7eb137fb4b6ad2f24871fdd",
+    "installedSha256": "159d991453ffcf325757a7ecfb9f7b0a7689d2ccb7eb137fb4b6ad2f24871fdd",
+    "equal": true
+  },
+  {
+    "file": "bin/j2pkcs11.dll",
+    "archiveSha256": "e9287e3d6d409d094f3013e5f54a71e399c02456d59b64195299929ce1ed44a2",
+    "installedSha256": "e9287e3d6d409d094f3013e5f54a71e399c02456d59b64195299929ce1ed44a2",
+    "equal": true
+  },
+  {
+    "file": "bin/jaas.dll",
+    "archiveSha256": "69f870fd2fffb916acc77a08c9bc47bf6669a67fc031df85cba7f9ec8348d184",
+    "installedSha256": "69f870fd2fffb916acc77a08c9bc47bf6669a67fc031df85cba7f9ec8348d184",
+    "equal": true
+  },
+  {
+    "file": "bin/jabswitch.exe",
+    "archiveSha256": "7a00bc65bc885a7ca773416770120a3c720795c6ad638a59eac1e1f6a4cbdc08",
+    "installedSha256": "7a00bc65bc885a7ca773416770120a3c720795c6ad638a59eac1e1f6a4cbdc08",
+    "equal": true
+  },
+  {
+    "file": "bin/jaccessinspector.exe",
+    "archiveSha256": "8a2546100a33ae0e3f0e28fda00a6164a4df342c15f82cb30fa2322efaa2ece4",
+    "installedSha256": "8a2546100a33ae0e3f0e28fda00a6164a4df342c15f82cb30fa2322efaa2ece4",
+    "equal": true
+  },
+  {
+    "file": "bin/jaccesswalker.exe",
+    "archiveSha256": "67d6d8a95b2964b310eb2e395e8dab17f5f45e5d7a793236013bbad3ebbfc38d",
+    "installedSha256": "67d6d8a95b2964b310eb2e395e8dab17f5f45e5d7a793236013bbad3ebbfc38d",
+    "equal": true
+  },
+  {
+    "file": "bin/jar.exe",
+    "archiveSha256": "868f09a910730f8f3dc9d29d73936b5faf5cdb810056ed87c3100666ec1aa4ed",
+    "installedSha256": "868f09a910730f8f3dc9d29d73936b5faf5cdb810056ed87c3100666ec1aa4ed",
+    "equal": true
+  },
+  {
+    "file": "bin/jarsigner.exe",
+    "archiveSha256": "8ae518879fd29609997945d17882285c21a74fffac67d23bdb332e0d3d71408c",
+    "installedSha256": "8ae518879fd29609997945d17882285c21a74fffac67d23bdb332e0d3d71408c",
+    "equal": true
+  },
+  {
+    "file": "bin/java.dll",
+    "archiveSha256": "2ad5752d53e70687cccdbb95557b130673f2f04d9950bd91b807da454dd35a32",
+    "installedSha256": "2ad5752d53e70687cccdbb95557b130673f2f04d9950bd91b807da454dd35a32",
+    "equal": true
+  },
+  {
+    "file": "bin/java.exe",
+    "archiveSha256": "5d70ba8fd785f42e145972391a7de285a63989f0950447a4bd608da36e1172f4",
+    "installedSha256": "5d70ba8fd785f42e145972391a7de285a63989f0950447a4bd608da36e1172f4",
+    "equal": true
+  },
+  {
+    "file": "bin/javaaccessbridge.dll",
+    "archiveSha256": "e51ff243298bd768418a2fbf5e7e4acbaeef47b90cebe6a092b84199ae9b74b7",
+    "installedSha256": "e51ff243298bd768418a2fbf5e7e4acbaeef47b90cebe6a092b84199ae9b74b7",
+    "equal": true
+  },
+  {
+    "file": "bin/javac.exe",
+    "archiveSha256": "cfc993927f0cd711d56bd710d7b7c97e1907f21d9456d293e4905ee225300e90",
+    "installedSha256": "cfc993927f0cd711d56bd710d7b7c97e1907f21d9456d293e4905ee225300e90",
+    "equal": true
+  },
+  {
+    "file": "bin/javadoc.exe",
+    "archiveSha256": "1540956041068010cd1c201241c1129f8381d064022041b4a6dd82d1bedd9e79",
+    "installedSha256": "1540956041068010cd1c201241c1129f8381d064022041b4a6dd82d1bedd9e79",
+    "equal": true
+  },
+  {
+    "file": "bin/javajpeg.dll",
+    "archiveSha256": "33b6e3c49e6f9cabec4fc977a90c197ec8a7c3fa2cfa12003a716e920884775a",
+    "installedSha256": "33b6e3c49e6f9cabec4fc977a90c197ec8a7c3fa2cfa12003a716e920884775a",
+    "equal": true
+  },
+  {
+    "file": "bin/javap.exe",
+    "archiveSha256": "0615c83cb45b24a3309456ebb102b9089df4d9bb06d572e58ab45a8632433d30",
+    "installedSha256": "0615c83cb45b24a3309456ebb102b9089df4d9bb06d572e58ab45a8632433d30",
+    "equal": true
+  },
+  {
+    "file": "bin/javaw.exe",
+    "archiveSha256": "34e7fc84e194dfd31647e65ae4aa0729e111ff1e1e1b9da58b1bcc6380d6f267",
+    "installedSha256": "34e7fc84e194dfd31647e65ae4aa0729e111ff1e1e1b9da58b1bcc6380d6f267",
+    "equal": true
+  },
+  {
+    "file": "bin/jawt.dll",
+    "archiveSha256": "2178e6c220e3a9ebd7c65af323b08747e69886374114e24dec8ba1291149c60e",
+    "installedSha256": "2178e6c220e3a9ebd7c65af323b08747e69886374114e24dec8ba1291149c60e",
+    "equal": true
+  },
+  {
+    "file": "bin/jcmd.exe",
+    "archiveSha256": "65370f0b30dea86cd38234211082184d7a07f0f5304696fa1c08d41128157ca7",
+    "installedSha256": "65370f0b30dea86cd38234211082184d7a07f0f5304696fa1c08d41128157ca7",
+    "equal": true
+  },
+  {
+    "file": "bin/jconsole.exe",
+    "archiveSha256": "80394d3d252b0163fb9871f9ed3304f7dfc6a8afe00d8e7ee82c9c436464e3f2",
+    "installedSha256": "80394d3d252b0163fb9871f9ed3304f7dfc6a8afe00d8e7ee82c9c436464e3f2",
+    "equal": true
+  },
+  {
+    "file": "bin/jdb.exe",
+    "archiveSha256": "85aa09d24f17d846acf270fe303ca2a2beb973d7791024e032fe2d70145d0a23",
+    "installedSha256": "85aa09d24f17d846acf270fe303ca2a2beb973d7791024e032fe2d70145d0a23",
+    "equal": true
+  },
+  {
+    "file": "bin/jdeprscan.exe",
+    "archiveSha256": "54e914f54034dfa7f138dfe8665aa4322097b54a6d83e47d2f7ed7aae7806aa7",
+    "installedSha256": "54e914f54034dfa7f138dfe8665aa4322097b54a6d83e47d2f7ed7aae7806aa7",
+    "equal": true
+  },
+  {
+    "file": "bin/jdeps.exe",
+    "archiveSha256": "5d86d4df2050e9d5faaabbd0e1ea830d92bf97fef48e31114f0ed8497e60a814",
+    "installedSha256": "5d86d4df2050e9d5faaabbd0e1ea830d92bf97fef48e31114f0ed8497e60a814",
+    "equal": true
+  },
+  {
+    "file": "bin/jdwp.dll",
+    "archiveSha256": "f9045016a75116326a68f2d38b2ba7d5a9ca4b6fa9f5a1d2078fe1434d5dedd5",
+    "installedSha256": "f9045016a75116326a68f2d38b2ba7d5a9ca4b6fa9f5a1d2078fe1434d5dedd5",
+    "equal": true
+  },
+  {
+    "file": "bin/jfr.exe",
+    "archiveSha256": "cc9f7df16d59bdf0b96c75f7f93e822194f4d9325c1139efa937ef6bc827a4bc",
+    "installedSha256": "cc9f7df16d59bdf0b96c75f7f93e822194f4d9325c1139efa937ef6bc827a4bc",
+    "equal": true
+  },
+  {
+    "file": "bin/jhsdb.exe",
+    "archiveSha256": "4383e7f7e1e493dd887cf3701cba843de9ecb462876cc676ab280be31443e985",
+    "installedSha256": "4383e7f7e1e493dd887cf3701cba843de9ecb462876cc676ab280be31443e985",
+    "equal": true
+  },
+  {
+    "file": "bin/jimage.dll",
+    "archiveSha256": "3ffd7401f13329ca49ab63e73f7bac120ae3e60eb41e7b4c2701928c2971d2d1",
+    "installedSha256": "3ffd7401f13329ca49ab63e73f7bac120ae3e60eb41e7b4c2701928c2971d2d1",
+    "equal": true
+  },
+  {
+    "file": "bin/jimage.exe",
+    "archiveSha256": "649eb0992ee15f2e06ab19104df5a2217c6f3260bcd7de976501928e34dbe602",
+    "installedSha256": "649eb0992ee15f2e06ab19104df5a2217c6f3260bcd7de976501928e34dbe602",
+    "equal": true
+  },
+  {
+    "file": "bin/jinfo.exe",
+    "archiveSha256": "4afce185d9693077637b5cc089fdf82bd6d27449e377008a5335fdac58a66c6e",
+    "installedSha256": "4afce185d9693077637b5cc089fdf82bd6d27449e377008a5335fdac58a66c6e",
+    "equal": true
+  },
+  {
+    "file": "bin/jli.dll",
+    "archiveSha256": "4c7afa0e808fee30827b31ed07260968ce802425deed98e414ad7f30ad6cb6ed",
+    "installedSha256": "4c7afa0e808fee30827b31ed07260968ce802425deed98e414ad7f30ad6cb6ed",
+    "equal": true
+  },
+  {
+    "file": "bin/jlink.exe",
+    "archiveSha256": "1d95304303090ae5251dd394d599fe5c74b35ba1a442702f40356dc6db37edea",
+    "installedSha256": "1d95304303090ae5251dd394d599fe5c74b35ba1a442702f40356dc6db37edea",
+    "equal": true
+  },
+  {
+    "file": "bin/jmap.exe",
+    "archiveSha256": "fb5220832aa6024fc39d490bc19027bd85bbd4d956eae5c232b95ef9dc29fbed",
+    "installedSha256": "fb5220832aa6024fc39d490bc19027bd85bbd4d956eae5c232b95ef9dc29fbed",
+    "equal": true
+  },
+  {
+    "file": "bin/jmod.exe",
+    "archiveSha256": "23fd6873e2340ba5f7aa7ab3936b07aee37bb53bd8b5dccff83c92517a6b3e3f",
+    "installedSha256": "23fd6873e2340ba5f7aa7ab3936b07aee37bb53bd8b5dccff83c92517a6b3e3f",
+    "equal": true
+  },
+  {
+    "file": "bin/jpackage.dll",
+    "archiveSha256": "02590dc6c8070c958b3ee4e413f1e403693ff74c070aef5c81c3b4407e0b6747",
+    "installedSha256": "02590dc6c8070c958b3ee4e413f1e403693ff74c070aef5c81c3b4407e0b6747",
+    "equal": true
+  },
+  {
+    "file": "bin/jpackage.exe",
+    "archiveSha256": "9d12939826fa1c66311b9cbfbf725d0376b633ba59c22f488fcb533b22c03dc1",
+    "installedSha256": "9d12939826fa1c66311b9cbfbf725d0376b633ba59c22f488fcb533b22c03dc1",
+    "equal": true
+  },
+  {
+    "file": "bin/jps.exe",
+    "archiveSha256": "7a027a154b3f4235b779df97da1487f8ef01a1fdfbf642e095ccbdf91fca8cde",
+    "installedSha256": "7a027a154b3f4235b779df97da1487f8ef01a1fdfbf642e095ccbdf91fca8cde",
+    "equal": true
+  },
+  {
+    "file": "bin/jrunscript.exe",
+    "archiveSha256": "04e238956fd395cfe9446d3b79c8f0af4c893cd97b6b3509fb9b286e10c85db9",
+    "installedSha256": "04e238956fd395cfe9446d3b79c8f0af4c893cd97b6b3509fb9b286e10c85db9",
+    "equal": true
+  },
+  {
+    "file": "bin/jshell.exe",
+    "archiveSha256": "0e5eaab9375d1122ae89ac382f2fa0e7d0fa235ee97677ad860844c03c00aac1",
+    "installedSha256": "0e5eaab9375d1122ae89ac382f2fa0e7d0fa235ee97677ad860844c03c00aac1",
+    "equal": true
+  },
+  {
+    "file": "bin/jsound.dll",
+    "archiveSha256": "5388c1d9452bcc6fefa67bf6ffd47227c028fdd5dd0480e981c25fa5e4f41600",
+    "installedSha256": "5388c1d9452bcc6fefa67bf6ffd47227c028fdd5dd0480e981c25fa5e4f41600",
+    "equal": true
+  },
+  {
+    "file": "bin/jstack.exe",
+    "archiveSha256": "ebdfc4fdedfc029d80476001b0f065b5b4b402e32445d5311c0d716732aae321",
+    "installedSha256": "ebdfc4fdedfc029d80476001b0f065b5b4b402e32445d5311c0d716732aae321",
+    "equal": true
+  },
+  {
+    "file": "bin/jstat.exe",
+    "archiveSha256": "f42f7a0a3267d6eace87defd79c743736daf98d65966cc6056f3dceab84de992",
+    "installedSha256": "f42f7a0a3267d6eace87defd79c743736daf98d65966cc6056f3dceab84de992",
+    "equal": true
+  },
+  {
+    "file": "bin/jstatd.exe",
+    "archiveSha256": "048f6a582a4bc46eb10816132b9e07876f2ddf397356f5579551ddb5282f979e",
+    "installedSha256": "048f6a582a4bc46eb10816132b9e07876f2ddf397356f5579551ddb5282f979e",
+    "equal": true
+  },
+  {
+    "file": "bin/jsvml.dll",
+    "archiveSha256": "c120a67c55182e7378125cdc2bf52b1f70f9a45661dd6f29a83f087093899dc7",
+    "installedSha256": "c120a67c55182e7378125cdc2bf52b1f70f9a45661dd6f29a83f087093899dc7",
+    "equal": true
+  },
+  {
+    "file": "bin/keytool.exe",
+    "archiveSha256": "670993088087f6fa0c2b67d4dcad2d8d3f9f8596bfa7e70cdf7895577348819f",
+    "installedSha256": "670993088087f6fa0c2b67d4dcad2d8d3f9f8596bfa7e70cdf7895577348819f",
+    "equal": true
+  },
+  {
+    "file": "bin/kinit.exe",
+    "archiveSha256": "3d5ad2154b42c63d67c2ed35588970908ea50d565dc62a47396ed5c4df73be19",
+    "installedSha256": "3d5ad2154b42c63d67c2ed35588970908ea50d565dc62a47396ed5c4df73be19",
+    "equal": true
+  },
+  {
+    "file": "bin/klist.exe",
+    "archiveSha256": "c7c4e140b920a1eae79605415a5a287a325329051582154c02f26e89f0c00d45",
+    "installedSha256": "c7c4e140b920a1eae79605415a5a287a325329051582154c02f26e89f0c00d45",
+    "equal": true
+  },
+  {
+    "file": "bin/ktab.exe",
+    "archiveSha256": "d09fd4bb7fe8cc420cc6470d7b24c02a11999bae29b0835c67bb49444cc368ce",
+    "installedSha256": "d09fd4bb7fe8cc420cc6470d7b24c02a11999bae29b0835c67bb49444cc368ce",
+    "equal": true
+  },
+  {
+    "file": "bin/lcms.dll",
+    "archiveSha256": "114572903b50ffcdae7a831977462d4d4231bf610a07e28afe0a8f68cbd88788",
+    "installedSha256": "114572903b50ffcdae7a831977462d4d4231bf610a07e28afe0a8f68cbd88788",
+    "equal": true
+  },
+  {
+    "file": "bin/le.dll",
+    "archiveSha256": "f3724ab4402e1cbcf40057c8f2cd2427fa34ea78d0d2e9e2bf55e27ecd8a092c",
+    "installedSha256": "f3724ab4402e1cbcf40057c8f2cd2427fa34ea78d0d2e9e2bf55e27ecd8a092c",
+    "equal": true
+  },
+  {
+    "file": "bin/management.dll",
+    "archiveSha256": "49b45d98f9afc4848f6a49ae00c6b0b072f23e679fd27feb114c3dc10ec3024e",
+    "installedSha256": "49b45d98f9afc4848f6a49ae00c6b0b072f23e679fd27feb114c3dc10ec3024e",
+    "equal": true
+  },
+  {
+    "file": "bin/management_agent.dll",
+    "archiveSha256": "0f7c0fe9dc3b6567f48c0d5d4b0b2ee6be8baf0a3f2d7a89b2ce5992fd11c9a7",
+    "installedSha256": "0f7c0fe9dc3b6567f48c0d5d4b0b2ee6be8baf0a3f2d7a89b2ce5992fd11c9a7",
+    "equal": true
+  },
+  {
+    "file": "bin/management_ext.dll",
+    "archiveSha256": "9c817947215a5b7fb9ad63bde1905a895e2a1cc8c30da7e67f1f94748c69fec7",
+    "installedSha256": "9c817947215a5b7fb9ad63bde1905a895e2a1cc8c30da7e67f1f94748c69fec7",
+    "equal": true
+  },
+  {
+    "file": "bin/mlib_image.dll",
+    "archiveSha256": "7be0384b94e94ac476cfce39b8c2c2d08ae720a7c3cd4269d224f0345c7ceb00",
+    "installedSha256": "7be0384b94e94ac476cfce39b8c2c2d08ae720a7c3cd4269d224f0345c7ceb00",
+    "equal": true
+  },
+  {
+    "file": "bin/msvcp140.dll",
+    "archiveSha256": "a88b8c1c8f27bf90fe960e0e8bd56984ad48167071af92d96ec1051f89f827fb",
+    "installedSha256": "a88b8c1c8f27bf90fe960e0e8bd56984ad48167071af92d96ec1051f89f827fb",
+    "equal": true
+  },
+  {
+    "file": "bin/net.dll",
+    "archiveSha256": "02200c8233241af1d8f48572784c174dea4160309ff40d39add17eab1e4c9839",
+    "installedSha256": "02200c8233241af1d8f48572784c174dea4160309ff40d39add17eab1e4c9839",
+    "equal": true
+  },
+  {
+    "file": "bin/nio.dll",
+    "archiveSha256": "358c9b77a6e36eb7a59cfa24858d752205713bbd1bbfb33b50fd59cd2faf486b",
+    "installedSha256": "358c9b77a6e36eb7a59cfa24858d752205713bbd1bbfb33b50fd59cd2faf486b",
+    "equal": true
+  },
+  {
+    "file": "bin/prefs.dll",
+    "archiveSha256": "df1341b06398e8023f905113a292c28d38b349395ba0027d9dd928d042242811",
+    "installedSha256": "df1341b06398e8023f905113a292c28d38b349395ba0027d9dd928d042242811",
+    "equal": true
+  },
+  {
+    "file": "bin/rmi.dll",
+    "archiveSha256": "2350e937afc2ea318cf6ac2d584d63027d3de77cfd6aebce8f58c2f329578477",
+    "installedSha256": "2350e937afc2ea318cf6ac2d584d63027d3de77cfd6aebce8f58c2f329578477",
+    "equal": true
+  },
+  {
+    "file": "bin/rmiregistry.exe",
+    "archiveSha256": "5a381e504f34a94c1c986c971125cfa5ecb621cf30017a9b2f0f32accbca2f3d",
+    "installedSha256": "5a381e504f34a94c1c986c971125cfa5ecb621cf30017a9b2f0f32accbca2f3d",
+    "equal": true
+  },
+  {
+    "file": "bin/saproc.dll",
+    "archiveSha256": "f739f2937bb072423b2059a994d3271ac3557790c14098a882f90463c18a6844",
+    "installedSha256": "f739f2937bb072423b2059a994d3271ac3557790c14098a882f90463c18a6844",
+    "equal": true
+  },
+  {
+    "file": "bin/serialver.exe",
+    "archiveSha256": "c60e3d78b967c030d3080b96ef40434dd4e845a5c8df113a7244cd2e5b054b3c",
+    "installedSha256": "c60e3d78b967c030d3080b96ef40434dd4e845a5c8df113a7244cd2e5b054b3c",
+    "equal": true
+  },
+  {
+    "file": "bin/server/classes.jsa",
+    "archiveSha256": "b5d36f2bf1729142d39bdeed2396a0c990a218b898151f53ffda745dcc873181",
+    "installedSha256": "b5d36f2bf1729142d39bdeed2396a0c990a218b898151f53ffda745dcc873181",
+    "equal": true
+  },
+  {
+    "file": "bin/server/classes_nocoops.jsa",
+    "archiveSha256": "0ade1647d895f9110dec4818e236cbbe9c885779b83bbed2b9ce0d8e9de5b0e6",
+    "installedSha256": "0ade1647d895f9110dec4818e236cbbe9c885779b83bbed2b9ce0d8e9de5b0e6",
+    "equal": true
+  },
+  {
+    "file": "bin/server/jvm.dll",
+    "archiveSha256": "b2242d457e00a0b2b2ad269960611e3ef31b9e182b45409c3e9c426713e84bd9",
+    "installedSha256": "b2242d457e00a0b2b2ad269960611e3ef31b9e182b45409c3e9c426713e84bd9",
+    "equal": true
+  },
+  {
+    "file": "bin/splashscreen.dll",
+    "archiveSha256": "2362947a81ea16d9f5ac92a53d4435131ebd9da52299f2eedf30e2d5126a251e",
+    "installedSha256": "2362947a81ea16d9f5ac92a53d4435131ebd9da52299f2eedf30e2d5126a251e",
+    "equal": true
+  },
+  {
+    "file": "bin/sspi_bridge.dll",
+    "archiveSha256": "aab0ab2e0250e2faa40454e9e9811d7873c58b8e474fa5158f2efd74aa05fe9c",
+    "installedSha256": "aab0ab2e0250e2faa40454e9e9811d7873c58b8e474fa5158f2efd74aa05fe9c",
+    "equal": true
+  },
+  {
+    "file": "bin/sunmscapi.dll",
+    "archiveSha256": "d40bf142c08c1e9a823154905b3aed7a7ef825cf77bc9e06735bc8fa3ee7efb4",
+    "installedSha256": "d40bf142c08c1e9a823154905b3aed7a7ef825cf77bc9e06735bc8fa3ee7efb4",
+    "equal": true
+  },
+  {
+    "file": "bin/ucrtbase.dll",
+    "archiveSha256": "6238cbfe9f57c142b75e153c399c478d492252fda8cb40ee539c2dcb0f2eb232",
+    "installedSha256": "6238cbfe9f57c142b75e153c399c478d492252fda8cb40ee539c2dcb0f2eb232",
+    "equal": true
+  },
+  {
+    "file": "bin/vcruntime140.dll",
+    "archiveSha256": "475ab98b7722e965bd38c8fa6ed23502309582ccf294ff1061cb290c7988f0d1",
+    "installedSha256": "475ab98b7722e965bd38c8fa6ed23502309582ccf294ff1061cb290c7988f0d1",
+    "equal": true
+  },
+  {
+    "file": "bin/vcruntime140_1.dll",
+    "archiveSha256": "0579d460ea1f7e8a815fa55a8821a5ff489c8097f051765e9beaf25d8d0f27d6",
+    "installedSha256": "0579d460ea1f7e8a815fa55a8821a5ff489c8097f051765e9beaf25d8d0f27d6",
+    "equal": true
+  },
+  {
+    "file": "bin/verify.dll",
+    "archiveSha256": "1e7ae3e6ffccb6d135d74033037c627789311f85aad12a700d6d448be1bfa5eb",
+    "installedSha256": "1e7ae3e6ffccb6d135d74033037c627789311f85aad12a700d6d448be1bfa5eb",
+    "equal": true
+  },
+  {
+    "file": "bin/w2k_lsa_auth.dll",
+    "archiveSha256": "d3c46d3aa53ea0e368a09b69c15d250e865c233af21403dbec56a4cec94ea11b",
+    "installedSha256": "d3c46d3aa53ea0e368a09b69c15d250e865c233af21403dbec56a4cec94ea11b",
+    "equal": true
+  },
+  {
+    "file": "bin/windowsaccessbridge-64.dll",
+    "archiveSha256": "e741222d5a239216038e206f1a5708f25c18c1a8d8cf4683a5ea654653fd7fe4",
+    "installedSha256": "e741222d5a239216038e206f1a5708f25c18c1a8d8cf4683a5ea654653fd7fe4",
+    "equal": true
+  },
+  {
+    "file": "bin/WinFallbackLookup.dll",
+    "archiveSha256": "f7e517620502af51459c5d1e54603df7ab33ea17ecb6de44a199afcada0cccc4",
+    "installedSha256": "f7e517620502af51459c5d1e54603df7ab33ea17ecb6de44a199afcada0cccc4",
+    "equal": true
+  },
+  {
+    "file": "bin/zip.dll",
+    "archiveSha256": "a7899d0cdd9d514ab9dd30790d84b13757742864ca4473dbf24cc1812e3424f3",
+    "installedSha256": "a7899d0cdd9d514ab9dd30790d84b13757742864ca4473dbf24cc1812e3424f3",
+    "equal": true
+  },
+  {
+    "file": "conf/logging.properties",
+    "archiveSha256": "b62d2733ab99556b108a1951d894c5a8d76b1ac7a00c02c388f9eb9be046c56f",
+    "installedSha256": "b62d2733ab99556b108a1951d894c5a8d76b1ac7a00c02c388f9eb9be046c56f",
+    "equal": true
+  },
+  {
+    "file": "conf/management/jmxremote.access",
+    "archiveSha256": "0c25d26ee212ca1e8c33f67c3c460d43fe849c3a1d23dbe341148517602b280c",
+    "installedSha256": "0c25d26ee212ca1e8c33f67c3c460d43fe849c3a1d23dbe341148517602b280c",
+    "equal": true
+  },
+  {
+    "file": "conf/management/jmxremote.password.template",
+    "archiveSha256": "0273b6a6b9e20e6ce54c5aee70164028e0395063b2b7d39060a40b6495543dbf",
+    "installedSha256": "0273b6a6b9e20e6ce54c5aee70164028e0395063b2b7d39060a40b6495543dbf",
+    "equal": true
+  },
+  {
+    "file": "conf/management/management.properties",
+    "archiveSha256": "f80096ec028dcb71625c398ec16d12023cafc6a1c055aceaed07d02e8d56f637",
+    "installedSha256": "f80096ec028dcb71625c398ec16d12023cafc6a1c055aceaed07d02e8d56f637",
+    "equal": true
+  },
+  {
+    "file": "conf/net.properties",
+    "archiveSha256": "5bc726671936e0af4fdf6bed67d9e3a20a92c30b0ba23673d0314baa5e3ffb08",
+    "installedSha256": "5bc726671936e0af4fdf6bed67d9e3a20a92c30b0ba23673d0314baa5e3ffb08",
+    "equal": true
+  },
+  {
+    "file": "conf/security/java.policy",
+    "archiveSha256": "f2a00a1dec3b7a097f0815f338a84717ba1017d5d7aae96d842d2188d67c3250",
+    "installedSha256": "f2a00a1dec3b7a097f0815f338a84717ba1017d5d7aae96d842d2188d67c3250",
+    "equal": true
+  },
+  {
+    "file": "conf/security/java.security",
+    "archiveSha256": "d3869371d15a199e17e227a45b95e6b78b69fce329dba03c4a2a42cd3efff20b",
+    "installedSha256": "d3869371d15a199e17e227a45b95e6b78b69fce329dba03c4a2a42cd3efff20b",
+    "equal": true
+  },
+  {
+    "file": "conf/security/policy/limited/default_local.policy",
+    "archiveSha256": "2b2627548e61316150d47ffc3e6cad465ca05b3cccd4785eb7d21aa7baa0f441",
+    "installedSha256": "2b2627548e61316150d47ffc3e6cad465ca05b3cccd4785eb7d21aa7baa0f441",
+    "equal": true
+  },
+  {
+    "file": "conf/security/policy/limited/default_US_export.policy",
+    "archiveSha256": "758b930a526fc670ab7537f8c26321527050a31f5f42149a2dda623c56a0a1a9",
+    "installedSha256": "758b930a526fc670ab7537f8c26321527050a31f5f42149a2dda623c56a0a1a9",
+    "equal": true
+  },
+  {
+    "file": "conf/security/policy/limited/exempt_local.policy",
+    "archiveSha256": "8c3d7648abcd95a272ce12db870082937f4d7f6878d730d83cb7fbb31eb8b2c9",
+    "installedSha256": "8c3d7648abcd95a272ce12db870082937f4d7f6878d730d83cb7fbb31eb8b2c9",
+    "equal": true
+  },
+  {
+    "file": "conf/security/policy/README.txt",
+    "archiveSha256": "6da0747334b0fea7592fd92614b2bbc8b126535e129b1fee483774d914e98eb5",
+    "installedSha256": "6da0747334b0fea7592fd92614b2bbc8b126535e129b1fee483774d914e98eb5",
+    "equal": true
+  },
+  {
+    "file": "conf/security/policy/unlimited/default_local.policy",
+    "archiveSha256": "8d8a318e6d90dfd7e26612d2b6385aa704f686ca6134c551f8928418d92b851a",
+    "installedSha256": "8d8a318e6d90dfd7e26612d2b6385aa704f686ca6134c551f8928418d92b851a",
+    "equal": true
+  },
+  {
+    "file": "conf/security/policy/unlimited/default_US_export.policy",
+    "archiveSha256": "758b930a526fc670ab7537f8c26321527050a31f5f42149a2dda623c56a0a1a9",
+    "installedSha256": "758b930a526fc670ab7537f8c26321527050a31f5f42149a2dda623c56a0a1a9",
+    "equal": true
+  },
+  {
+    "file": "conf/sound.properties",
+    "archiveSha256": "299c2360b6155eb28990ec49cd21753f97e43442fe8fab03e04f3e213df43a66",
+    "installedSha256": "299c2360b6155eb28990ec49cd21753f97e43442fe8fab03e04f3e213df43a66",
+    "equal": true
+  },
+  {
+    "file": "include/classfile_constants.h",
+    "archiveSha256": "e5a2593d22d358dc84a0c8cfc57531e471b58ab03ff1c79c4bfd2bc499a41503",
+    "installedSha256": "e5a2593d22d358dc84a0c8cfc57531e471b58ab03ff1c79c4bfd2bc499a41503",
+    "equal": true
+  },
+  {
+    "file": "include/jawt.h",
+    "archiveSha256": "0c5df58320511cc350977ba3ba3b1e3f10942900579eef482ac4f4bfb1c9a0ae",
+    "installedSha256": "0c5df58320511cc350977ba3ba3b1e3f10942900579eef482ac4f4bfb1c9a0ae",
+    "equal": true
+  },
+  {
+    "file": "include/jdwpTransport.h",
+    "archiveSha256": "c5be39603fad19b71e5dc06deb6dce8834700be36d9ab114d0ec4d4aa0ac4517",
+    "installedSha256": "c5be39603fad19b71e5dc06deb6dce8834700be36d9ab114d0ec4d4aa0ac4517",
+    "equal": true
+  },
+  {
+    "file": "include/jni.h",
+    "archiveSha256": "b450319f21e3e70bb559c1b3e9febdf876c0ca282a86effa1584475090f1404a",
+    "installedSha256": "b450319f21e3e70bb559c1b3e9febdf876c0ca282a86effa1584475090f1404a",
+    "equal": true
+  },
+  {
+    "file": "include/jvmti.h",
+    "archiveSha256": "a0ec0daac70e668b6457e3de8fdeb78ac61e077620133dd91f3c8e6d0bc1431e",
+    "installedSha256": "a0ec0daac70e668b6457e3de8fdeb78ac61e077620133dd91f3c8e6d0bc1431e",
+    "equal": true
+  },
+  {
+    "file": "include/jvmticmlr.h",
+    "archiveSha256": "b9484508a7d4368d4fd54453ee4555815ce294a28ab5f40d7523ef9af38e2563",
+    "installedSha256": "b9484508a7d4368d4fd54453ee4555815ce294a28ab5f40d7523ef9af38e2563",
+    "equal": true
+  },
+  {
+    "file": "include/win32/bridge/AccessBridgeCallbacks.h",
+    "archiveSha256": "7dffc19cabc370870fafa3eeb80e4960ac29385ed2b550d60ddf467a44a6b595",
+    "installedSha256": "7dffc19cabc370870fafa3eeb80e4960ac29385ed2b550d60ddf467a44a6b595",
+    "equal": true
+  },
+  {
+    "file": "include/win32/bridge/AccessBridgeCalls.h",
+    "archiveSha256": "d2887110ba888f7436658e4020f3f0eec4341f903a9f164ce34e554df93e94bb",
+    "installedSha256": "d2887110ba888f7436658e4020f3f0eec4341f903a9f164ce34e554df93e94bb",
+    "equal": true
+  },
+  {
+    "file": "include/win32/bridge/AccessBridgePackages.h",
+    "archiveSha256": "68f32834744103099ae57568ca23f69dcd316f1884622914a9fb584f57d4b405",
+    "installedSha256": "68f32834744103099ae57568ca23f69dcd316f1884622914a9fb584f57d4b405",
+    "equal": true
+  },
+  {
+    "file": "include/win32/jawt_md.h",
+    "archiveSha256": "b0254a597ec26ae849d8f9fc3fe2a68249a69bfd5b0026a53c93fac1af13c3b8",
+    "installedSha256": "b0254a597ec26ae849d8f9fc3fe2a68249a69bfd5b0026a53c93fac1af13c3b8",
+    "equal": true
+  },
+  {
+    "file": "include/win32/jni_md.h",
+    "archiveSha256": "a0d17d1d5dda93f81d723dcec4b9b0f47c8a5f9d2a1164f3fb3f9a882bb3cd34",
+    "installedSha256": "a0d17d1d5dda93f81d723dcec4b9b0f47c8a5f9d2a1164f3fb3f9a882bb3cd34",
+    "equal": true
+  },
+  {
+    "file": "jmods/java.base.jmod",
+    "archiveSha256": "513f6ca315ce907e8a8760c0fbd2f2de41b32b0fa96f0bf8f0294742b6a29f1b",
+    "installedSha256": "513f6ca315ce907e8a8760c0fbd2f2de41b32b0fa96f0bf8f0294742b6a29f1b",
+    "equal": true
+  },
+  {
+    "file": "jmods/java.compiler.jmod",
+    "archiveSha256": "9d19b98a0c2e4afbf7502b69ceea2ef010ec4c70a22945d93bbf6b89cac443a9",
+    "installedSha256": "9d19b98a0c2e4afbf7502b69ceea2ef010ec4c70a22945d93bbf6b89cac443a9",
+    "equal": true
+  },
+  {
+    "file": "jmods/java.datatransfer.jmod",
+    "archiveSha256": "6480a04bf4584d7271c01b208aa658e33badb03ee6ab99000dcb0c21771003eb",
+    "installedSha256": "6480a04bf4584d7271c01b208aa658e33badb03ee6ab99000dcb0c21771003eb",
+    "equal": true
+  },
+  {
+    "file": "jmods/java.desktop.jmod",
+    "archiveSha256": "9547f8025134f151b69a32e27e5f22b9cf49fcda05401fd4ff651b071ca0e56c",
+    "installedSha256": "9547f8025134f151b69a32e27e5f22b9cf49fcda05401fd4ff651b071ca0e56c",
+    "equal": true
+  },
+  {
+    "file": "jmods/java.instrument.jmod",
+    "archiveSha256": "894bd0287978a87aee1ebd577882dc010c18c14e63e41a23d317edee0c984176",
+    "installedSha256": "894bd0287978a87aee1ebd577882dc010c18c14e63e41a23d317edee0c984176",
+    "equal": true
+  },
+  {
+    "file": "jmods/java.logging.jmod",
+    "archiveSha256": "24c29d5bdefadccc028c69a080e9f2cd5ded337ffbfae20bcd95353ff47135c8",
+    "installedSha256": "24c29d5bdefadccc028c69a080e9f2cd5ded337ffbfae20bcd95353ff47135c8",
+    "equal": true
+  },
+  {
+    "file": "jmods/java.management.jmod",
+    "archiveSha256": "f21919e4ae2d7c293daf6930090a23e827946fcf118a29bc9a0cb7ba9d5a045a",
+    "installedSha256": "f21919e4ae2d7c293daf6930090a23e827946fcf118a29bc9a0cb7ba9d5a045a",
+    "equal": true
+  },
+  {
+    "file": "jmods/java.management.rmi.jmod",
+    "archiveSha256": "93fbe001abbb49a5939239bfdc06bfef3d03e90c8411ff94e691ba17159d6fbf",
+    "installedSha256": "93fbe001abbb49a5939239bfdc06bfef3d03e90c8411ff94e691ba17159d6fbf",
+    "equal": true
+  },
+  {
+    "file": "jmods/java.naming.jmod",
+    "archiveSha256": "b84dccad489259f326a7de851d33173a173bb767b50d867e2a2eee957575e121",
+    "installedSha256": "b84dccad489259f326a7de851d33173a173bb767b50d867e2a2eee957575e121",
+    "equal": true
+  },
+  {
+    "file": "jmods/java.net.http.jmod",
+    "archiveSha256": "fc497820fca677ba9dc84dda03c23450bd203f91e43366a846c9a7faf6bc0dc8",
+    "installedSha256": "fc497820fca677ba9dc84dda03c23450bd203f91e43366a846c9a7faf6bc0dc8",
+    "equal": true
+  },
+  {
+    "file": "jmods/java.prefs.jmod",
+    "archiveSha256": "3748a2886cd7ca59ad8de70ea3d4d2cafd35f2086fe2a7c8cdbbfe3d754dedc2",
+    "installedSha256": "3748a2886cd7ca59ad8de70ea3d4d2cafd35f2086fe2a7c8cdbbfe3d754dedc2",
+    "equal": true
+  },
+  {
+    "file": "jmods/java.rmi.jmod",
+    "archiveSha256": "b0ccfbd65c946ca0c89197e29defc9fb75cd9689d683076fad860bed741475b3",
+    "installedSha256": "b0ccfbd65c946ca0c89197e29defc9fb75cd9689d683076fad860bed741475b3",
+    "equal": true
+  },
+  {
+    "file": "jmods/java.scripting.jmod",
+    "archiveSha256": "008b2050c085bcdb9da5b91bb12af16f73d6cffb36e07edd545aa21ec3687ce4",
+    "installedSha256": "008b2050c085bcdb9da5b91bb12af16f73d6cffb36e07edd545aa21ec3687ce4",
+    "equal": true
+  },
+  {
+    "file": "jmods/java.se.jmod",
+    "archiveSha256": "6b55eae785396b58e07b93563828180bfb091c4c8cefe8ba4eb068a0fcb0dba9",
+    "installedSha256": "6b55eae785396b58e07b93563828180bfb091c4c8cefe8ba4eb068a0fcb0dba9",
+    "equal": true
+  },
+  {
+    "file": "jmods/java.security.jgss.jmod",
+    "archiveSha256": "b53798f90cc269167a7fb2244d05aa1f3ce4c8a5172214ffaf68f68d0d8603bf",
+    "installedSha256": "b53798f90cc269167a7fb2244d05aa1f3ce4c8a5172214ffaf68f68d0d8603bf",
+    "equal": true
+  },
+  {
+    "file": "jmods/java.security.sasl.jmod",
+    "archiveSha256": "545dc1d15a1be2edfbadfd2ea1b99828f9a7f0454a6e19787d835a176b1fd59c",
+    "installedSha256": "545dc1d15a1be2edfbadfd2ea1b99828f9a7f0454a6e19787d835a176b1fd59c",
+    "equal": true
+  },
+  {
+    "file": "jmods/java.smartcardio.jmod",
+    "archiveSha256": "83507ff3fb7d9e44e37b37ee7947d3c05b32cf24fc74620c3fc4e13c7144e254",
+    "installedSha256": "83507ff3fb7d9e44e37b37ee7947d3c05b32cf24fc74620c3fc4e13c7144e254",
+    "equal": true
+  },
+  {
+    "file": "jmods/java.sql.jmod",
+    "archiveSha256": "307f1e851415e64e9aac1c1329b159b6ba89a291c6c75b3b3a5e2044b06ab136",
+    "installedSha256": "307f1e851415e64e9aac1c1329b159b6ba89a291c6c75b3b3a5e2044b06ab136",
+    "equal": true
+  },
+  {
+    "file": "jmods/java.sql.rowset.jmod",
+    "archiveSha256": "e84111be9db1b9ad6428604ec2aba6c22c43b887389046450ee682ea5d87fec8",
+    "installedSha256": "e84111be9db1b9ad6428604ec2aba6c22c43b887389046450ee682ea5d87fec8",
+    "equal": true
+  },
+  {
+    "file": "jmods/java.transaction.xa.jmod",
+    "archiveSha256": "be082c3cd577cc43a8b78a9dc2baad2f4c5d4c47c89366312ab8de20925d6ae9",
+    "installedSha256": "be082c3cd577cc43a8b78a9dc2baad2f4c5d4c47c89366312ab8de20925d6ae9",
+    "equal": true
+  },
+  {
+    "file": "jmods/java.xml.crypto.jmod",
+    "archiveSha256": "dd84a911b6b6bdc55e5eb8f1926cc3b783d85757dcda15ffc4c2286f44221948",
+    "installedSha256": "dd84a911b6b6bdc55e5eb8f1926cc3b783d85757dcda15ffc4c2286f44221948",
+    "equal": true
+  },
+  {
+    "file": "jmods/java.xml.jmod",
+    "archiveSha256": "300d2e910798ddc7a679b70c6beb2ec14f32accb4b405e01c29afb1668e0b292",
+    "installedSha256": "300d2e910798ddc7a679b70c6beb2ec14f32accb4b405e01c29afb1668e0b292",
+    "equal": true
+  },
+  {
+    "file": "jmods/jdk.accessibility.jmod",
+    "archiveSha256": "789b2bf4701dc07295abc0be0691411bd2526132c8e545e004b5bf76ef73e1ab",
+    "installedSha256": "789b2bf4701dc07295abc0be0691411bd2526132c8e545e004b5bf76ef73e1ab",
+    "equal": true
+  },
+  {
+    "file": "jmods/jdk.attach.jmod",
+    "archiveSha256": "a648efe0068268b4fc9e2865802ab7aee44ebf2bec4c9cc167ea1979433d4db6",
+    "installedSha256": "a648efe0068268b4fc9e2865802ab7aee44ebf2bec4c9cc167ea1979433d4db6",
+    "equal": true
+  },
+  {
+    "file": "jmods/jdk.charsets.jmod",
+    "archiveSha256": "291226cb00925d501994ecff364fb3f060a0201120f03fb0ab633d7a67fd3ec0",
+    "installedSha256": "291226cb00925d501994ecff364fb3f060a0201120f03fb0ab633d7a67fd3ec0",
+    "equal": true
+  },
+  {
+    "file": "jmods/jdk.compiler.jmod",
+    "archiveSha256": "a7968e4a481130b7eca15b4b423fa5ebb4220221e289f8963eab595ef69e71ba",
+    "installedSha256": "a7968e4a481130b7eca15b4b423fa5ebb4220221e289f8963eab595ef69e71ba",
+    "equal": true
+  },
+  {
+    "file": "jmods/jdk.crypto.cryptoki.jmod",
+    "archiveSha256": "3b8dc209a35f551639ff2ab03ba638b097251025e5ebe2580f1b03bfaf6f839a",
+    "installedSha256": "3b8dc209a35f551639ff2ab03ba638b097251025e5ebe2580f1b03bfaf6f839a",
+    "equal": true
+  },
+  {
+    "file": "jmods/jdk.crypto.ec.jmod",
+    "archiveSha256": "ecbf41267b80b0d66f2159c75aa42844bbc1fedeeac40008e44f5936011c647f",
+    "installedSha256": "ecbf41267b80b0d66f2159c75aa42844bbc1fedeeac40008e44f5936011c647f",
+    "equal": true
+  },
+  {
+    "file": "jmods/jdk.crypto.mscapi.jmod",
+    "archiveSha256": "93c638291bc98f450d6548ff694bb762d4061fa83b12f5382d7690e0b93c2e4c",
+    "installedSha256": "93c638291bc98f450d6548ff694bb762d4061fa83b12f5382d7690e0b93c2e4c",
+    "equal": true
+  },
+  {
+    "file": "jmods/jdk.dynalink.jmod",
+    "archiveSha256": "331187c4e16bd64b12374f9b902f2e782922dd356c0aa8a39ee392828221cb71",
+    "installedSha256": "331187c4e16bd64b12374f9b902f2e782922dd356c0aa8a39ee392828221cb71",
+    "equal": true
+  },
+  {
+    "file": "jmods/jdk.editpad.jmod",
+    "archiveSha256": "ad4421f8248b31f697f5ef77ff10b79d13dfae55096b752ecf879907997a248d",
+    "installedSha256": "ad4421f8248b31f697f5ef77ff10b79d13dfae55096b752ecf879907997a248d",
+    "equal": true
+  },
+  {
+    "file": "jmods/jdk.hotspot.agent.jmod",
+    "archiveSha256": "957d6cd5584377b57e2e799c8342f8bec052c8df5c23d069cc920ae5accbc163",
+    "installedSha256": "957d6cd5584377b57e2e799c8342f8bec052c8df5c23d069cc920ae5accbc163",
+    "equal": true
+  },
+  {
+    "file": "jmods/jdk.httpserver.jmod",
+    "archiveSha256": "3031605bd8534ee021395d7443aae0d2e71d16cc7bc46c2cca34fd7f34d8e5fd",
+    "installedSha256": "3031605bd8534ee021395d7443aae0d2e71d16cc7bc46c2cca34fd7f34d8e5fd",
+    "equal": true
+  },
+  {
+    "file": "jmods/jdk.incubator.foreign.jmod",
+    "archiveSha256": "acf8b3a02006fa054af3ab1f193771b982e66f4e985b837fc33bf64cf7155b9e",
+    "installedSha256": "acf8b3a02006fa054af3ab1f193771b982e66f4e985b837fc33bf64cf7155b9e",
+    "equal": true
+  },
+  {
+    "file": "jmods/jdk.incubator.vector.jmod",
+    "archiveSha256": "3752f391b62ebb2ffb737c5db9f751c3ad50563c1989540eacb445ddb505557d",
+    "installedSha256": "3752f391b62ebb2ffb737c5db9f751c3ad50563c1989540eacb445ddb505557d",
+    "equal": true
+  },
+  {
+    "file": "jmods/jdk.internal.ed.jmod",
+    "archiveSha256": "e74195badd80ececb12fc351f7ac2db4f0f1feaa2f7053f7bd45b217aa83bf05",
+    "installedSha256": "e74195badd80ececb12fc351f7ac2db4f0f1feaa2f7053f7bd45b217aa83bf05",
+    "equal": true
+  },
+  {
+    "file": "jmods/jdk.internal.jvmstat.jmod",
+    "archiveSha256": "5d902bcd8f37f1b5c696f54052ae2cd546ef7c10c23de2251bb71ef031ed357c",
+    "installedSha256": "5d902bcd8f37f1b5c696f54052ae2cd546ef7c10c23de2251bb71ef031ed357c",
+    "equal": true
+  },
+  {
+    "file": "jmods/jdk.internal.le.jmod",
+    "archiveSha256": "b91acf69f1ad519fba2c4793d5b3ca9f6a235982fe0c813473a197ae3e873d9e",
+    "installedSha256": "b91acf69f1ad519fba2c4793d5b3ca9f6a235982fe0c813473a197ae3e873d9e",
+    "equal": true
+  },
+  {
+    "file": "jmods/jdk.internal.opt.jmod",
+    "archiveSha256": "00c2b7cba2b119c10ac3aa4b1204b797794850f6433f7cbf36378fd69c1489e8",
+    "installedSha256": "00c2b7cba2b119c10ac3aa4b1204b797794850f6433f7cbf36378fd69c1489e8",
+    "equal": true
+  },
+  {
+    "file": "jmods/jdk.internal.vm.ci.jmod",
+    "archiveSha256": "07bbb3513a42240f01abf3f291597fedf6da205a6d9795bb9a9d0159b53767ff",
+    "installedSha256": "07bbb3513a42240f01abf3f291597fedf6da205a6d9795bb9a9d0159b53767ff",
+    "equal": true
+  },
+  {
+    "file": "jmods/jdk.internal.vm.compiler.jmod",
+    "archiveSha256": "ef61ad3e42adbd05b6c6b35c588bab2c05b149f487ceff5782fa777f91ea384e",
+    "installedSha256": "ef61ad3e42adbd05b6c6b35c588bab2c05b149f487ceff5782fa777f91ea384e",
+    "equal": true
+  },
+  {
+    "file": "jmods/jdk.internal.vm.compiler.management.jmod",
+    "archiveSha256": "93626afd7d8ca7e47bc41f5cd455bc715c3b9e7701cb09adf48b1e67938ff4d7",
+    "installedSha256": "93626afd7d8ca7e47bc41f5cd455bc715c3b9e7701cb09adf48b1e67938ff4d7",
+    "equal": true
+  },
+  {
+    "file": "jmods/jdk.jartool.jmod",
+    "archiveSha256": "9d59fcea09deba761fabecaf95445647537e849630213bb072b65e5418b0aa40",
+    "installedSha256": "9d59fcea09deba761fabecaf95445647537e849630213bb072b65e5418b0aa40",
+    "equal": true
+  },
+  {
+    "file": "jmods/jdk.javadoc.jmod",
+    "archiveSha256": "2f4b9fa3747d259f7f8180b2e3b07e89bb8541661f0ef645469ca4ecb75ce6c1",
+    "installedSha256": "2f4b9fa3747d259f7f8180b2e3b07e89bb8541661f0ef645469ca4ecb75ce6c1",
+    "equal": true
+  },
+  {
+    "file": "jmods/jdk.jcmd.jmod",
+    "archiveSha256": "0a9f810e1f8b02101ddfcc25805ce7fd8e81282b284b99213513b1e43f1e0848",
+    "installedSha256": "0a9f810e1f8b02101ddfcc25805ce7fd8e81282b284b99213513b1e43f1e0848",
+    "equal": true
+  },
+  {
+    "file": "jmods/jdk.jconsole.jmod",
+    "archiveSha256": "8e2ffe613737deeb082e62afffc16fc2e28a42e13210e15f6e4eda3d7d041952",
+    "installedSha256": "8e2ffe613737deeb082e62afffc16fc2e28a42e13210e15f6e4eda3d7d041952",
+    "equal": true
+  },
+  {
+    "file": "jmods/jdk.jdeps.jmod",
+    "archiveSha256": "27cc22e1d1846eef25aa1c2944ff0066e2193c09ca1f763678b516e85a0a5c17",
+    "installedSha256": "27cc22e1d1846eef25aa1c2944ff0066e2193c09ca1f763678b516e85a0a5c17",
+    "equal": true
+  },
+  {
+    "file": "jmods/jdk.jdi.jmod",
+    "archiveSha256": "1bb609c115f0a8d665f8c8a1c681231e5881774e3020eee0cad0a858939bdf5d",
+    "installedSha256": "1bb609c115f0a8d665f8c8a1c681231e5881774e3020eee0cad0a858939bdf5d",
+    "equal": true
+  },
+  {
+    "file": "jmods/jdk.jdwp.agent.jmod",
+    "archiveSha256": "44c1c6c308defaeb8b1196ebd7a71beaca0304863472f1e53dc877d80fc578df",
+    "installedSha256": "44c1c6c308defaeb8b1196ebd7a71beaca0304863472f1e53dc877d80fc578df",
+    "equal": true
+  },
+  {
+    "file": "jmods/jdk.jfr.jmod",
+    "archiveSha256": "f4d7f735f669261a88b602939105d8d11ecaf952f1c7eeeba28e91e1d64472fe",
+    "installedSha256": "f4d7f735f669261a88b602939105d8d11ecaf952f1c7eeeba28e91e1d64472fe",
+    "equal": true
+  },
+  {
+    "file": "jmods/jdk.jlink.jmod",
+    "archiveSha256": "4c36a5ac4b14b24a91f87d826a336de22f3639e1104944c5610ff8433ee6a95c",
+    "installedSha256": "4c36a5ac4b14b24a91f87d826a336de22f3639e1104944c5610ff8433ee6a95c",
+    "equal": true
+  },
+  {
+    "file": "jmods/jdk.jpackage.jmod",
+    "archiveSha256": "5fe4f01fbe97e5fd3b6edd300e2a42afdea21d9a4a06e63548fbc628c1e0c89d",
+    "installedSha256": "5fe4f01fbe97e5fd3b6edd300e2a42afdea21d9a4a06e63548fbc628c1e0c89d",
+    "equal": true
+  },
+  {
+    "file": "jmods/jdk.jshell.jmod",
+    "archiveSha256": "08de77f0408b958547c0264e0ac540cf95e4183b2685112314bae55e2d9ac085",
+    "installedSha256": "08de77f0408b958547c0264e0ac540cf95e4183b2685112314bae55e2d9ac085",
+    "equal": true
+  },
+  {
+    "file": "jmods/jdk.jsobject.jmod",
+    "archiveSha256": "585e27e6394ab74ee09ec37cd7322d8e602649edca00c0f7a01113d0a9867ee9",
+    "installedSha256": "585e27e6394ab74ee09ec37cd7322d8e602649edca00c0f7a01113d0a9867ee9",
+    "equal": true
+  },
+  {
+    "file": "jmods/jdk.jstatd.jmod",
+    "archiveSha256": "552a54d915892f80b4b0ace196031c92f5ad2dd397a340921b7c9179de9bdb49",
+    "installedSha256": "552a54d915892f80b4b0ace196031c92f5ad2dd397a340921b7c9179de9bdb49",
+    "equal": true
+  },
+  {
+    "file": "jmods/jdk.localedata.jmod",
+    "archiveSha256": "72ba7984fc852a819b234aa941731f533219e78c74e3795d8980e343af587b4e",
+    "installedSha256": "72ba7984fc852a819b234aa941731f533219e78c74e3795d8980e343af587b4e",
+    "equal": true
+  },
+  {
+    "file": "jmods/jdk.management.agent.jmod",
+    "archiveSha256": "3690bf7d9b5868134fdf4b38b502496ab76fb7d74c6c34145cf8cdfbd355f692",
+    "installedSha256": "3690bf7d9b5868134fdf4b38b502496ab76fb7d74c6c34145cf8cdfbd355f692",
+    "equal": true
+  },
+  {
+    "file": "jmods/jdk.management.jfr.jmod",
+    "archiveSha256": "e00636ee1b452f43b72c4e25692eaff3ecd96607a6eecd26874ed756954e5054",
+    "installedSha256": "e00636ee1b452f43b72c4e25692eaff3ecd96607a6eecd26874ed756954e5054",
+    "equal": true
+  },
+  {
+    "file": "jmods/jdk.management.jmod",
+    "archiveSha256": "fe2f21fbe834cd0ecda18f42a7850650814eae76252d321ae95fd3f006df717a",
+    "installedSha256": "fe2f21fbe834cd0ecda18f42a7850650814eae76252d321ae95fd3f006df717a",
+    "equal": true
+  },
+  {
+    "file": "jmods/jdk.naming.dns.jmod",
+    "archiveSha256": "f6aa1b1b1e180b736b2500287d4b908c3525dec6295c546bbf25e4f4d6c83ded",
+    "installedSha256": "f6aa1b1b1e180b736b2500287d4b908c3525dec6295c546bbf25e4f4d6c83ded",
+    "equal": true
+  },
+  {
+    "file": "jmods/jdk.naming.rmi.jmod",
+    "archiveSha256": "934a29b0c5d11f92c559410e8019b2fd5af14b4f9ffb0127811c0369e28924ca",
+    "installedSha256": "934a29b0c5d11f92c559410e8019b2fd5af14b4f9ffb0127811c0369e28924ca",
+    "equal": true
+  },
+  {
+    "file": "jmods/jdk.net.jmod",
+    "archiveSha256": "8390e5646e42a0f2e764285503309c7898f7143ffd822b543079ced62decf360",
+    "installedSha256": "8390e5646e42a0f2e764285503309c7898f7143ffd822b543079ced62decf360",
+    "equal": true
+  },
+  {
+    "file": "jmods/jdk.nio.mapmode.jmod",
+    "archiveSha256": "e85672f45bcfea2490f514513d65f1523e895bd3a1363c58082bef085bf15d4d",
+    "installedSha256": "e85672f45bcfea2490f514513d65f1523e895bd3a1363c58082bef085bf15d4d",
+    "equal": true
+  },
+  {
+    "file": "jmods/jdk.random.jmod",
+    "archiveSha256": "2c8f78bda59752f5c580d24e8f5a30a6fa7bedd3bc85ef66264db520be814921",
+    "installedSha256": "2c8f78bda59752f5c580d24e8f5a30a6fa7bedd3bc85ef66264db520be814921",
+    "equal": true
+  },
+  {
+    "file": "jmods/jdk.sctp.jmod",
+    "archiveSha256": "3ec5ae477702f6f4432d15b76112cbcc19e1a00289dcb4e8158dcd83b8495dbc",
+    "installedSha256": "3ec5ae477702f6f4432d15b76112cbcc19e1a00289dcb4e8158dcd83b8495dbc",
+    "equal": true
+  },
+  {
+    "file": "jmods/jdk.security.auth.jmod",
+    "archiveSha256": "248c6f949b041340bf6982c371af985d3159e818e8f411f369c7871128c9bdae",
+    "installedSha256": "248c6f949b041340bf6982c371af985d3159e818e8f411f369c7871128c9bdae",
+    "equal": true
+  },
+  {
+    "file": "jmods/jdk.security.jgss.jmod",
+    "archiveSha256": "621e2a69b60ce3428e47437545818c15cbbe7b92569065a086809b9b4ae75c12",
+    "installedSha256": "621e2a69b60ce3428e47437545818c15cbbe7b92569065a086809b9b4ae75c12",
+    "equal": true
+  },
+  {
+    "file": "jmods/jdk.unsupported.desktop.jmod",
+    "archiveSha256": "2e6a2d413cd21ad799e51580dedf3a5d44cd630e5373b66f685bc3b7b6fa30db",
+    "installedSha256": "2e6a2d413cd21ad799e51580dedf3a5d44cd630e5373b66f685bc3b7b6fa30db",
+    "equal": true
+  },
+  {
+    "file": "jmods/jdk.unsupported.jmod",
+    "archiveSha256": "ea4029447477bc58863b4d1daa38b9203409196092ecac82e56f13a41272a2f4",
+    "installedSha256": "ea4029447477bc58863b4d1daa38b9203409196092ecac82e56f13a41272a2f4",
+    "equal": true
+  },
+  {
+    "file": "jmods/jdk.xml.dom.jmod",
+    "archiveSha256": "2f19c2b2f39353480de4278c458bd6dd74e91b42c8cb05e1c6d622d49c3eef50",
+    "installedSha256": "2f19c2b2f39353480de4278c458bd6dd74e91b42c8cb05e1c6d622d49c3eef50",
+    "equal": true
+  },
+  {
+    "file": "jmods/jdk.zipfs.jmod",
+    "archiveSha256": "a287c0ecb606d8337b78131ba1ca6d6aafe949277694d9e91d4859255f28d7e6",
+    "installedSha256": "a287c0ecb606d8337b78131ba1ca6d6aafe949277694d9e91d4859255f28d7e6",
+    "equal": true
+  },
+  {
+    "file": "legal/java.base/aes.md",
+    "archiveSha256": "45c6d4da48325edfbff3dcf71c704e504c057904435ed23c6d57046d551eb69d",
+    "installedSha256": "45c6d4da48325edfbff3dcf71c704e504c057904435ed23c6d57046d551eb69d",
+    "equal": true
+  },
+  {
+    "file": "legal/java.base/asm.md",
+    "archiveSha256": "1ff912740e84e024711def5fa482ffbb46eff64559760c467352dfa7c39a3307",
+    "installedSha256": "1ff912740e84e024711def5fa482ffbb46eff64559760c467352dfa7c39a3307",
+    "equal": true
+  },
+  {
+    "file": "legal/java.base/c-libutl.md",
+    "archiveSha256": "bef40679922d6fdfb7e4ddb223ad6722300f6054ba737bbf6188d60fcec517f9",
+    "installedSha256": "bef40679922d6fdfb7e4ddb223ad6722300f6054ba737bbf6188d60fcec517f9",
+    "equal": true
+  },
+  {
+    "file": "legal/java.base/cldr.md",
+    "archiveSha256": "f2bd33ded550a05d59e8f659416ef382490504548d846e6388b1dffd273aa077",
+    "installedSha256": "f2bd33ded550a05d59e8f659416ef382490504548d846e6388b1dffd273aa077",
+    "equal": true
+  },
+  {
+    "file": "legal/java.base/COPYRIGHT",
+    "archiveSha256": "79ccb53e0dbdb8ec16747a516eb77c3737c797e544aaa0a552b8a886a70eef69",
+    "installedSha256": "79ccb53e0dbdb8ec16747a516eb77c3737c797e544aaa0a552b8a886a70eef69",
+    "equal": true
+  },
+  {
+    "file": "legal/java.base/icu.md",
+    "archiveSha256": "af0057e8553906083f69c2fb9fe9ed4ae8bc2340a0b1e376a424702f00300b29",
+    "installedSha256": "af0057e8553906083f69c2fb9fe9ed4ae8bc2340a0b1e376a424702f00300b29",
+    "equal": true
+  },
+  {
+    "file": "legal/java.base/LICENSE",
+    "archiveSha256": "4d156eecbf6ca462d8cf772552fff874b167f87def9566837fb8e4fb347f29a5",
+    "installedSha256": "4d156eecbf6ca462d8cf772552fff874b167f87def9566837fb8e4fb347f29a5",
+    "equal": true
+  },
+  {
+    "file": "legal/java.base/public_suffix.md",
+    "archiveSha256": "bca182053946267c1f3bb5d160849a6a290b2aefc57abc7155180ca98db87301",
+    "installedSha256": "bca182053946267c1f3bb5d160849a6a290b2aefc57abc7155180ca98db87301",
+    "equal": true
+  },
+  {
+    "file": "legal/java.base/unicode.md",
+    "archiveSha256": "5e4e6623a21a63f9bc16ea54af4133b8038e490c0d499a74676f9e5a61b9c5b2",
+    "installedSha256": "5e4e6623a21a63f9bc16ea54af4133b8038e490c0d499a74676f9e5a61b9c5b2",
+    "equal": true
+  },
+  {
+    "file": "legal/java.base/wepoll.md",
+    "archiveSha256": "3ac2992770080453b98c42afa807ba4b2c1738ef756b92a55c645f55e7df48f0",
+    "installedSha256": "3ac2992770080453b98c42afa807ba4b2c1738ef756b92a55c645f55e7df48f0",
+    "equal": true
+  },
+  {
+    "file": "legal/java.base/zlib.md",
+    "archiveSha256": "81518ebc49d23a7c77b2e08eff48664ea0c7dd90957a0caf22fd9654985d3285",
+    "installedSha256": "81518ebc49d23a7c77b2e08eff48664ea0c7dd90957a0caf22fd9654985d3285",
+    "equal": true
+  },
+  {
+    "file": "legal/java.compiler/COPYRIGHT",
+    "archiveSha256": "7afb3a2dc57cb16223dddc970e0b464311e5311484c793abf9327a19ef629018",
+    "installedSha256": "7afb3a2dc57cb16223dddc970e0b464311e5311484c793abf9327a19ef629018",
+    "equal": true
+  },
+  {
+    "file": "legal/java.compiler/LICENSE",
+    "archiveSha256": "86e0516b888276a492b19f9a84f5a866ed36925fae1510b3a94a0b6213e69192",
+    "installedSha256": "86e0516b888276a492b19f9a84f5a866ed36925fae1510b3a94a0b6213e69192",
+    "equal": true
+  },
+  {
+    "file": "legal/java.datatransfer/COPYRIGHT",
+    "archiveSha256": "7afb3a2dc57cb16223dddc970e0b464311e5311484c793abf9327a19ef629018",
+    "installedSha256": "7afb3a2dc57cb16223dddc970e0b464311e5311484c793abf9327a19ef629018",
+    "equal": true
+  },
+  {
+    "file": "legal/java.datatransfer/LICENSE",
+    "archiveSha256": "86e0516b888276a492b19f9a84f5a866ed36925fae1510b3a94a0b6213e69192",
+    "installedSha256": "86e0516b888276a492b19f9a84f5a866ed36925fae1510b3a94a0b6213e69192",
+    "equal": true
+  },
+  {
+    "file": "legal/java.desktop/colorimaging.md",
+    "archiveSha256": "04d61e3e8e71dd452ebe52008af5378d9f6640d14578aeb515dc5375973b0189",
+    "installedSha256": "04d61e3e8e71dd452ebe52008af5378d9f6640d14578aeb515dc5375973b0189",
+    "equal": true
+  },
+  {
+    "file": "legal/java.desktop/COPYRIGHT",
+    "archiveSha256": "7afb3a2dc57cb16223dddc970e0b464311e5311484c793abf9327a19ef629018",
+    "installedSha256": "7afb3a2dc57cb16223dddc970e0b464311e5311484c793abf9327a19ef629018",
+    "equal": true
+  },
+  {
+    "file": "legal/java.desktop/freetype.md",
+    "archiveSha256": "9de0e0dc09071c6372039836606eab5bebf347bae9cb7691f982d818ed091453",
+    "installedSha256": "9de0e0dc09071c6372039836606eab5bebf347bae9cb7691f982d818ed091453",
+    "equal": true
+  },
+  {
+    "file": "legal/java.desktop/giflib.md",
+    "archiveSha256": "c8b99f33890887d27ad56fba9edd8ebbc668cfe0689168505a95613d1d4b32f8",
+    "installedSha256": "c8b99f33890887d27ad56fba9edd8ebbc668cfe0689168505a95613d1d4b32f8",
+    "equal": true
+  },
+  {
+    "file": "legal/java.desktop/harfbuzz.md",
+    "archiveSha256": "a73cc87c16567c41180d2045d7e0076d41e07ff5dc27aa95fbc3721af5bc73b8",
+    "installedSha256": "a73cc87c16567c41180d2045d7e0076d41e07ff5dc27aa95fbc3721af5bc73b8",
+    "equal": true
+  },
+  {
+    "file": "legal/java.desktop/jpeg.md",
+    "archiveSha256": "580be596216ee11e2554b24ce944973acaede2ebf5ffba34a6bd8cc441c05043",
+    "installedSha256": "580be596216ee11e2554b24ce944973acaede2ebf5ffba34a6bd8cc441c05043",
+    "equal": true
+  },
+  {
+    "file": "legal/java.desktop/lcms.md",
+    "archiveSha256": "8acf00b5efd25c1c055927222fd3c26b0c9fd02ed02e478c225b64e7a24d9782",
+    "installedSha256": "8acf00b5efd25c1c055927222fd3c26b0c9fd02ed02e478c225b64e7a24d9782",
+    "equal": true
+  },
+  {
+    "file": "legal/java.desktop/libpng.md",
+    "archiveSha256": "9c69c70e1e8443d35e4ea506e0d8dce0e67d4985859d35b0807566c8d6e7681e",
+    "installedSha256": "9c69c70e1e8443d35e4ea506e0d8dce0e67d4985859d35b0807566c8d6e7681e",
+    "equal": true
+  },
+  {
+    "file": "legal/java.desktop/LICENSE",
+    "archiveSha256": "86e0516b888276a492b19f9a84f5a866ed36925fae1510b3a94a0b6213e69192",
+    "installedSha256": "86e0516b888276a492b19f9a84f5a866ed36925fae1510b3a94a0b6213e69192",
+    "equal": true
+  },
+  {
+    "file": "legal/java.desktop/mesa3d.md",
+    "archiveSha256": "63f4e6f75caebbccb95d903fb43e46ac7111b3624d0a34f146b276d7d9e7b152",
+    "installedSha256": "63f4e6f75caebbccb95d903fb43e46ac7111b3624d0a34f146b276d7d9e7b152",
+    "equal": true
+  },
+  {
+    "file": "legal/java.instrument/COPYRIGHT",
+    "archiveSha256": "7afb3a2dc57cb16223dddc970e0b464311e5311484c793abf9327a19ef629018",
+    "installedSha256": "7afb3a2dc57cb16223dddc970e0b464311e5311484c793abf9327a19ef629018",
+    "equal": true
+  },
+  {
+    "file": "legal/java.instrument/LICENSE",
+    "archiveSha256": "86e0516b888276a492b19f9a84f5a866ed36925fae1510b3a94a0b6213e69192",
+    "installedSha256": "86e0516b888276a492b19f9a84f5a866ed36925fae1510b3a94a0b6213e69192",
+    "equal": true
+  },
+  {
+    "file": "legal/java.logging/COPYRIGHT",
+    "archiveSha256": "7afb3a2dc57cb16223dddc970e0b464311e5311484c793abf9327a19ef629018",
+    "installedSha256": "7afb3a2dc57cb16223dddc970e0b464311e5311484c793abf9327a19ef629018",
+    "equal": true
+  },
+  {
+    "file": "legal/java.logging/LICENSE",
+    "archiveSha256": "86e0516b888276a492b19f9a84f5a866ed36925fae1510b3a94a0b6213e69192",
+    "installedSha256": "86e0516b888276a492b19f9a84f5a866ed36925fae1510b3a94a0b6213e69192",
+    "equal": true
+  },
+  {
+    "file": "legal/java.management/COPYRIGHT",
+    "archiveSha256": "7afb3a2dc57cb16223dddc970e0b464311e5311484c793abf9327a19ef629018",
+    "installedSha256": "7afb3a2dc57cb16223dddc970e0b464311e5311484c793abf9327a19ef629018",
+    "equal": true
+  },
+  {
+    "file": "legal/java.management/LICENSE",
+    "archiveSha256": "86e0516b888276a492b19f9a84f5a866ed36925fae1510b3a94a0b6213e69192",
+    "installedSha256": "86e0516b888276a492b19f9a84f5a866ed36925fae1510b3a94a0b6213e69192",
+    "equal": true
+  },
+  {
+    "file": "legal/java.management.rmi/COPYRIGHT",
+    "archiveSha256": "7afb3a2dc57cb16223dddc970e0b464311e5311484c793abf9327a19ef629018",
+    "installedSha256": "7afb3a2dc57cb16223dddc970e0b464311e5311484c793abf9327a19ef629018",
+    "equal": true
+  },
+  {
+    "file": "legal/java.management.rmi/LICENSE",
+    "archiveSha256": "86e0516b888276a492b19f9a84f5a866ed36925fae1510b3a94a0b6213e69192",
+    "installedSha256": "86e0516b888276a492b19f9a84f5a866ed36925fae1510b3a94a0b6213e69192",
+    "equal": true
+  },
+  {
+    "file": "legal/java.naming/COPYRIGHT",
+    "archiveSha256": "7afb3a2dc57cb16223dddc970e0b464311e5311484c793abf9327a19ef629018",
+    "installedSha256": "7afb3a2dc57cb16223dddc970e0b464311e5311484c793abf9327a19ef629018",
+    "equal": true
+  },
+  {
+    "file": "legal/java.naming/LICENSE",
+    "archiveSha256": "86e0516b888276a492b19f9a84f5a866ed36925fae1510b3a94a0b6213e69192",
+    "installedSha256": "86e0516b888276a492b19f9a84f5a866ed36925fae1510b3a94a0b6213e69192",
+    "equal": true
+  },
+  {
+    "file": "legal/java.net.http/COPYRIGHT",
+    "archiveSha256": "7afb3a2dc57cb16223dddc970e0b464311e5311484c793abf9327a19ef629018",
+    "installedSha256": "7afb3a2dc57cb16223dddc970e0b464311e5311484c793abf9327a19ef629018",
+    "equal": true
+  },
+  {
+    "file": "legal/java.net.http/LICENSE",
+    "archiveSha256": "86e0516b888276a492b19f9a84f5a866ed36925fae1510b3a94a0b6213e69192",
+    "installedSha256": "86e0516b888276a492b19f9a84f5a866ed36925fae1510b3a94a0b6213e69192",
+    "equal": true
+  },
+  {
+    "file": "legal/java.prefs/COPYRIGHT",
+    "archiveSha256": "7afb3a2dc57cb16223dddc970e0b464311e5311484c793abf9327a19ef629018",
+    "installedSha256": "7afb3a2dc57cb16223dddc970e0b464311e5311484c793abf9327a19ef629018",
+    "equal": true
+  },
+  {
+    "file": "legal/java.prefs/LICENSE",
+    "archiveSha256": "86e0516b888276a492b19f9a84f5a866ed36925fae1510b3a94a0b6213e69192",
+    "installedSha256": "86e0516b888276a492b19f9a84f5a866ed36925fae1510b3a94a0b6213e69192",
+    "equal": true
+  },
+  {
+    "file": "legal/java.rmi/COPYRIGHT",
+    "archiveSha256": "7afb3a2dc57cb16223dddc970e0b464311e5311484c793abf9327a19ef629018",
+    "installedSha256": "7afb3a2dc57cb16223dddc970e0b464311e5311484c793abf9327a19ef629018",
+    "equal": true
+  },
+  {
+    "file": "legal/java.rmi/LICENSE",
+    "archiveSha256": "86e0516b888276a492b19f9a84f5a866ed36925fae1510b3a94a0b6213e69192",
+    "installedSha256": "86e0516b888276a492b19f9a84f5a866ed36925fae1510b3a94a0b6213e69192",
+    "equal": true
+  },
+  {
+    "file": "legal/java.scripting/COPYRIGHT",
+    "archiveSha256": "7afb3a2dc57cb16223dddc970e0b464311e5311484c793abf9327a19ef629018",
+    "installedSha256": "7afb3a2dc57cb16223dddc970e0b464311e5311484c793abf9327a19ef629018",
+    "equal": true
+  },
+  {
+    "file": "legal/java.scripting/LICENSE",
+    "archiveSha256": "86e0516b888276a492b19f9a84f5a866ed36925fae1510b3a94a0b6213e69192",
+    "installedSha256": "86e0516b888276a492b19f9a84f5a866ed36925fae1510b3a94a0b6213e69192",
+    "equal": true
+  },
+  {
+    "file": "legal/java.se/COPYRIGHT",
+    "archiveSha256": "7afb3a2dc57cb16223dddc970e0b464311e5311484c793abf9327a19ef629018",
+    "installedSha256": "7afb3a2dc57cb16223dddc970e0b464311e5311484c793abf9327a19ef629018",
+    "equal": true
+  },
+  {
+    "file": "legal/java.se/LICENSE",
+    "archiveSha256": "86e0516b888276a492b19f9a84f5a866ed36925fae1510b3a94a0b6213e69192",
+    "installedSha256": "86e0516b888276a492b19f9a84f5a866ed36925fae1510b3a94a0b6213e69192",
+    "equal": true
+  },
+  {
+    "file": "legal/java.security.jgss/COPYRIGHT",
+    "archiveSha256": "7afb3a2dc57cb16223dddc970e0b464311e5311484c793abf9327a19ef629018",
+    "installedSha256": "7afb3a2dc57cb16223dddc970e0b464311e5311484c793abf9327a19ef629018",
+    "equal": true
+  },
+  {
+    "file": "legal/java.security.jgss/LICENSE",
+    "archiveSha256": "86e0516b888276a492b19f9a84f5a866ed36925fae1510b3a94a0b6213e69192",
+    "installedSha256": "86e0516b888276a492b19f9a84f5a866ed36925fae1510b3a94a0b6213e69192",
+    "equal": true
+  },
+  {
+    "file": "legal/java.security.sasl/COPYRIGHT",
+    "archiveSha256": "7afb3a2dc57cb16223dddc970e0b464311e5311484c793abf9327a19ef629018",
+    "installedSha256": "7afb3a2dc57cb16223dddc970e0b464311e5311484c793abf9327a19ef629018",
+    "equal": true
+  },
+  {
+    "file": "legal/java.security.sasl/LICENSE",
+    "archiveSha256": "86e0516b888276a492b19f9a84f5a866ed36925fae1510b3a94a0b6213e69192",
+    "installedSha256": "86e0516b888276a492b19f9a84f5a866ed36925fae1510b3a94a0b6213e69192",
+    "equal": true
+  },
+  {
+    "file": "legal/java.smartcardio/COPYRIGHT",
+    "archiveSha256": "7afb3a2dc57cb16223dddc970e0b464311e5311484c793abf9327a19ef629018",
+    "installedSha256": "7afb3a2dc57cb16223dddc970e0b464311e5311484c793abf9327a19ef629018",
+    "equal": true
+  },
+  {
+    "file": "legal/java.smartcardio/LICENSE",
+    "archiveSha256": "86e0516b888276a492b19f9a84f5a866ed36925fae1510b3a94a0b6213e69192",
+    "installedSha256": "86e0516b888276a492b19f9a84f5a866ed36925fae1510b3a94a0b6213e69192",
+    "equal": true
+  },
+  {
+    "file": "legal/java.sql/COPYRIGHT",
+    "archiveSha256": "7afb3a2dc57cb16223dddc970e0b464311e5311484c793abf9327a19ef629018",
+    "installedSha256": "7afb3a2dc57cb16223dddc970e0b464311e5311484c793abf9327a19ef629018",
+    "equal": true
+  },
+  {
+    "file": "legal/java.sql/LICENSE",
+    "archiveSha256": "86e0516b888276a492b19f9a84f5a866ed36925fae1510b3a94a0b6213e69192",
+    "installedSha256": "86e0516b888276a492b19f9a84f5a866ed36925fae1510b3a94a0b6213e69192",
+    "equal": true
+  },
+  {
+    "file": "legal/java.sql.rowset/COPYRIGHT",
+    "archiveSha256": "7afb3a2dc57cb16223dddc970e0b464311e5311484c793abf9327a19ef629018",
+    "installedSha256": "7afb3a2dc57cb16223dddc970e0b464311e5311484c793abf9327a19ef629018",
+    "equal": true
+  },
+  {
+    "file": "legal/java.sql.rowset/LICENSE",
+    "archiveSha256": "86e0516b888276a492b19f9a84f5a866ed36925fae1510b3a94a0b6213e69192",
+    "installedSha256": "86e0516b888276a492b19f9a84f5a866ed36925fae1510b3a94a0b6213e69192",
+    "equal": true
+  },
+  {
+    "file": "legal/java.transaction.xa/COPYRIGHT",
+    "archiveSha256": "7afb3a2dc57cb16223dddc970e0b464311e5311484c793abf9327a19ef629018",
+    "installedSha256": "7afb3a2dc57cb16223dddc970e0b464311e5311484c793abf9327a19ef629018",
+    "equal": true
+  },
+  {
+    "file": "legal/java.transaction.xa/LICENSE",
+    "archiveSha256": "86e0516b888276a492b19f9a84f5a866ed36925fae1510b3a94a0b6213e69192",
+    "installedSha256": "86e0516b888276a492b19f9a84f5a866ed36925fae1510b3a94a0b6213e69192",
+    "equal": true
+  },
+  {
+    "file": "legal/java.xml/bcel.md",
+    "archiveSha256": "853a1e7ce397bb10de0e2b3bde0844bcc651f17d983decd07d2d003c0304c311",
+    "installedSha256": "853a1e7ce397bb10de0e2b3bde0844bcc651f17d983decd07d2d003c0304c311",
+    "equal": true
+  },
+  {
+    "file": "legal/java.xml/COPYRIGHT",
+    "archiveSha256": "7afb3a2dc57cb16223dddc970e0b464311e5311484c793abf9327a19ef629018",
+    "installedSha256": "7afb3a2dc57cb16223dddc970e0b464311e5311484c793abf9327a19ef629018",
+    "equal": true
+  },
+  {
+    "file": "legal/java.xml/dom.md",
+    "archiveSha256": "6686e8877667584a3a7c07344baadca1a03e29f677162d87c3c0811e990d1148",
+    "installedSha256": "6686e8877667584a3a7c07344baadca1a03e29f677162d87c3c0811e990d1148",
+    "equal": true
+  },
+  {
+    "file": "legal/java.xml/jcup.md",
+    "archiveSha256": "8d5dcfdf50455a3c34c753a98f21e953248af200415a9084e3f102cb6c43b8bf",
+    "installedSha256": "8d5dcfdf50455a3c34c753a98f21e953248af200415a9084e3f102cb6c43b8bf",
+    "equal": true
+  },
+  {
+    "file": "legal/java.xml/LICENSE",
+    "archiveSha256": "86e0516b888276a492b19f9a84f5a866ed36925fae1510b3a94a0b6213e69192",
+    "installedSha256": "86e0516b888276a492b19f9a84f5a866ed36925fae1510b3a94a0b6213e69192",
+    "equal": true
+  },
+  {
+    "file": "legal/java.xml/xalan.md",
+    "archiveSha256": "ea67226be5cfe19c7e79725c2c24a16676323264d69f9747c528de0b44541b03",
+    "installedSha256": "ea67226be5cfe19c7e79725c2c24a16676323264d69f9747c528de0b44541b03",
+    "equal": true
+  },
+  {
+    "file": "legal/java.xml/xerces.md",
+    "archiveSha256": "472224f99de833f4f4c19f2f8a0317f22114e1c641f5d77ffa3a4280a1b80176",
+    "installedSha256": "472224f99de833f4f4c19f2f8a0317f22114e1c641f5d77ffa3a4280a1b80176",
+    "equal": true
+  },
+  {
+    "file": "legal/java.xml.crypto/COPYRIGHT",
+    "archiveSha256": "7afb3a2dc57cb16223dddc970e0b464311e5311484c793abf9327a19ef629018",
+    "installedSha256": "7afb3a2dc57cb16223dddc970e0b464311e5311484c793abf9327a19ef629018",
+    "equal": true
+  },
+  {
+    "file": "legal/java.xml.crypto/LICENSE",
+    "archiveSha256": "86e0516b888276a492b19f9a84f5a866ed36925fae1510b3a94a0b6213e69192",
+    "installedSha256": "86e0516b888276a492b19f9a84f5a866ed36925fae1510b3a94a0b6213e69192",
+    "equal": true
+  },
+  {
+    "file": "legal/java.xml.crypto/santuario.md",
+    "archiveSha256": "6c05574d99b0d7e38c6217db5718e7ba2ee7f710f23a5f8228e502dcffe43e7a",
+    "installedSha256": "6c05574d99b0d7e38c6217db5718e7ba2ee7f710f23a5f8228e502dcffe43e7a",
+    "equal": true
+  },
+  {
+    "file": "legal/jdk.accessibility/COPYRIGHT",
+    "archiveSha256": "7afb3a2dc57cb16223dddc970e0b464311e5311484c793abf9327a19ef629018",
+    "installedSha256": "7afb3a2dc57cb16223dddc970e0b464311e5311484c793abf9327a19ef629018",
+    "equal": true
+  },
+  {
+    "file": "legal/jdk.accessibility/LICENSE",
+    "archiveSha256": "86e0516b888276a492b19f9a84f5a866ed36925fae1510b3a94a0b6213e69192",
+    "installedSha256": "86e0516b888276a492b19f9a84f5a866ed36925fae1510b3a94a0b6213e69192",
+    "equal": true
+  },
+  {
+    "file": "legal/jdk.attach/COPYRIGHT",
+    "archiveSha256": "7afb3a2dc57cb16223dddc970e0b464311e5311484c793abf9327a19ef629018",
+    "installedSha256": "7afb3a2dc57cb16223dddc970e0b464311e5311484c793abf9327a19ef629018",
+    "equal": true
+  },
+  {
+    "file": "legal/jdk.attach/LICENSE",
+    "archiveSha256": "86e0516b888276a492b19f9a84f5a866ed36925fae1510b3a94a0b6213e69192",
+    "installedSha256": "86e0516b888276a492b19f9a84f5a866ed36925fae1510b3a94a0b6213e69192",
+    "equal": true
+  },
+  {
+    "file": "legal/jdk.charsets/COPYRIGHT",
+    "archiveSha256": "7afb3a2dc57cb16223dddc970e0b464311e5311484c793abf9327a19ef629018",
+    "installedSha256": "7afb3a2dc57cb16223dddc970e0b464311e5311484c793abf9327a19ef629018",
+    "equal": true
+  },
+  {
+    "file": "legal/jdk.charsets/LICENSE",
+    "archiveSha256": "86e0516b888276a492b19f9a84f5a866ed36925fae1510b3a94a0b6213e69192",
+    "installedSha256": "86e0516b888276a492b19f9a84f5a866ed36925fae1510b3a94a0b6213e69192",
+    "equal": true
+  },
+  {
+    "file": "legal/jdk.compiler/COPYRIGHT",
+    "archiveSha256": "7afb3a2dc57cb16223dddc970e0b464311e5311484c793abf9327a19ef629018",
+    "installedSha256": "7afb3a2dc57cb16223dddc970e0b464311e5311484c793abf9327a19ef629018",
+    "equal": true
+  },
+  {
+    "file": "legal/jdk.compiler/LICENSE",
+    "archiveSha256": "86e0516b888276a492b19f9a84f5a866ed36925fae1510b3a94a0b6213e69192",
+    "installedSha256": "86e0516b888276a492b19f9a84f5a866ed36925fae1510b3a94a0b6213e69192",
+    "equal": true
+  },
+  {
+    "file": "legal/jdk.crypto.cryptoki/COPYRIGHT",
+    "archiveSha256": "7afb3a2dc57cb16223dddc970e0b464311e5311484c793abf9327a19ef629018",
+    "installedSha256": "7afb3a2dc57cb16223dddc970e0b464311e5311484c793abf9327a19ef629018",
+    "equal": true
+  },
+  {
+    "file": "legal/jdk.crypto.cryptoki/LICENSE",
+    "archiveSha256": "86e0516b888276a492b19f9a84f5a866ed36925fae1510b3a94a0b6213e69192",
+    "installedSha256": "86e0516b888276a492b19f9a84f5a866ed36925fae1510b3a94a0b6213e69192",
+    "equal": true
+  },
+  {
+    "file": "legal/jdk.crypto.cryptoki/pkcs11cryptotoken.md",
+    "archiveSha256": "262802e081760b38b3748c8b194353d340e39bc936ac22e17abbb7158d895811",
+    "installedSha256": "262802e081760b38b3748c8b194353d340e39bc936ac22e17abbb7158d895811",
+    "equal": true
+  },
+  {
+    "file": "legal/jdk.crypto.cryptoki/pkcs11wrapper.md",
+    "archiveSha256": "371974b1fca3744a3892c7ee1fcc593b8b4281fc218f4cafd2f709e9df5fd81d",
+    "installedSha256": "371974b1fca3744a3892c7ee1fcc593b8b4281fc218f4cafd2f709e9df5fd81d",
+    "equal": true
+  },
+  {
+    "file": "legal/jdk.crypto.ec/COPYRIGHT",
+    "archiveSha256": "7afb3a2dc57cb16223dddc970e0b464311e5311484c793abf9327a19ef629018",
+    "installedSha256": "7afb3a2dc57cb16223dddc970e0b464311e5311484c793abf9327a19ef629018",
+    "equal": true
+  },
+  {
+    "file": "legal/jdk.crypto.ec/LICENSE",
+    "archiveSha256": "86e0516b888276a492b19f9a84f5a866ed36925fae1510b3a94a0b6213e69192",
+    "installedSha256": "86e0516b888276a492b19f9a84f5a866ed36925fae1510b3a94a0b6213e69192",
+    "equal": true
+  },
+  {
+    "file": "legal/jdk.crypto.mscapi/COPYRIGHT",
+    "archiveSha256": "7afb3a2dc57cb16223dddc970e0b464311e5311484c793abf9327a19ef629018",
+    "installedSha256": "7afb3a2dc57cb16223dddc970e0b464311e5311484c793abf9327a19ef629018",
+    "equal": true
+  },
+  {
+    "file": "legal/jdk.crypto.mscapi/LICENSE",
+    "archiveSha256": "86e0516b888276a492b19f9a84f5a866ed36925fae1510b3a94a0b6213e69192",
+    "installedSha256": "86e0516b888276a492b19f9a84f5a866ed36925fae1510b3a94a0b6213e69192",
+    "equal": true
+  },
+  {
+    "file": "legal/jdk.dynalink/COPYRIGHT",
+    "archiveSha256": "7afb3a2dc57cb16223dddc970e0b464311e5311484c793abf9327a19ef629018",
+    "installedSha256": "7afb3a2dc57cb16223dddc970e0b464311e5311484c793abf9327a19ef629018",
+    "equal": true
+  },
+  {
+    "file": "legal/jdk.dynalink/dynalink.md",
+    "archiveSha256": "17312591cabee3ef6c34ed8897d92e4e361ba9cea41ec00dcd61a322a8fc2cdb",
+    "installedSha256": "17312591cabee3ef6c34ed8897d92e4e361ba9cea41ec00dcd61a322a8fc2cdb",
+    "equal": true
+  },
+  {
+    "file": "legal/jdk.dynalink/LICENSE",
+    "archiveSha256": "86e0516b888276a492b19f9a84f5a866ed36925fae1510b3a94a0b6213e69192",
+    "installedSha256": "86e0516b888276a492b19f9a84f5a866ed36925fae1510b3a94a0b6213e69192",
+    "equal": true
+  },
+  {
+    "file": "legal/jdk.editpad/COPYRIGHT",
+    "archiveSha256": "7afb3a2dc57cb16223dddc970e0b464311e5311484c793abf9327a19ef629018",
+    "installedSha256": "7afb3a2dc57cb16223dddc970e0b464311e5311484c793abf9327a19ef629018",
+    "equal": true
+  },
+  {
+    "file": "legal/jdk.editpad/LICENSE",
+    "archiveSha256": "86e0516b888276a492b19f9a84f5a866ed36925fae1510b3a94a0b6213e69192",
+    "installedSha256": "86e0516b888276a492b19f9a84f5a866ed36925fae1510b3a94a0b6213e69192",
+    "equal": true
+  },
+  {
+    "file": "legal/jdk.hotspot.agent/COPYRIGHT",
+    "archiveSha256": "7afb3a2dc57cb16223dddc970e0b464311e5311484c793abf9327a19ef629018",
+    "installedSha256": "7afb3a2dc57cb16223dddc970e0b464311e5311484c793abf9327a19ef629018",
+    "equal": true
+  },
+  {
+    "file": "legal/jdk.hotspot.agent/LICENSE",
+    "archiveSha256": "86e0516b888276a492b19f9a84f5a866ed36925fae1510b3a94a0b6213e69192",
+    "installedSha256": "86e0516b888276a492b19f9a84f5a866ed36925fae1510b3a94a0b6213e69192",
+    "equal": true
+  },
+  {
+    "file": "legal/jdk.httpserver/COPYRIGHT",
+    "archiveSha256": "7afb3a2dc57cb16223dddc970e0b464311e5311484c793abf9327a19ef629018",
+    "installedSha256": "7afb3a2dc57cb16223dddc970e0b464311e5311484c793abf9327a19ef629018",
+    "equal": true
+  },
+  {
+    "file": "legal/jdk.httpserver/LICENSE",
+    "archiveSha256": "86e0516b888276a492b19f9a84f5a866ed36925fae1510b3a94a0b6213e69192",
+    "installedSha256": "86e0516b888276a492b19f9a84f5a866ed36925fae1510b3a94a0b6213e69192",
+    "equal": true
+  },
+  {
+    "file": "legal/jdk.incubator.foreign/COPYRIGHT",
+    "archiveSha256": "7afb3a2dc57cb16223dddc970e0b464311e5311484c793abf9327a19ef629018",
+    "installedSha256": "7afb3a2dc57cb16223dddc970e0b464311e5311484c793abf9327a19ef629018",
+    "equal": true
+  },
+  {
+    "file": "legal/jdk.incubator.foreign/LICENSE",
+    "archiveSha256": "86e0516b888276a492b19f9a84f5a866ed36925fae1510b3a94a0b6213e69192",
+    "installedSha256": "86e0516b888276a492b19f9a84f5a866ed36925fae1510b3a94a0b6213e69192",
+    "equal": true
+  },
+  {
+    "file": "legal/jdk.incubator.vector/COPYRIGHT",
+    "archiveSha256": "7afb3a2dc57cb16223dddc970e0b464311e5311484c793abf9327a19ef629018",
+    "installedSha256": "7afb3a2dc57cb16223dddc970e0b464311e5311484c793abf9327a19ef629018",
+    "equal": true
+  },
+  {
+    "file": "legal/jdk.incubator.vector/LICENSE",
+    "archiveSha256": "86e0516b888276a492b19f9a84f5a866ed36925fae1510b3a94a0b6213e69192",
+    "installedSha256": "86e0516b888276a492b19f9a84f5a866ed36925fae1510b3a94a0b6213e69192",
+    "equal": true
+  },
+  {
+    "file": "legal/jdk.internal.ed/COPYRIGHT",
+    "archiveSha256": "7afb3a2dc57cb16223dddc970e0b464311e5311484c793abf9327a19ef629018",
+    "installedSha256": "7afb3a2dc57cb16223dddc970e0b464311e5311484c793abf9327a19ef629018",
+    "equal": true
+  },
+  {
+    "file": "legal/jdk.internal.ed/LICENSE",
+    "archiveSha256": "86e0516b888276a492b19f9a84f5a866ed36925fae1510b3a94a0b6213e69192",
+    "installedSha256": "86e0516b888276a492b19f9a84f5a866ed36925fae1510b3a94a0b6213e69192",
+    "equal": true
+  },
+  {
+    "file": "legal/jdk.internal.jvmstat/COPYRIGHT",
+    "archiveSha256": "7afb3a2dc57cb16223dddc970e0b464311e5311484c793abf9327a19ef629018",
+    "installedSha256": "7afb3a2dc57cb16223dddc970e0b464311e5311484c793abf9327a19ef629018",
+    "equal": true
+  },
+  {
+    "file": "legal/jdk.internal.jvmstat/LICENSE",
+    "archiveSha256": "86e0516b888276a492b19f9a84f5a866ed36925fae1510b3a94a0b6213e69192",
+    "installedSha256": "86e0516b888276a492b19f9a84f5a866ed36925fae1510b3a94a0b6213e69192",
+    "equal": true
+  },
+  {
+    "file": "legal/jdk.internal.le/COPYRIGHT",
+    "archiveSha256": "7afb3a2dc57cb16223dddc970e0b464311e5311484c793abf9327a19ef629018",
+    "installedSha256": "7afb3a2dc57cb16223dddc970e0b464311e5311484c793abf9327a19ef629018",
+    "equal": true
+  },
+  {
+    "file": "legal/jdk.internal.le/jline.md",
+    "archiveSha256": "852140a95a626146063bf0e72e49ecb3fd62d679a9822628862334cfecc15077",
+    "installedSha256": "852140a95a626146063bf0e72e49ecb3fd62d679a9822628862334cfecc15077",
+    "equal": true
+  },
+  {
+    "file": "legal/jdk.internal.le/LICENSE",
+    "archiveSha256": "86e0516b888276a492b19f9a84f5a866ed36925fae1510b3a94a0b6213e69192",
+    "installedSha256": "86e0516b888276a492b19f9a84f5a866ed36925fae1510b3a94a0b6213e69192",
+    "equal": true
+  },
+  {
+    "file": "legal/jdk.internal.opt/COPYRIGHT",
+    "archiveSha256": "7afb3a2dc57cb16223dddc970e0b464311e5311484c793abf9327a19ef629018",
+    "installedSha256": "7afb3a2dc57cb16223dddc970e0b464311e5311484c793abf9327a19ef629018",
+    "equal": true
+  },
+  {
+    "file": "legal/jdk.internal.opt/jopt-simple.md",
+    "archiveSha256": "99bc67f93cf57d6d20e6047731c93fbb267d70fbdd4115d119e0f85c6efe5c05",
+    "installedSha256": "99bc67f93cf57d6d20e6047731c93fbb267d70fbdd4115d119e0f85c6efe5c05",
+    "equal": true
+  },
+  {
+    "file": "legal/jdk.internal.opt/LICENSE",
+    "archiveSha256": "86e0516b888276a492b19f9a84f5a866ed36925fae1510b3a94a0b6213e69192",
+    "installedSha256": "86e0516b888276a492b19f9a84f5a866ed36925fae1510b3a94a0b6213e69192",
+    "equal": true
+  },
+  {
+    "file": "legal/jdk.internal.vm.ci/COPYRIGHT",
+    "archiveSha256": "7afb3a2dc57cb16223dddc970e0b464311e5311484c793abf9327a19ef629018",
+    "installedSha256": "7afb3a2dc57cb16223dddc970e0b464311e5311484c793abf9327a19ef629018",
+    "equal": true
+  },
+  {
+    "file": "legal/jdk.internal.vm.ci/LICENSE",
+    "archiveSha256": "86e0516b888276a492b19f9a84f5a866ed36925fae1510b3a94a0b6213e69192",
+    "installedSha256": "86e0516b888276a492b19f9a84f5a866ed36925fae1510b3a94a0b6213e69192",
+    "equal": true
+  },
+  {
+    "file": "legal/jdk.internal.vm.compiler/COPYRIGHT",
+    "archiveSha256": "7afb3a2dc57cb16223dddc970e0b464311e5311484c793abf9327a19ef629018",
+    "installedSha256": "7afb3a2dc57cb16223dddc970e0b464311e5311484c793abf9327a19ef629018",
+    "equal": true
+  },
+  {
+    "file": "legal/jdk.internal.vm.compiler/LICENSE",
+    "archiveSha256": "86e0516b888276a492b19f9a84f5a866ed36925fae1510b3a94a0b6213e69192",
+    "installedSha256": "86e0516b888276a492b19f9a84f5a866ed36925fae1510b3a94a0b6213e69192",
+    "equal": true
+  },
+  {
+    "file": "legal/jdk.internal.vm.compiler.management/COPYRIGHT",
+    "archiveSha256": "7afb3a2dc57cb16223dddc970e0b464311e5311484c793abf9327a19ef629018",
+    "installedSha256": "7afb3a2dc57cb16223dddc970e0b464311e5311484c793abf9327a19ef629018",
+    "equal": true
+  },
+  {
+    "file": "legal/jdk.internal.vm.compiler.management/LICENSE",
+    "archiveSha256": "86e0516b888276a492b19f9a84f5a866ed36925fae1510b3a94a0b6213e69192",
+    "installedSha256": "86e0516b888276a492b19f9a84f5a866ed36925fae1510b3a94a0b6213e69192",
+    "equal": true
+  },
+  {
+    "file": "legal/jdk.jartool/COPYRIGHT",
+    "archiveSha256": "7afb3a2dc57cb16223dddc970e0b464311e5311484c793abf9327a19ef629018",
+    "installedSha256": "7afb3a2dc57cb16223dddc970e0b464311e5311484c793abf9327a19ef629018",
+    "equal": true
+  },
+  {
+    "file": "legal/jdk.jartool/LICENSE",
+    "archiveSha256": "86e0516b888276a492b19f9a84f5a866ed36925fae1510b3a94a0b6213e69192",
+    "installedSha256": "86e0516b888276a492b19f9a84f5a866ed36925fae1510b3a94a0b6213e69192",
+    "equal": true
+  },
+  {
+    "file": "legal/jdk.javadoc/COPYRIGHT",
+    "archiveSha256": "7afb3a2dc57cb16223dddc970e0b464311e5311484c793abf9327a19ef629018",
+    "installedSha256": "7afb3a2dc57cb16223dddc970e0b464311e5311484c793abf9327a19ef629018",
+    "equal": true
+  },
+  {
+    "file": "legal/jdk.javadoc/jquery.md",
+    "archiveSha256": "0716943682c624fd2f49b3a718a2ed4d6386e872fe741f1c759573ae24509d3e",
+    "installedSha256": "0716943682c624fd2f49b3a718a2ed4d6386e872fe741f1c759573ae24509d3e",
+    "equal": true
+  },
+  {
+    "file": "legal/jdk.javadoc/jqueryUI.md",
+    "archiveSha256": "bb0a0e89ebd824df714516bf64b9101c62081e4b376f00f929a58c09555bf111",
+    "installedSha256": "bb0a0e89ebd824df714516bf64b9101c62081e4b376f00f929a58c09555bf111",
+    "equal": true
+  },
+  {
+    "file": "legal/jdk.javadoc/LICENSE",
+    "archiveSha256": "86e0516b888276a492b19f9a84f5a866ed36925fae1510b3a94a0b6213e69192",
+    "installedSha256": "86e0516b888276a492b19f9a84f5a866ed36925fae1510b3a94a0b6213e69192",
+    "equal": true
+  },
+  {
+    "file": "legal/jdk.jcmd/COPYRIGHT",
+    "archiveSha256": "7afb3a2dc57cb16223dddc970e0b464311e5311484c793abf9327a19ef629018",
+    "installedSha256": "7afb3a2dc57cb16223dddc970e0b464311e5311484c793abf9327a19ef629018",
+    "equal": true
+  },
+  {
+    "file": "legal/jdk.jcmd/LICENSE",
+    "archiveSha256": "86e0516b888276a492b19f9a84f5a866ed36925fae1510b3a94a0b6213e69192",
+    "installedSha256": "86e0516b888276a492b19f9a84f5a866ed36925fae1510b3a94a0b6213e69192",
+    "equal": true
+  },
+  {
+    "file": "legal/jdk.jconsole/COPYRIGHT",
+    "archiveSha256": "7afb3a2dc57cb16223dddc970e0b464311e5311484c793abf9327a19ef629018",
+    "installedSha256": "7afb3a2dc57cb16223dddc970e0b464311e5311484c793abf9327a19ef629018",
+    "equal": true
+  },
+  {
+    "file": "legal/jdk.jconsole/LICENSE",
+    "archiveSha256": "86e0516b888276a492b19f9a84f5a866ed36925fae1510b3a94a0b6213e69192",
+    "installedSha256": "86e0516b888276a492b19f9a84f5a866ed36925fae1510b3a94a0b6213e69192",
+    "equal": true
+  },
+  {
+    "file": "legal/jdk.jdeps/COPYRIGHT",
+    "archiveSha256": "7afb3a2dc57cb16223dddc970e0b464311e5311484c793abf9327a19ef629018",
+    "installedSha256": "7afb3a2dc57cb16223dddc970e0b464311e5311484c793abf9327a19ef629018",
+    "equal": true
+  },
+  {
+    "file": "legal/jdk.jdeps/LICENSE",
+    "archiveSha256": "86e0516b888276a492b19f9a84f5a866ed36925fae1510b3a94a0b6213e69192",
+    "installedSha256": "86e0516b888276a492b19f9a84f5a866ed36925fae1510b3a94a0b6213e69192",
+    "equal": true
+  },
+  {
+    "file": "legal/jdk.jdi/COPYRIGHT",
+    "archiveSha256": "7afb3a2dc57cb16223dddc970e0b464311e5311484c793abf9327a19ef629018",
+    "installedSha256": "7afb3a2dc57cb16223dddc970e0b464311e5311484c793abf9327a19ef629018",
+    "equal": true
+  },
+  {
+    "file": "legal/jdk.jdi/LICENSE",
+    "archiveSha256": "86e0516b888276a492b19f9a84f5a866ed36925fae1510b3a94a0b6213e69192",
+    "installedSha256": "86e0516b888276a492b19f9a84f5a866ed36925fae1510b3a94a0b6213e69192",
+    "equal": true
+  },
+  {
+    "file": "legal/jdk.jdwp.agent/COPYRIGHT",
+    "archiveSha256": "7afb3a2dc57cb16223dddc970e0b464311e5311484c793abf9327a19ef629018",
+    "installedSha256": "7afb3a2dc57cb16223dddc970e0b464311e5311484c793abf9327a19ef629018",
+    "equal": true
+  },
+  {
+    "file": "legal/jdk.jdwp.agent/LICENSE",
+    "archiveSha256": "86e0516b888276a492b19f9a84f5a866ed36925fae1510b3a94a0b6213e69192",
+    "installedSha256": "86e0516b888276a492b19f9a84f5a866ed36925fae1510b3a94a0b6213e69192",
+    "equal": true
+  },
+  {
+    "file": "legal/jdk.jfr/COPYRIGHT",
+    "archiveSha256": "7afb3a2dc57cb16223dddc970e0b464311e5311484c793abf9327a19ef629018",
+    "installedSha256": "7afb3a2dc57cb16223dddc970e0b464311e5311484c793abf9327a19ef629018",
+    "equal": true
+  },
+  {
+    "file": "legal/jdk.jfr/LICENSE",
+    "archiveSha256": "86e0516b888276a492b19f9a84f5a866ed36925fae1510b3a94a0b6213e69192",
+    "installedSha256": "86e0516b888276a492b19f9a84f5a866ed36925fae1510b3a94a0b6213e69192",
+    "equal": true
+  },
+  {
+    "file": "legal/jdk.jlink/COPYRIGHT",
+    "archiveSha256": "7afb3a2dc57cb16223dddc970e0b464311e5311484c793abf9327a19ef629018",
+    "installedSha256": "7afb3a2dc57cb16223dddc970e0b464311e5311484c793abf9327a19ef629018",
+    "equal": true
+  },
+  {
+    "file": "legal/jdk.jlink/LICENSE",
+    "archiveSha256": "86e0516b888276a492b19f9a84f5a866ed36925fae1510b3a94a0b6213e69192",
+    "installedSha256": "86e0516b888276a492b19f9a84f5a866ed36925fae1510b3a94a0b6213e69192",
+    "equal": true
+  },
+  {
+    "file": "legal/jdk.jpackage/COPYRIGHT",
+    "archiveSha256": "7afb3a2dc57cb16223dddc970e0b464311e5311484c793abf9327a19ef629018",
+    "installedSha256": "7afb3a2dc57cb16223dddc970e0b464311e5311484c793abf9327a19ef629018",
+    "equal": true
+  },
+  {
+    "file": "legal/jdk.jpackage/LICENSE",
+    "archiveSha256": "86e0516b888276a492b19f9a84f5a866ed36925fae1510b3a94a0b6213e69192",
+    "installedSha256": "86e0516b888276a492b19f9a84f5a866ed36925fae1510b3a94a0b6213e69192",
+    "equal": true
+  },
+  {
+    "file": "legal/jdk.jshell/COPYRIGHT",
+    "archiveSha256": "7afb3a2dc57cb16223dddc970e0b464311e5311484c793abf9327a19ef629018",
+    "installedSha256": "7afb3a2dc57cb16223dddc970e0b464311e5311484c793abf9327a19ef629018",
+    "equal": true
+  },
+  {
+    "file": "legal/jdk.jshell/LICENSE",
+    "archiveSha256": "86e0516b888276a492b19f9a84f5a866ed36925fae1510b3a94a0b6213e69192",
+    "installedSha256": "86e0516b888276a492b19f9a84f5a866ed36925fae1510b3a94a0b6213e69192",
+    "equal": true
+  },
+  {
+    "file": "legal/jdk.jsobject/COPYRIGHT",
+    "archiveSha256": "7afb3a2dc57cb16223dddc970e0b464311e5311484c793abf9327a19ef629018",
+    "installedSha256": "7afb3a2dc57cb16223dddc970e0b464311e5311484c793abf9327a19ef629018",
+    "equal": true
+  },
+  {
+    "file": "legal/jdk.jsobject/LICENSE",
+    "archiveSha256": "86e0516b888276a492b19f9a84f5a866ed36925fae1510b3a94a0b6213e69192",
+    "installedSha256": "86e0516b888276a492b19f9a84f5a866ed36925fae1510b3a94a0b6213e69192",
+    "equal": true
+  },
+  {
+    "file": "legal/jdk.jstatd/COPYRIGHT",
+    "archiveSha256": "7afb3a2dc57cb16223dddc970e0b464311e5311484c793abf9327a19ef629018",
+    "installedSha256": "7afb3a2dc57cb16223dddc970e0b464311e5311484c793abf9327a19ef629018",
+    "equal": true
+  },
+  {
+    "file": "legal/jdk.jstatd/LICENSE",
+    "archiveSha256": "86e0516b888276a492b19f9a84f5a866ed36925fae1510b3a94a0b6213e69192",
+    "installedSha256": "86e0516b888276a492b19f9a84f5a866ed36925fae1510b3a94a0b6213e69192",
+    "equal": true
+  },
+  {
+    "file": "legal/jdk.localedata/cldr.md",
+    "archiveSha256": "09972449731a1d1a0863af0384aeb7839f84cac74983c96856e6c305e31ed8b2",
+    "installedSha256": "09972449731a1d1a0863af0384aeb7839f84cac74983c96856e6c305e31ed8b2",
+    "equal": true
+  },
+  {
+    "file": "legal/jdk.localedata/COPYRIGHT",
+    "archiveSha256": "7afb3a2dc57cb16223dddc970e0b464311e5311484c793abf9327a19ef629018",
+    "installedSha256": "7afb3a2dc57cb16223dddc970e0b464311e5311484c793abf9327a19ef629018",
+    "equal": true
+  },
+  {
+    "file": "legal/jdk.localedata/LICENSE",
+    "archiveSha256": "86e0516b888276a492b19f9a84f5a866ed36925fae1510b3a94a0b6213e69192",
+    "installedSha256": "86e0516b888276a492b19f9a84f5a866ed36925fae1510b3a94a0b6213e69192",
+    "equal": true
+  },
+  {
+    "file": "legal/jdk.localedata/thaidict.md",
+    "archiveSha256": "c326144a2351c9608fa708b5d7d3c5a3da03e82b66479b128e9db4969539824a",
+    "installedSha256": "c326144a2351c9608fa708b5d7d3c5a3da03e82b66479b128e9db4969539824a",
+    "equal": true
+  },
+  {
+    "file": "legal/jdk.management/COPYRIGHT",
+    "archiveSha256": "7afb3a2dc57cb16223dddc970e0b464311e5311484c793abf9327a19ef629018",
+    "installedSha256": "7afb3a2dc57cb16223dddc970e0b464311e5311484c793abf9327a19ef629018",
+    "equal": true
+  },
+  {
+    "file": "legal/jdk.management/LICENSE",
+    "archiveSha256": "86e0516b888276a492b19f9a84f5a866ed36925fae1510b3a94a0b6213e69192",
+    "installedSha256": "86e0516b888276a492b19f9a84f5a866ed36925fae1510b3a94a0b6213e69192",
+    "equal": true
+  },
+  {
+    "file": "legal/jdk.management.agent/COPYRIGHT",
+    "archiveSha256": "7afb3a2dc57cb16223dddc970e0b464311e5311484c793abf9327a19ef629018",
+    "installedSha256": "7afb3a2dc57cb16223dddc970e0b464311e5311484c793abf9327a19ef629018",
+    "equal": true
+  },
+  {
+    "file": "legal/jdk.management.agent/LICENSE",
+    "archiveSha256": "86e0516b888276a492b19f9a84f5a866ed36925fae1510b3a94a0b6213e69192",
+    "installedSha256": "86e0516b888276a492b19f9a84f5a866ed36925fae1510b3a94a0b6213e69192",
+    "equal": true
+  },
+  {
+    "file": "legal/jdk.management.jfr/COPYRIGHT",
+    "archiveSha256": "7afb3a2dc57cb16223dddc970e0b464311e5311484c793abf9327a19ef629018",
+    "installedSha256": "7afb3a2dc57cb16223dddc970e0b464311e5311484c793abf9327a19ef629018",
+    "equal": true
+  },
+  {
+    "file": "legal/jdk.management.jfr/LICENSE",
+    "archiveSha256": "86e0516b888276a492b19f9a84f5a866ed36925fae1510b3a94a0b6213e69192",
+    "installedSha256": "86e0516b888276a492b19f9a84f5a866ed36925fae1510b3a94a0b6213e69192",
+    "equal": true
+  },
+  {
+    "file": "legal/jdk.naming.dns/COPYRIGHT",
+    "archiveSha256": "7afb3a2dc57cb16223dddc970e0b464311e5311484c793abf9327a19ef629018",
+    "installedSha256": "7afb3a2dc57cb16223dddc970e0b464311e5311484c793abf9327a19ef629018",
+    "equal": true
+  },
+  {
+    "file": "legal/jdk.naming.dns/LICENSE",
+    "archiveSha256": "86e0516b888276a492b19f9a84f5a866ed36925fae1510b3a94a0b6213e69192",
+    "installedSha256": "86e0516b888276a492b19f9a84f5a866ed36925fae1510b3a94a0b6213e69192",
+    "equal": true
+  },
+  {
+    "file": "legal/jdk.naming.rmi/COPYRIGHT",
+    "archiveSha256": "7afb3a2dc57cb16223dddc970e0b464311e5311484c793abf9327a19ef629018",
+    "installedSha256": "7afb3a2dc57cb16223dddc970e0b464311e5311484c793abf9327a19ef629018",
+    "equal": true
+  },
+  {
+    "file": "legal/jdk.naming.rmi/LICENSE",
+    "archiveSha256": "86e0516b888276a492b19f9a84f5a866ed36925fae1510b3a94a0b6213e69192",
+    "installedSha256": "86e0516b888276a492b19f9a84f5a866ed36925fae1510b3a94a0b6213e69192",
+    "equal": true
+  },
+  {
+    "file": "legal/jdk.net/COPYRIGHT",
+    "archiveSha256": "7afb3a2dc57cb16223dddc970e0b464311e5311484c793abf9327a19ef629018",
+    "installedSha256": "7afb3a2dc57cb16223dddc970e0b464311e5311484c793abf9327a19ef629018",
+    "equal": true
+  },
+  {
+    "file": "legal/jdk.net/LICENSE",
+    "archiveSha256": "86e0516b888276a492b19f9a84f5a866ed36925fae1510b3a94a0b6213e69192",
+    "installedSha256": "86e0516b888276a492b19f9a84f5a866ed36925fae1510b3a94a0b6213e69192",
+    "equal": true
+  },
+  {
+    "file": "legal/jdk.nio.mapmode/COPYRIGHT",
+    "archiveSha256": "7afb3a2dc57cb16223dddc970e0b464311e5311484c793abf9327a19ef629018",
+    "installedSha256": "7afb3a2dc57cb16223dddc970e0b464311e5311484c793abf9327a19ef629018",
+    "equal": true
+  },
+  {
+    "file": "legal/jdk.nio.mapmode/LICENSE",
+    "archiveSha256": "86e0516b888276a492b19f9a84f5a866ed36925fae1510b3a94a0b6213e69192",
+    "installedSha256": "86e0516b888276a492b19f9a84f5a866ed36925fae1510b3a94a0b6213e69192",
+    "equal": true
+  },
+  {
+    "file": "legal/jdk.random/COPYRIGHT",
+    "archiveSha256": "7afb3a2dc57cb16223dddc970e0b464311e5311484c793abf9327a19ef629018",
+    "installedSha256": "7afb3a2dc57cb16223dddc970e0b464311e5311484c793abf9327a19ef629018",
+    "equal": true
+  },
+  {
+    "file": "legal/jdk.random/LICENSE",
+    "archiveSha256": "86e0516b888276a492b19f9a84f5a866ed36925fae1510b3a94a0b6213e69192",
+    "installedSha256": "86e0516b888276a492b19f9a84f5a866ed36925fae1510b3a94a0b6213e69192",
+    "equal": true
+  },
+  {
+    "file": "legal/jdk.sctp/COPYRIGHT",
+    "archiveSha256": "7afb3a2dc57cb16223dddc970e0b464311e5311484c793abf9327a19ef629018",
+    "installedSha256": "7afb3a2dc57cb16223dddc970e0b464311e5311484c793abf9327a19ef629018",
+    "equal": true
+  },
+  {
+    "file": "legal/jdk.sctp/LICENSE",
+    "archiveSha256": "86e0516b888276a492b19f9a84f5a866ed36925fae1510b3a94a0b6213e69192",
+    "installedSha256": "86e0516b888276a492b19f9a84f5a866ed36925fae1510b3a94a0b6213e69192",
+    "equal": true
+  },
+  {
+    "file": "legal/jdk.security.auth/COPYRIGHT",
+    "archiveSha256": "7afb3a2dc57cb16223dddc970e0b464311e5311484c793abf9327a19ef629018",
+    "installedSha256": "7afb3a2dc57cb16223dddc970e0b464311e5311484c793abf9327a19ef629018",
+    "equal": true
+  },
+  {
+    "file": "legal/jdk.security.auth/LICENSE",
+    "archiveSha256": "86e0516b888276a492b19f9a84f5a866ed36925fae1510b3a94a0b6213e69192",
+    "installedSha256": "86e0516b888276a492b19f9a84f5a866ed36925fae1510b3a94a0b6213e69192",
+    "equal": true
+  },
+  {
+    "file": "legal/jdk.security.jgss/COPYRIGHT",
+    "archiveSha256": "7afb3a2dc57cb16223dddc970e0b464311e5311484c793abf9327a19ef629018",
+    "installedSha256": "7afb3a2dc57cb16223dddc970e0b464311e5311484c793abf9327a19ef629018",
+    "equal": true
+  },
+  {
+    "file": "legal/jdk.security.jgss/LICENSE",
+    "archiveSha256": "86e0516b888276a492b19f9a84f5a866ed36925fae1510b3a94a0b6213e69192",
+    "installedSha256": "86e0516b888276a492b19f9a84f5a866ed36925fae1510b3a94a0b6213e69192",
+    "equal": true
+  },
+  {
+    "file": "legal/jdk.unsupported/COPYRIGHT",
+    "archiveSha256": "7afb3a2dc57cb16223dddc970e0b464311e5311484c793abf9327a19ef629018",
+    "installedSha256": "7afb3a2dc57cb16223dddc970e0b464311e5311484c793abf9327a19ef629018",
+    "equal": true
+  },
+  {
+    "file": "legal/jdk.unsupported/LICENSE",
+    "archiveSha256": "86e0516b888276a492b19f9a84f5a866ed36925fae1510b3a94a0b6213e69192",
+    "installedSha256": "86e0516b888276a492b19f9a84f5a866ed36925fae1510b3a94a0b6213e69192",
+    "equal": true
+  },
+  {
+    "file": "legal/jdk.unsupported.desktop/COPYRIGHT",
+    "archiveSha256": "7afb3a2dc57cb16223dddc970e0b464311e5311484c793abf9327a19ef629018",
+    "installedSha256": "7afb3a2dc57cb16223dddc970e0b464311e5311484c793abf9327a19ef629018",
+    "equal": true
+  },
+  {
+    "file": "legal/jdk.unsupported.desktop/LICENSE",
+    "archiveSha256": "86e0516b888276a492b19f9a84f5a866ed36925fae1510b3a94a0b6213e69192",
+    "installedSha256": "86e0516b888276a492b19f9a84f5a866ed36925fae1510b3a94a0b6213e69192",
+    "equal": true
+  },
+  {
+    "file": "legal/jdk.xml.dom/COPYRIGHT",
+    "archiveSha256": "7afb3a2dc57cb16223dddc970e0b464311e5311484c793abf9327a19ef629018",
+    "installedSha256": "7afb3a2dc57cb16223dddc970e0b464311e5311484c793abf9327a19ef629018",
+    "equal": true
+  },
+  {
+    "file": "legal/jdk.xml.dom/LICENSE",
+    "archiveSha256": "86e0516b888276a492b19f9a84f5a866ed36925fae1510b3a94a0b6213e69192",
+    "installedSha256": "86e0516b888276a492b19f9a84f5a866ed36925fae1510b3a94a0b6213e69192",
+    "equal": true
+  },
+  {
+    "file": "legal/jdk.zipfs/COPYRIGHT",
+    "archiveSha256": "7afb3a2dc57cb16223dddc970e0b464311e5311484c793abf9327a19ef629018",
+    "installedSha256": "7afb3a2dc57cb16223dddc970e0b464311e5311484c793abf9327a19ef629018",
+    "equal": true
+  },
+  {
+    "file": "legal/jdk.zipfs/LICENSE",
+    "archiveSha256": "86e0516b888276a492b19f9a84f5a866ed36925fae1510b3a94a0b6213e69192",
+    "installedSha256": "86e0516b888276a492b19f9a84f5a866ed36925fae1510b3a94a0b6213e69192",
+    "equal": true
+  },
+  {
+    "file": "lib/classlist",
+    "archiveSha256": "1b3e55f0551ad83c9792ed27c0b5f646be3af2882624f112e4581d1ff5a88e32",
+    "installedSha256": "1b3e55f0551ad83c9792ed27c0b5f646be3af2882624f112e4581d1ff5a88e32",
+    "equal": true
+  },
+  {
+    "file": "lib/ct.sym",
+    "archiveSha256": "57e8315a273c91080fb4406dcbde3a17c7b2a5bfc85b0bab084ea96b8abe4988",
+    "installedSha256": "57e8315a273c91080fb4406dcbde3a17c7b2a5bfc85b0bab084ea96b8abe4988",
+    "equal": true
+  },
+  {
+    "file": "lib/fontconfig.bfc",
+    "archiveSha256": "968ac99bbaaf8a49a474c934e73ad58f88c6c7f2a363cb44771e0378444e36ba",
+    "installedSha256": "968ac99bbaaf8a49a474c934e73ad58f88c6c7f2a363cb44771e0378444e36ba",
+    "equal": true
+  },
+  {
+    "file": "lib/fontconfig.properties.src",
+    "archiveSha256": "0e09536058276fbd7dbe92b7e359f6fdde04b55ea7f9e4995b70c9bed34cd11a",
+    "installedSha256": "0e09536058276fbd7dbe92b7e359f6fdde04b55ea7f9e4995b70c9bed34cd11a",
+    "equal": true
+  },
+  {
+    "file": "lib/jawt.lib",
+    "archiveSha256": "78b5fa351274fe1bfd7d970e95bdea026640e8be2d3b78a295574a8face1ba54",
+    "installedSha256": "78b5fa351274fe1bfd7d970e95bdea026640e8be2d3b78a295574a8face1ba54",
+    "equal": true
+  },
+  {
+    "file": "lib/jfr/default.jfc",
+    "archiveSha256": "8c704f48b6932a23b1529712501bb886662e6d8c2be8a2efd36ea0c255686844",
+    "installedSha256": "8c704f48b6932a23b1529712501bb886662e6d8c2be8a2efd36ea0c255686844",
+    "equal": true
+  },
+  {
+    "file": "lib/jfr/profile.jfc",
+    "archiveSha256": "74968dffec110041217017a863366952b1de06e6a8eb918cdc773c7b5ac2318a",
+    "installedSha256": "74968dffec110041217017a863366952b1de06e6a8eb918cdc773c7b5ac2318a",
+    "equal": true
+  },
+  {
+    "file": "lib/jrt-fs.jar",
+    "archiveSha256": "adc3baf005f6287c3d33d24884ae8afaf32148fe03682ce9ccda094671cac6e9",
+    "installedSha256": "adc3baf005f6287c3d33d24884ae8afaf32148fe03682ce9ccda094671cac6e9",
+    "equal": true
+  },
+  {
+    "file": "lib/jvm.cfg",
+    "archiveSha256": "aa9efb969444c1484e29adecab55a122458090616e766b2f1230ef05bc3867e0",
+    "installedSha256": "aa9efb969444c1484e29adecab55a122458090616e766b2f1230ef05bc3867e0",
+    "equal": true
+  },
+  {
+    "file": "lib/jvm.lib",
+    "archiveSha256": "5944db31dfcaac7756cd0902a0aecb3044be36477c7f629862e5b8993b949827",
+    "installedSha256": "5944db31dfcaac7756cd0902a0aecb3044be36477c7f629862e5b8993b949827",
+    "equal": true
+  },
+  {
+    "file": "lib/modules",
+    "archiveSha256": "0609e98ac15d0e0daf3505a518314c7b96d40e01f5d625f22d4fa019a0a79ffc",
+    "installedSha256": "0609e98ac15d0e0daf3505a518314c7b96d40e01f5d625f22d4fa019a0a79ffc",
+    "equal": true
+  },
+  {
+    "file": "lib/psfont.properties.ja",
+    "archiveSha256": "0c790de696536165913685785ea8cbe1ac64acf09e2c8d92d802083a6da09393",
+    "installedSha256": "0c790de696536165913685785ea8cbe1ac64acf09e2c8d92d802083a6da09393",
+    "equal": true
+  },
+  {
+    "file": "lib/psfontj2d.properties",
+    "archiveSha256": "7d51936fa3fd5812ae51f9f5657e0e70487dca810b985607b6c5d6603f5e6c98",
+    "installedSha256": "7d51936fa3fd5812ae51f9f5657e0e70487dca810b985607b6c5d6603f5e6c98",
+    "equal": true
+  },
+  {
+    "file": "lib/security/blocked.certs",
+    "archiveSha256": "583500b76965eb54b03493372989ab4d3426f85462d1db232c5ae6706a4d6c58",
+    "installedSha256": "583500b76965eb54b03493372989ab4d3426f85462d1db232c5ae6706a4d6c58",
+    "equal": true
+  },
+  {
+    "file": "lib/security/cacerts",
+    "archiveSha256": "88729256ffe5a3e439986d180bbacc0b66cb1d6d52ced7c8ad63b7f15f022452",
+    "installedSha256": "88729256ffe5a3e439986d180bbacc0b66cb1d6d52ced7c8ad63b7f15f022452",
+    "equal": true
+  },
+  {
+    "file": "lib/security/default.policy",
+    "archiveSha256": "6f8af6b72c1132c0592defd777bc5397a27eabe59b17ad2ba388e69d711257ba",
+    "installedSha256": "6f8af6b72c1132c0592defd777bc5397a27eabe59b17ad2ba388e69d711257ba",
+    "equal": true
+  },
+  {
+    "file": "lib/security/public_suffix_list.dat",
+    "archiveSha256": "72e17c92d464ba1476fbcc7dac6cbc493f6fb04f158895368b57d81ddbe277d1",
+    "installedSha256": "72e17c92d464ba1476fbcc7dac6cbc493f6fb04f158895368b57d81ddbe277d1",
+    "equal": true
+  },
+  {
+    "file": "lib/src.zip",
+    "archiveSha256": "b82bcc173679d7c8c386cdef8002b3e8200ebd8c161ddde0b1c751eecbf0b692",
+    "installedSha256": "b82bcc173679d7c8c386cdef8002b3e8200ebd8c161ddde0b1c751eecbf0b692",
+    "equal": true
+  },
+  {
+    "file": "lib/tzdb.dat",
+    "archiveSha256": "b7dba25abdfee317daa042c89b01e5711f5781d020dd733ba411760b72addb93",
+    "installedSha256": "b7dba25abdfee317daa042c89b01e5711f5781d020dd733ba411760b72addb93",
+    "equal": true
+  },
+  {
+    "file": "lib/tzmappings",
+    "archiveSha256": "36dc51c4bf787f640a4b45cbb84ab6954f6e595cbd3617c2f5a4e1e607b38bff",
+    "installedSha256": "36dc51c4bf787f640a4b45cbb84ab6954f6e595cbd3617c2f5a4e1e607b38bff",
+    "equal": true
+  },
+  {
+    "file": "LICENSE",
+    "archiveSha256": "4d156eecbf6ca462d8cf772552fff874b167f87def9566837fb8e4fb347f29a5",
+    "installedSha256": "4d156eecbf6ca462d8cf772552fff874b167f87def9566837fb8e4fb347f29a5",
+    "equal": true
+  },
+  {
+    "file": "README",
+    "archiveSha256": "5e3d8b36848ca0492497f7a89e096234999b1e9141602307f632e66ae07012e0",
+    "installedSha256": "5e3d8b36848ca0492497f7a89e096234999b1e9141602307f632e66ae07012e0",
+    "equal": true
+  },
+  {
+    "file": "release",
+    "archiveSha256": "252f064aa016573cd587a7397df6804301cff411498a052ed44847fd443ea41b",
+    "installedSha256": "252f064aa016573cd587a7397df6804301cff411498a052ed44847fd443ea41b",
+    "equal": true
+  }
+]

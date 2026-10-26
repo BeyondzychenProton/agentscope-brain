@@ -1,0 +1,13 @@
+{
+  "issue": 27,
+  "mysqlVersion": "8.0.45",
+  "table": "issue27_agent_state",
+  "terminalStatus": "VERIFIED",
+  "beforeVersion": 1,
+  "afterVersion": 2,
+  "terminalResultCount": 1,
+  "restartPendingSupported": false,
+  "modelCalls": 1,
+  "toolBodyCalls": 1,
+  "otherToolSends": 0
+}

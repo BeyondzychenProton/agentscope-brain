@@ -1,0 +1,40 @@
+Picked up JAVA_TOOL_OPTIONS: -Dfile.encoding=UTF-8
+[INFO] Scanning for projects...
+[INFO] 
+[INFO] -----------< com.agentscope.brain:agentscope-brain-backend >------------
+[INFO] Building AgentScope Brain Backend 0.1.0-SNAPSHOT
+[INFO]   from pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- clean:3.5.0:clean (default-clean) @ agentscope-brain-backend ---
+[INFO] Deleting D:\code project\agentscope\backend\target
+[INFO] 
+[INFO] --- enforcer:3.6.2:enforce (fixed-build-runtime) @ agentscope-brain-backend ---
+[INFO] Rule 0: org.apache.maven.enforcer.rules.version.RequireMavenVersion passed
+[INFO] Rule 1: org.apache.maven.enforcer.rules.version.RequireJavaVersion passed
+[INFO] 
+[INFO] --- resources:3.5.0:resources (default-resources) @ agentscope-brain-backend ---
+[INFO] skip non existing resourceDirectory D:\code project\agentscope\backend\src\main\resources
+[INFO] skip non existing resourceDirectory D:\code project\agentscope\backend\src\main\resources
+[INFO] 
+[INFO] --- compiler:3.15.0:compile (default-compile) @ agentscope-brain-backend ---
+[INFO] Recompiling the module because of changed source code.
+[INFO] Compiling 1 source file with javac [debug parameters release 17] to target\classes
+[INFO] 
+[INFO] --- resources:3.5.0:testResources (default-testResources) @ agentscope-brain-backend ---
+[INFO] Not copying test resources
+[INFO] 
+[INFO] --- compiler:3.15.0:testCompile (default-testCompile) @ agentscope-brain-backend ---
+[INFO] Not compiling test sources
+[INFO] 
+[INFO] --- surefire:3.5.6:test (default-test) @ agentscope-brain-backend ---
+[INFO] Tests are skipped.
+[INFO] 
+[INFO] --- jar:3.5.1:jar (default-jar) @ agentscope-brain-backend ---
+[INFO] Building jar: D:\code project\agentscope\backend\target\agentscope-brain-backend-0.1.0-SNAPSHOT.jar
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESS
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  3.819 s
+[INFO] Finished at: 2026-10-25T21:58:32+08:00
+[INFO] ------------------------------------------------------------------------

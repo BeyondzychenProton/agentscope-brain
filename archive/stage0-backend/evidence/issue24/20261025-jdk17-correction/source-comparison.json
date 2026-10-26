@@ -1,0 +1,56 @@
+[
+  {
+    "file": ".mvn/wrapper/maven-wrapper.properties",
+    "originalSha256": "51b221ede4e074d19bb44d6d485bb7b298e77874572a09697aba0a9e234e0745",
+    "currentSha256": "51b221ede4e074d19bb44d6d485bb7b298e77874572a09697aba0a9e234e0745",
+    "unchanged": true
+  },
+  {
+    "file": "mvnw",
+    "originalSha256": "cae96cef89ebea3531221f4ae17c23cf8edf67d00eae8306d4186ae1bbed4d02",
+    "currentSha256": "cae96cef89ebea3531221f4ae17c23cf8edf67d00eae8306d4186ae1bbed4d02",
+    "unchanged": true
+  },
+  {
+    "file": "mvnw.cmd",
+    "originalSha256": "46eedb8419bd14fe70d5bb2916d7b6f51806e51b39d5b76a42610384ca929c1c",
+    "currentSha256": "46eedb8419bd14fe70d5bb2916d7b6f51806e51b39d5b76a42610384ca929c1c",
+    "unchanged": true
+  },
+  {
+    "file": "pom.xml",
+    "originalSha256": "8232df1d611ada5d2044bf1f02d3b8810804281e134fdb5aafd28bc98e6c75d0",
+    "currentSha256": "8232df1d611ada5d2044bf1f02d3b8810804281e134fdb5aafd28bc98e6c75d0",
+    "unchanged": true
+  },
+  {
+    "file": "scripts\\验证依赖基线.ps1",
+    "originalSha256": "134115586f2c2bb1f4a24cd2574628ea9f2906463b1e42194f8e4431c129ee30",
+    "currentSha256": "442206f59b2bee35abe8c2f9bc5fe4a99706243b5b13e0617d8581049d371984",
+    "unchanged": false
+  },
+  {
+    "file": "src\\main\\java\\com\\agentscope\\brain\\validation\\ClosedDraft7Validator.java",
+    "originalSha256": "891dbc3b50264c0855a902a5c556e25d29ff9df0c8f81c9138c10d39ceb08d35",
+    "currentSha256": "891dbc3b50264c0855a902a5c556e25d29ff9df0c8f81c9138c10d39ceb08d35",
+    "unchanged": true
+  },
+  {
+    "file": "src\\test\\java\\com\\agentscope\\brain\\baseline\\IsolatedAssemblyTest.java",
+    "originalSha256": "c6894044aed2a1dc5004d03e003dd61ce5d4b4bc221133932b29aff70cb8905c",
+    "currentSha256": "c6894044aed2a1dc5004d03e003dd61ce5d4b4bc221133932b29aff70cb8905c",
+    "unchanged": true
+  },
+  {
+    "file": "src\\test\\java\\com\\agentscope\\brain\\validation\\ClosedDraft7ValidatorTest.java",
+    "originalSha256": "e9e57910245b530b765a74631469e1f00bc8a5a8da4751e6799870ff79cd6736",
+    "currentSha256": "e9e57910245b530b765a74631469e1f00bc8a5a8da4751e6799870ff79cd6736",
+    "unchanged": true
+  },
+  {
+    "file": "src\\test\\java\\com\\agentscope\\brain\\validation\\SdkToolValidatorTest.java",
+    "originalSha256": "d47afdf9535b4ef866baa2cdc1f62bdc0aa0a13ae0f3ee12e51ceb59af4511e5",
+    "currentSha256": "d47afdf9535b4ef866baa2cdc1f62bdc0aa0a13ae0f3ee12e51ceb59af4511e5",
+    "unchanged": true
+  }
+]

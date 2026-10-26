@@ -1,0 +1,12 @@
+$scriptDir='C:\Users\shanH\AppData\Local\Temp\agentscope-issue24-wrapper-e8815e2dcfcd4673a796046e7b920879\bad-checksum\
+'; $script='mvnw.cmd'; icm -ScriptBlock ([Scriptblock]::Create((Get-Content -Raw 'C:\Users\shanH\AppData\Local\Temp\age
+ntscope-issue24-wrapper-e8815e2dcfcd4673a796046e7b920879\bad-checksum\mvnw.cmd'))) -NoNewScope : Error: Failed to valid
+ate Maven distribution SHA-256, your Maven distribution might be compromised. If you updated your Maven version, you ne
+ed to update the specified distributionSha256Sum property.
+At line:1 char:1
++ & {$scriptDir='C:\Users\shanH\AppData\Local\Temp\agentscope-issue24-w ...
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (:) [Write-Error], WriteErrorException
+    + FullyQualifiedErrorId : Microsoft.PowerShell.Commands.WriteErrorException
+ 
+Cannot start maven from wrapper  

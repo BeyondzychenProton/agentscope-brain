@@ -1,0 +1,62 @@
+[
+  {
+    "name": "maven-version",
+    "arguments": [
+      "-version"
+    ],
+    "exitCode": 0
+  },
+  {
+    "name": "effective-pom-command",
+    "arguments": [
+      "-B",
+      "-ntp",
+      "help:effective-pom",
+      "-Doutput=D:\\code project\\agentscope\\backend\\evidence\\issue24\\20261025-windows-oracle17/effective-pom.xml"
+    ],
+    "exitCode": 0
+  },
+  {
+    "name": "dependency-tree-command",
+    "arguments": [
+      "-B",
+      "-ntp",
+      "dependency:tree",
+      "-Dverbose",
+      "-DoutputFile=D:\\code project\\agentscope\\backend\\evidence\\issue24\\20261025-windows-oracle17/dependency-tree.txt"
+    ],
+    "exitCode": 0
+  },
+  {
+    "name": "classpath-command",
+    "arguments": [
+      "-B",
+      "-ntp",
+      "dependency:build-classpath",
+      "-DincludeScope=test",
+      "-Dmdep.outputFile=D:\\code project\\agentscope\\backend\\evidence\\issue24\\20261025-windows-oracle17/classpath.txt"
+    ],
+    "exitCode": 0
+  },
+  {
+    "name": "clean-verify",
+    "arguments": [
+      "-B",
+      "-ntp",
+      "clean",
+      "verify"
+    ],
+    "exitCode": 0
+  },
+  {
+    "name": "rebuild-package",
+    "arguments": [
+      "-B",
+      "-ntp",
+      "clean",
+      "package",
+      "-Dmaven.test.skip=true"
+    ],
+    "exitCode": 0
+  }
+]

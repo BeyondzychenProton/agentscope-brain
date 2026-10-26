@@ -1,0 +1,23 @@
+{
+  "executableEntrypoint": "com.agentscope.brain.AgentScopeBrainApplication",
+  "applicationEntries": [
+    "BOOT-INF/classes/application-dev.yaml",
+    "BOOT-INF/classes/application-prod.yaml",
+    "BOOT-INF/classes/application.yaml",
+    "BOOT-INF/classes/com/agentscope/brain/AgentScopeBrainApplication.class",
+    "BOOT-INF/classes/com/agentscope/brain/conversation/package-info.class",
+    "BOOT-INF/classes/com/agentscope/brain/identity/internal/security/ClosedAccessConfiguration.class",
+    "BOOT-INF/classes/com/agentscope/brain/identity/package-info.class",
+    "BOOT-INF/classes/com/agentscope/brain/interaction/internal/validation/ClosedDraft7Validator$Violation.class",
+    "BOOT-INF/classes/com/agentscope/brain/interaction/internal/validation/ClosedDraft7Validator.class",
+    "BOOT-INF/classes/com/agentscope/brain/interaction/package-info.class",
+    "BOOT-INF/classes/com/agentscope/brain/media/package-info.class",
+    "BOOT-INF/classes/com/agentscope/brain/memory/package-info.class",
+    "BOOT-INF/classes/com/agentscope/brain/operation/package-info.class",
+    "BOOT-INF/classes/com/agentscope/brain/projection/package-info.class",
+    "BOOT-INF/classes/com/agentscope/brain/release/package-info.class",
+    "BOOT-INF/classes/com/agentscope/brain/runtime/package-info.class"
+  ],
+  "forbiddenEntryCount": 0,
+  "jarSha256": "c154c9c54be42a3c9d8f094480c7952914dde0d015aa92e2893576f47a7193a6"
+}

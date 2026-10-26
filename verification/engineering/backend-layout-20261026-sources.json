@@ -1,0 +1,106 @@
+[
+  {
+    "path": "backend/.mvn/wrapper/maven-wrapper.properties",
+    "sha256": "51b221ede4e074d19bb44d6d485bb7b298e77874572a09697aba0a9e234e0745"
+  },
+  {
+    "path": "backend/开发规范.md",
+    "sha256": "4c09353e4d950e14ea1416168ad048f8ec15bb2312e67a5aa8b8af23faa777c9"
+  },
+  {
+    "path": "backend/config/application-shared.yaml.example",
+    "sha256": "d32e93bdb5ba79b691ab29ffa8953bcb323753a0c47911959778d1ab61796dfa"
+  },
+  {
+    "path": "backend/config/README.md",
+    "sha256": "b6352112b232d20e9ff3f8dbdd5754a56bb6eb791706ea65b30ec78b91e21a02"
+  },
+  {
+    "path": "backend/pom.xml",
+    "sha256": "8fbae9b07cdfcf6b3363b267892c5a776024d3d74a6d22c2c0e12fbb6924e5fb"
+  },
+  {
+    "path": "backend/README.md",
+    "sha256": "3c65db37192318764f5aff8fdf1365a7054c05c0167c1fe86400a6ec15baaaf7"
+  },
+  {
+    "path": "backend/scripts/检查工程规范.ps1",
+    "sha256": "cb617afbcd5ec840bd37fe8881d1d6e31eefe4617dc625b9d5f21dfc22589233"
+  },
+  {
+    "path": "backend/src/main/java/com/agentscope/brain/AgentScopeBrainApplication.java",
+    "sha256": "1787a868b3d974a4795ff82d04398f87f132caa0b25f2a48fb9b874ca99ed8f9"
+  },
+  {
+    "path": "backend/src/main/java/com/agentscope/brain/conversation/package-info.java",
+    "sha256": "dbbbedaeb9b3abfd1edac133e68ee1528ea57429bb72d86277b2aaeeafec702b"
+  },
+  {
+    "path": "backend/src/main/java/com/agentscope/brain/identity/internal/security/ClosedAccessConfiguration.java",
+    "sha256": "575370fde13bed5f953959f75c9f393cdf1a7aeb067c6299cc65b7a0474a169a"
+  },
+  {
+    "path": "backend/src/main/java/com/agentscope/brain/identity/package-info.java",
+    "sha256": "24a8a5fbf18981348220af7b3cb9c271e34c0fcdf198c23f6fef1cfa22be1fec"
+  },
+  {
+    "path": "backend/src/main/java/com/agentscope/brain/interaction/internal/validation/ClosedDraft7Validator.java",
+    "sha256": "85ea9839d67f5d19de34e37000730ca7733d9ebd3112aae55986948d860f0401"
+  },
+  {
+    "path": "backend/src/main/java/com/agentscope/brain/interaction/package-info.java",
+    "sha256": "b5cf02eb29ddf6be7a54f977a5f1a2c788ee0c20d67397503c27afc7221f3937"
+  },
+  {
+    "path": "backend/src/main/java/com/agentscope/brain/media/package-info.java",
+    "sha256": "cc2d796f7a1d8d4d46f3a07b95fbf4a0ac06ff2af3c1519196a65bfb423b574d"
+  },
+  {
+    "path": "backend/src/main/java/com/agentscope/brain/memory/package-info.java",
+    "sha256": "a115aa93a54c471d6c0d66f27cd2f95c319d9122fbf59c7826924e1b27f7ff68"
+  },
+  {
+    "path": "backend/src/main/java/com/agentscope/brain/operation/package-info.java",
+    "sha256": "169069bc374bb20bccaaf23a495c52fc3118f8137d63b5ebe18b0b2bec7de50f"
+  },
+  {
+    "path": "backend/src/main/java/com/agentscope/brain/projection/package-info.java",
+    "sha256": "2778921308c9b63bfc9a86de2a3f4b65f2ff47bbc7033dc86ad33a03c25271c6"
+  },
+  {
+    "path": "backend/src/main/java/com/agentscope/brain/release/package-info.java",
+    "sha256": "04e5ef9ed6226eba19b7a6c663027505b118355616e0ce233e8f722abc3ce421"
+  },
+  {
+    "path": "backend/src/main/java/com/agentscope/brain/runtime/package-info.java",
+    "sha256": "aa3b68c00f9c92cdf365177a3a7c48cd2597902041e5bed1f8ee3bdb8ef02ce0"
+  },
+  {
+    "path": "backend/src/main/resources/application-dev.yaml",
+    "sha256": "19d4e83373c8ea6bb1ecbcd0224e7b54efa42762e91cbc23254497f38da3a88a"
+  },
+  {
+    "path": "backend/src/main/resources/application-prod.yaml",
+    "sha256": "5a7edd7f6908e596c5cf44938d2d2f8b13b69ad532302f610823c7a959258474"
+  },
+  {
+    "path": "backend/src/main/resources/application.yaml",
+    "sha256": "831ed9ea301537fc296ced6e7a7066142e959d96de37b524ec07d9119c4a81de"
+  },
+  {
+    "path": "backend/src/test/java/com/agentscope/brain/architecture/ApplicationAssemblyTest.java",
+    "sha256": "0cea9160cbeb8408f4497b3ad2ea0ce4af5810c986f1338958a6f99a0abbef6a"
+  },
+  {
+    "path": "backend/src/test/java/com/agentscope/brain/interaction/internal/validation/ClosedDraft7ValidatorTest.java",
+    "sha256": "0dac60b947bab85c644abec545efe154a41f30fa64528f3245769d4bb6809a3d"
+  },
+  {
+    "path": "backend/src/test/java/com/agentscope/brain/interaction/internal/validation/SdkToolValidatorTest.java",
+    "sha256": "eb8e6693b8d5acb8d30ecd590afef1c7aae0a932bc2d7df25f70ed7e02a345a4"
+  },
+  {
+    "path": "backend/src/test/resources/application-test.yaml",
+    "sha256": "46c8bf8f675287a3f161a6674286cfa3249aae8c1e0680d08aaceef27f367d18"
+  }
+]
