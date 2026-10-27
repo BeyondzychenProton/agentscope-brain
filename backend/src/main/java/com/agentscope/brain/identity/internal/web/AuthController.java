@@ -62,15 +62,6 @@ public class AuthController {
         return new AuthDto(stage(user.changeRequired()), user.userId(), user.displayName(), principal.authenticatedAt(), principal.absoluteExpiresAt());
     }
 
-    @GetMapping("/api/me")
-    public MeDto me() {
-        var principal = principal();
-        var user = authentication.current(principal);
-        var phone = user.phone();
-        return new MeDto(stage(user.changeRequired()), user.userId(), user.displayName(), principal.authenticatedAt(),
-                principal.absoluteExpiresAt(), "***" + phone.substring(Math.max(0, phone.length() - 4)), List.of());
-    }
-
     @PostMapping("/api/auth/logout")
     public ResponseEntity<Void> logout(HttpServletRequest request, HttpServletResponse response) {
         csrf.saveToken(null, request, response);

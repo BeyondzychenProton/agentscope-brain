@@ -1,0 +1,32 @@
+{
+  "issue": 37,
+  "executedAt": "2026-10-27T04:13:37.763141+00:00",
+  "database": "agentscope_brain",
+  "tables": 35,
+  "projectionTables": [],
+  "historySchemaAvailable": false,
+  "springSessions": 0,
+  "businessRuns": 0,
+  "businessTableCounts": {
+    "business_session": 0,
+    "business_message": 0,
+    "message_content_block": 0,
+    "business_run": 0,
+    "run_progress": 0,
+    "tool_operation": 0,
+    "operation_confirmation": 0
+  },
+  "releaseFacts": [
+    {
+      "configSha256": "C9CE48407752E1945F77F8CA553888295D2A67D8732D07C77A913A8AC765408A",
+      "manifestSha256": "2F7273CCC25CC126F027176B88296451C69F4C1898608AD694834A9167DB2A14",
+      "status": "AVAILABLE"
+    }
+  ],
+  "passwordChangeRequired": 0,
+  "credentialVersion": 2,
+  "successfulInitialPasswordAudits": 1,
+  "packagedJarSha256": "c709625bc6b6e2322b86ffba82d24fdb4692efcd05d6ffd4132bdf4335a2a7a9",
+  "clockFixtureUsedOnSharedDataset": false,
+  "result": "PASS"
+}

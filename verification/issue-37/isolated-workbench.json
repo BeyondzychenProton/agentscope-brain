@@ -1,0 +1,138 @@
+{
+  "mysql_version": "8.0.45",
+  "tables": 44,
+  "expected_rejections": 0,
+  "positive_checks": 0,
+  "inspection_checks": 0,
+  "concurrency_checks": 0,
+  "framework_kv_tested": false,
+  "application_integration_tested": true,
+  "probes": {},
+  "cases": [
+    {
+      "case": "14-01-current-trusted-identity-and-release-capability",
+      "result": "PASS"
+    },
+    {
+      "case": "14-02-client-owner-and-cache-cannot-select-principal",
+      "result": "PASS"
+    },
+    {
+      "case": "14-03-snapshot-bounded-view-and-string-identifiers",
+      "result": "PASS"
+    },
+    {
+      "case": "14-04-signed-history-page",
+      "result": "PASS"
+    },
+    {
+      "case": "14-05-fixed-utf8-text-digest-and-no-store",
+      "result": "PASS"
+    },
+    {
+      "case": "14-06-revocation-keeps-account-and-history-readable",
+      "result": "PASS"
+    },
+    {
+      "case": "14-07-unimplemented-writes-remain-server-denied:/api/submissions",
+      "result": "PASS"
+    },
+    {
+      "case": "14-07-unimplemented-writes-remain-server-denied:/api/session-intents",
+      "result": "PASS"
+    },
+    {
+      "case": "14-07-unimplemented-writes-remain-server-denied:/api/runs/1/continue",
+      "result": "PASS"
+    },
+    {
+      "case": "14-08-cross-user-session-and-unknown-employee-404",
+      "result": "PASS"
+    },
+    {
+      "case": "14-09-cross-user-content-404",
+      "result": "PASS"
+    },
+    {
+      "case": "14-10-old-security-context-cannot-read",
+      "result": "PASS"
+    },
+    {
+      "case": "14-11-account-disable-stops-reading-and-login",
+      "result": "PASS"
+    },
+    {
+      "case": "14-12-disable-is-valid-policy-at-startup",
+      "result": "PASS"
+    },
+    {
+      "case": "14-13-restart-keeps-revocation-and-password",
+      "result": "PASS"
+    },
+    {
+      "case": "14-14-repeated-bootstrap-does-not-regrant-or-reset",
+      "result": "PASS"
+    },
+    {
+      "case": "14-15-release-disable-valid-history-preserved",
+      "result": "PASS"
+    },
+    {
+      "case": "14-16-fixed-history-upper-bound-after-append",
+      "result": "PASS"
+    },
+    {
+      "case": "14-17-cursor-tamper-and-protocol-rejected",
+      "result": "PASS"
+    },
+    {
+      "case": "14-18-corrupt-fixed-version-not-rebuilt",
+      "result": "PASS"
+    },
+    {
+      "case": "14-19-missing-version-not-substituted",
+      "result": "PASS"
+    },
+    {
+      "case": "14-20-structural-reference-corruption-refuses-readiness",
+      "result": "PASS"
+    },
+    {
+      "case": "14-21-no-external-service-probes",
+      "result": "PASS"
+    },
+    {
+      "case": "14-23-no-new-execution-or-meeting-facts",
+      "result": "PASS"
+    },
+    {
+      "case": "14-24-exact-login-baseline-remains-usable",
+      "result": "PASS"
+    },
+    {
+      "case": "14-25-missing-history-revision-is-controlled-unavailable",
+      "result": "PASS"
+    },
+    {
+      "case": "14-26-partial-history-schema-refuses-readiness",
+      "result": "PASS"
+    }
+  ],
+  "upstreamCalls": 0,
+  "packagedJarSha256": "c709625bc6b6e2322b86ffba82d24fdb4692efcd05d6ffd4132bdf4335a2a7a9",
+  "sharedDatasetUsed": false,
+  "fixtureSessionId": "101",
+  "syntheticFormalMessages": 6,
+  "syntheticRuns": 3,
+  "executionEvidence": "Read graph has no SDK/model/tool dependency; all observed upstream calls and execution ledgers remain zero. Formal rows are synthetic.",
+  "issue": 37,
+  "executedAt": "2026-10-27T04:12:35.630480+00:00",
+  "temporaryInstanceRemoved": true,
+  "syntheticDataRemovedWithOwnedInstance": true,
+  "platformTables": 44,
+  "nativeTables": 5,
+  "runtimeTotalTables": 49,
+  "modelCalls": 0,
+  "sdkCalls": 0,
+  "meetingWrites": 0
+}

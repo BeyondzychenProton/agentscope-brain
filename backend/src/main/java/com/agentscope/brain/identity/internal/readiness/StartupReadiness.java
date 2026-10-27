@@ -75,7 +75,14 @@ public class StartupReadiness implements ApplicationListener<ApplicationReadyEve
     }
 
     private void checkStructures(List<String> missing) throws Exception {
-        var resource = new ClassPathResource("readiness/structure-v1.tsv");
+        // #34's exact login baseline and the exact 01..10 workbench baseline are distinct
+        // supported revisions. A partially installed history revision must fail closed.
+        boolean historyRevision = jdbc.queryForObject("""
+                SELECT COUNT(*) FROM information_schema.tables WHERE table_schema=DATABASE()
+                AND LOWER(table_name) IN ('session_projection_event','projection_content','projection_content_version')
+                """, Long.class) > 0;
+        var resource = new ClassPathResource(historyRevision
+                ? "readiness/structure-workbench-v1.tsv" : "readiness/structure-v1.tsv");
         try (var stream = resource.getInputStream()) {
             for (var line : new String(stream.readAllBytes(), StandardCharsets.UTF_8).split("\\R")) {
                 if (line.isBlank() || line.startsWith("#")) { continue; }

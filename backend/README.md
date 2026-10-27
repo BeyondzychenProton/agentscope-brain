@@ -2,7 +2,7 @@
 
 单 Spring Boot 应用、单 Maven 模块、一个生产 Java 进程。按业务能力组织代码，完整规则见 [后端开发规范](开发规范.md)；领域术语沿用 [GLOSSARY.md](../GLOSSARY.md)。
 
-当前已实现 #34 的普通用户登录、CSRF、Session JDBC、当前受限身份、受限页面及启动只读检查；唯一启动类和九模块布局保持不变。首次改密提交由 #35 承担，对话、会议和在线存储仍按各自工单实施。缺必要结构／预置／配置时 `/readyz` 和认证 API 返回 503，不会生成默认用户或修复数据。
+当前已实现 #34～#36 的登录、首次改密与固定认证期限，以及 #37 的真实身份／能力读取和受控 TEXT 历史。唯一启动类和九模块布局保持不变；真实发送、完整投影恢复、会议和在线存储仍按各自工单实施。缺必要结构／预置／配置时返回受控不可用，不会生成默认用户或修复数据。
 
 ```text
 backend/
@@ -35,6 +35,8 @@ $env:JAVA_HOME = 'D:\code environment\jdk\jdk-17.0.9'
 
 生成 `target/agentscope-brain-backend-0.1.0-SNAPSHOT.jar`，使用 Maven 3.9.16 和锁定依赖。构建不会执行共用库 DDL、装载 `resource.txt` 或连接模型／MCP／MinIO。自动化测试使用进程内 H2 与回环 HTTP；这不代替 MySQL 或真实登录验收。
 
+已有进程占用默认 JAR 时，可用 `-Dbrain.build.directory=target/issue37-build` 独立构建，避免替换运行中的制品；`verify` 的正式产物检查随目录一起切换。
+
 ## 运行配置
 
 直接编辑 [config/application.yaml](config/application.yaml)：已有连接、账号、密码已填写，运行环境由 `spring.profiles.active` 的 `dev`／`prod` 切换，不需要设置资源环境变量。从本目录运行：
@@ -52,6 +54,14 @@ Spring Boot 自动读取本目录下的 `config/application.yaml`；不再使用
 默认 `verify` 使用 H2／合成数据。MySQL 与生产 JAR 的受限登录验收显式运行仓库根目录 `python db/tests/执行Web受限登录隔离验收.py`，它只创建并清理自己核验过的回环 MySQL；不读取共用 YAML。真实数据集不用该故障执行器。
 
 ## 生产与测试隔离
+
+#37 的 `/api/me` 与 `/api/employees/{employeeId}/capabilities` 只读当前授权及固定发布配置；`EmployeeAccess.requireExecution` 重新检查当前账号／安全上下文与授权，不接收浏览器能力作为凭据。尚未实现的写端点仍由服务端拒绝。
+
+登录后通过 `/workbench?sessionId=<本人业务会话ID>` 打开指定历史。TEXT 读取沿用 `projection/snapshot`、`projection/messages`、`projection/content/{contentId}`；快照及分页使用 REPEATABLE READ，只读正式消息和固定不可变展示版本，校验 UTF-8 长度／SHA-256，按固定消息上界翻页。页面对用户与员工文字均作字面展示，扩展 Markdown、SSE、完整运行／交互恢复由阶段 2 实施；超出当前 TEXT 切片的事实返回 `PROJECTION_SCOPE_UNAVAILABLE`，不返回伪完整恢复结果。
+
+启动支持两个精确结构修订：原 `structure-v1.tsv`（01～06＋原生表）及 `structure-workbench-v1.tsv`（01～10＋原生表）。任一历史投影表存在即要求完整后者；部分安装拒绝就绪。旧登录基线可继续读取身份与能力，缺历史修订时返回受控不可用，不自动 DDL。`brain.projection.cursor-key` 可配置至少 32 字节的 Base64 私有 HMAC key，使原分页定位在重启后继续有效；未配置时使用进程随机 key，旧定位需重新取快照，历史事实和 streamId 不变。
+
+显式运行 `python db/tests/执行工作台撤权只读隔离验收.py` 验证 #37；它使用独占、可销毁的回环 MySQL，不读共享 YAML、不改共享账号。`--browser` 在撤权夹具上等待真实浏览器观察，证据放 [#37 验收记录](../verification/issue-37/验收记录.md)。
 
 首次改密（#35）使用短平台事务锁定用户后更新凭据／安全版本／用户修改来源并追加身份审计，随后轮换 Session ID／CSRF，保存沿用原认证时间与绝对期限的新上下文。提交异常只独立核对本请求的编码哈希、版本及审计，不重跑改密；无法证明时安全退出并返回 `AUTH_OUTCOME_UNCERTAIN`。SQL 已提交但 Session 保存失败为 `PASSWORD_CHANGED_RELOGIN_REQUIRED`；响应等待请求末尾 Session JDBC 保存完成，避免提前返回成功。默认测试覆盖提交回执丢失、原子回滚、并发与最终保存失败；真实 MySQL 隔离验证显式运行 `python db/tests/执行首次改密隔离验收.py`，不读取共用 YAML 或改真实账号。
 

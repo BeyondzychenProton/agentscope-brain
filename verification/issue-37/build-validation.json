@@ -1,0 +1,72 @@
+{
+  "issue": 37,
+  "executedAt": "2026-10-27T04:12:51.891004+00:00",
+  "jarSha256": "c709625bc6b6e2322b86ffba82d24fdb4692efcd05d6ffd4132bdf4335a2a7a9",
+  "java": "17.0.9",
+  "maven": "3.9.16",
+  "node": "24.22.1",
+  "npm": "11.19.1",
+  "unitTests": 52,
+  "productionArtifactTests": 1,
+  "frontendAuthTests": 9,
+  "frontendHistoryTests": 7,
+  "typecheck": "PASS",
+  "frontendBuild": "PASS",
+  "engineeringChecks": "PASS",
+  "mavenVerify": "PASS",
+  "buildDirectory": "backend/target/issue37-build",
+  "sharedInstanceReplaced": false,
+  "loginBaselineSha256": "56d0591e7554a16188d4bd99351376616522a55fe71fa3de60b5b9e2cf517e96",
+  "historyBaselineSha256": "998f62c402f0de1597e48f11464e698091dba55623f627586185878691c1fff7",
+  "structureInputs": [
+    {
+      "path": "db/schema/07_新建意图暂存与普通提交建表.sql",
+      "sha256": "b1a2c2140999ab064ba5e9353365d75732e5b8f72711eef2c82ce3583ae26089",
+      "newTables": [
+        "session_intent",
+        "media_upload",
+        "ordinary_submission"
+      ],
+      "alteredTables": []
+    },
+    {
+      "path": "db/schema/08_Run调度可信调用与终结建表.sql",
+      "sha256": "b69af37c2892950ac8ceb23032aae7ecab7b2c4b1506e18438ebdffeccb089cb",
+      "newTables": [
+        "runtime_capacity",
+        "runtime_dispatch",
+        "runtime_sdk_call",
+        "runtime_state_terminalization"
+      ],
+      "alteredTables": []
+    },
+    {
+      "path": "db/schema/09_交互响应与确认恢复建表.sql",
+      "sha256": "ab4b5e8965071877aeb6cc0a75a4dd6c5a1251cd4c2df7cf93b8429b061101da",
+      "newTables": [
+        "interaction_request",
+        "interaction_revision",
+        "interaction_response",
+        "crypto_nonce_cursor"
+      ],
+      "alteredTables": [
+        "operation_confirmation"
+      ]
+    },
+    {
+      "path": "db/schema/10_持久投影与不可变内容建表.sql",
+      "sha256": "f7a3e01741d8f5346f9aab7479f59bee00ccedcf1a07f1220943ba42b0013632",
+      "newTables": [
+        "session_projection_event",
+        "projection_content",
+        "projection_content_version"
+      ],
+      "alteredTables": [
+        "business_session",
+        "run_progress"
+      ]
+    }
+  ],
+  "applicationSourceSha256": "10deb3055f750041a122db979da048a4eca3d541ca16d31bf3b6cdfc7988c30e",
+  "isolationScriptSha256": "2c54a8cac80f9c16cf159ad663d60d688ef60010e1b6a0413ebae3d7c23a03da"
+}

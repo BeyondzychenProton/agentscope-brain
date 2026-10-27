@@ -1,0 +1,18 @@
+{
+  "issue": 37,
+  "synthetic": true,
+  "realBrowser": "Chrome",
+  "packagedApp": true,
+  "designatedSession": "101",
+  "readOnlyRevocationBanner": true,
+  "formalMessagesDisplayed": 6,
+  "htmlAndJavascriptLinkRenderedLiterally": true,
+  "historyExecutableElements": 0,
+  "composerCount": 0,
+  "refreshPreservedHistory": true,
+  "crossUserSession": "202",
+  "crossUserMessageCount": 0,
+  "crossUserControlledError": true,
+  "disabledAccountReturnedToLogin": true,
+  "sharedDatasetChanged": false
+}

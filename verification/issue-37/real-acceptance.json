@@ -1,0 +1,163 @@
+{
+  "issue": 37,
+  "database": "agentscope_brain",
+  "startedAt": "2026-10-27T04:32:54.024321+00:00",
+  "authorizedScope": "07..10 structure already VERIFIED; local restart and real identity/capability reads; no shared fixtures/account mutation",
+  "packagedJarSha256": "c709625bc6b6e2322b86ffba82d24fdb4692efcd05d6ffd4132bdf4335a2a7a9",
+  "cases": [
+    {
+      "case": "14-R00-structure-receipt-verified",
+      "result": "PASS"
+    },
+    {
+      "case": "14-R00-artifact-fingerprint",
+      "result": "PASS"
+    },
+    {
+      "case": "14-R01-exclusive-acceptance-lock",
+      "result": "PASS"
+    },
+    {
+      "case": "14-R02-shared-table-count-49",
+      "result": "PASS",
+      "tableCount": 49
+    },
+    {
+      "case": "14-R03-history-projection-tables-present",
+      "result": "PASS"
+    },
+    {
+      "case": "14-R04-empty:SPRING_SESSION",
+      "result": "PASS"
+    },
+    {
+      "case": "14-R04-empty:business_session",
+      "result": "PASS"
+    },
+    {
+      "case": "14-R04-empty:business_run",
+      "result": "PASS"
+    },
+    {
+      "case": "14-R04-empty:business_message",
+      "result": "PASS"
+    },
+    {
+      "case": "14-R04-empty:message_content_block",
+      "result": "PASS"
+    },
+    {
+      "case": "14-R04-empty:run_progress",
+      "result": "PASS"
+    },
+    {
+      "case": "14-R04-empty:tool_operation",
+      "result": "PASS"
+    },
+    {
+      "case": "14-R04-empty:operation_confirmation",
+      "result": "PASS"
+    },
+    {
+      "case": "14-R04-empty:session_projection_event",
+      "result": "PASS"
+    },
+    {
+      "case": "14-R04-empty:projection_content",
+      "result": "PASS"
+    },
+    {
+      "case": "14-R04-empty:projection_content_version",
+      "result": "PASS"
+    },
+    {
+      "case": "14-R05-password-change-complete-credential-v2",
+      "result": "PASS",
+      "credentialVersion": 2
+    },
+    {
+      "case": "14-R06-release-available",
+      "result": "PASS"
+    },
+    {
+      "case": "14-R07-real-grant-active",
+      "result": "PASS",
+      "grantStatuses": [
+        "ACTIVE"
+      ]
+    },
+    {
+      "case": "14-R08-workbench-structure-readyz",
+      "result": "PASS"
+    },
+    {
+      "case": "14-R09-anonymous-me-denied",
+      "result": "PASS"
+    },
+    {
+      "case": "14-R10-anonymous-capabilities-denied",
+      "result": "PASS"
+    },
+    {
+      "case": "14-R11-anonymous-history-denied",
+      "result": "PASS"
+    },
+    {
+      "case": "14-R12-human-browser-login-observed",
+      "result": "PASS"
+    },
+    {
+      "case": "14-R13-real-me-ready",
+      "result": "PASS",
+      "authStage": "READY",
+      "userId": "1"
+    },
+    {
+      "case": "14-R14-real-capabilities-present",
+      "result": "PASS",
+      "employeeCount": 1
+    },
+    {
+      "case": "14-R15-allowed-actions-from-server",
+      "result": "PASS",
+      "allowedActions": [
+        "START_RUN"
+      ]
+    },
+    {
+      "case": "14-R16-no-shared-history-fixture",
+      "result": "PASS"
+    },
+    {
+      "case": "14-R17-no-business-runs",
+      "result": "PASS"
+    },
+    {
+      "case": "14-R18-credential-still-v2",
+      "result": "PASS"
+    }
+  ],
+  "sharedFixtureRowsInserted": 0,
+  "accountMutated": false,
+  "passwordReset": false,
+  "modelCalls": 0,
+  "sdkCalls": 0,
+  "meetingWrites": 0,
+  "deployment": false,
+  "mysqlVersion": "8.4.11",
+  "serverUuid": "d0323e25-915a-11f1-ae5c-5add86bf7d78",
+  "state": "VERIFIED",
+  "sessionsObservedDuringAcceptance": 1,
+  "completedAt": "2026-10-27T04:37:49.422345+00:00",
+  "origin": "http://127.0.0.1:8080",
+  "browserObservation": {
+    "authStage": "READY",
+    "userId": "1",
+    "employeeCount": 1,
+    "capabilitiesStatus": 200,
+    "allowedActions": [
+      "START_RUN"
+    ],
+    "path": "/workbench"
+  }
+}
