@@ -79,6 +79,8 @@ Spring Boot 自动读取本目录下的 `config/application.yaml`；不再使用
 
 `GET /api/sessions?employeeId=<id>&q=<title>&pageCursor=<cursor>&limit=50` 读取本人未归档会话，limit 范围 1～100。标题搜索在数据库全范围执行，`%`、`_`、`!` 为字面字符；首尾空白去除，查询最多 200 Unicode 码点，控制字符和无效代理码拒绝。公开 ID／行版本保持十进制字符串，`updatedAt` 映射 UTC `last_activity_at`，按该字段和会话 ID 倒序键集分页。列表页是各自读取时点的一致视图；不是跨页冻结快照，业务活动导致排序变化时重新查询刷新列表。
 
+`PATCH /api/sessions/{sessionId}/title` 以 `{requestKey, expectedSessionVersion, title}` 改名：本人未归档会话、trim 后非空且不超过 200 字、CAS `row_version`；同 `requestKey` 幂等（表 `session_title_request`，见 `db/schema/11_会话标题改名请求建表.sql`）。不创建消息／Run、不调模型。冲突返回 `VERSION_CONFLICT`／`IDEMPOTENCY_CONFLICT`；非法标题 `TITLE_INVALID`。
+
 游标绑定用途、当前可信用户、员工、规范化查询和继续位置；每页重新核实身份与可读范围。默认沿用 `brain.projection.cursor-key`；也可用 `brain.conversation.cursor-key` 配置独立的至少 32 字节 Base64 key。两者均缺失时使用进程随机 key，重启后旧分页定位返回 `409 CURSOR_INVALID`，重新搜索即可。撤权／员工不可执行不妨碍本人历史列表；受限改密、账号失效和跨用户员工定位仍拒绝。缺结构返回受控不可用，不自动建表。
 
 此读取切片的 `allowedActions` 为空；`activeRun` 只读取已持久的 Run ID／状态，`processingStatus` 暂为 null，待运行切片交付实际调度解释。读取不产生消息／Run／dispatch，不访问 SDK／模型／会议服务。改名及普通发送尚未交付。隔离验收入口与结果见 [#42 记录](../verification/issue-42/验收记录.md)。

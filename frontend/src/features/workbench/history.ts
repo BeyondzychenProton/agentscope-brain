@@ -15,7 +15,7 @@ export interface Page {
 }
 export interface Snapshot {
   protocolVersion: string; sessionId: string; streamId: string; watermark: string; cursor: string
-  session: { employeeId: string; title: string; allowedActions: string[] }; messages: Page
+  session: { employeeId: string; title: string; sessionVersion?: string; allowedActions: string[] }; messages: Page
   runs?: Array<{ runId: string; status: string; processingStatus: string | null }>
 }
 export interface DisplayText { bodyFormat: string; body: string }

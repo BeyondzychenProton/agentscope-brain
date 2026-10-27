@@ -22,6 +22,13 @@ export class SessionNavigation {
     this.nextPageCursor = null
     this.busy = false
   }
+  /** Patch one list row after a successful rename without re-querying. */
+  applySummary(summary: SessionSummary) {
+    if (summary.employeeId !== this.employeeId) return
+    const index = this.items.findIndex(item => item.sessionId === summary.sessionId)
+    if (index < 0) return
+    this.items[index] = summary
+  }
   async search(employeeId: string, query: string) {
     this.clear()
     this.employeeId = employeeId

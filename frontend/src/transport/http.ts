@@ -7,10 +7,18 @@ export async function read<T>(path: string): Promise<T> {
 }
 
 export async function write<T>(path: string, input?: unknown): Promise<T> {
+  return mutate<T>('POST', path, input)
+}
+
+export async function patch<T>(path: string, input?: unknown): Promise<T> {
+  return mutate<T>('PATCH', path, input)
+}
+
+async function mutate<T>(method: 'POST' | 'PATCH', path: string, input?: unknown): Promise<T> {
   // A fresh token is required after login/logout rotates the authentication context.
   const csrf = await read<{ headerName: string; token: string }>('/api/auth/csrf')
   return request<T>(path, {
-    method: 'POST', headers: { 'Content-Type': 'application/json', [csrf.headerName]: csrf.token },
+    method, headers: { 'Content-Type': 'application/json', [csrf.headerName]: csrf.token },
     body: input === undefined ? undefined : JSON.stringify(input),
   })
 }

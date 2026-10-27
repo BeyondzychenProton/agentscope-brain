@@ -5,11 +5,13 @@ import { ElButton } from 'element-plus'
 import 'element-plus/es/components/button/style/css'
 import { useAuth } from '../features/auth/store'
 import { ApiFailure, read } from '../transport/http'
-import { SessionNavigation } from '../features/workbench/sessions'
+import { SessionNavigation, type SessionSummary } from '../features/workbench/sessions'
 import TextComposer from '../features/workbench/TextComposer.vue'
 import MarkdownBody from '../features/workbench/MarkdownBody.vue'
+import RenameSessionDialog from '../features/workbench/RenameSessionDialog.vue'
 import type { Receipt } from '../features/workbench/composer'
 import { RunWatch, type RunWatchObserve } from '../features/workbench/runWatch'
+import type { RenameTarget } from '../features/workbench/sessionTitle'
 import {
   basePath,
   displayMessages,
@@ -34,6 +36,9 @@ const navigation = reactive(new SessionNavigation())
 const searchTitle = ref('')
 const listError = ref('')
 const selectedEmployeeId = ref('')
+const headerMenuOpen = ref(false)
+const renameOpen = ref(false)
+const renameTarget = ref<RenameTarget | null>(null)
 const sessionId = computed(() => (typeof route.query.sessionId === 'string' ? route.query.sessionId : ''))
 const employees = computed(() => auth.identity?.employees ?? [])
 const historyCapability = computed(() =>
@@ -303,6 +308,56 @@ function newChat() {
   error.value = ''
 }
 
+function openRename(target: RenameTarget) {
+  headerMenuOpen.value = false
+  renameTarget.value = target
+  renameOpen.value = true
+}
+
+function openRenameFromHeader() {
+  if (!sessionId.value || !snapshot.value) return
+  const listed = navigation.items.find(item => item.sessionId === sessionId.value)
+  const version = listed?.sessionVersion || snapshot.value.session.sessionVersion
+  if (!version) {
+    error.value = '当前会话版本尚未就绪，请刷新后再改名。'
+    return
+  }
+  openRename({
+    sessionId: sessionId.value,
+    title: snapshot.value.session.title ?? listed?.title ?? null,
+    sessionVersion: version,
+  })
+}
+
+function openRenameFromList(session: SessionSummary, event: Event) {
+  event.preventDefault()
+  event.stopPropagation()
+  openRename({
+    sessionId: session.sessionId,
+    title: session.title,
+    sessionVersion: session.sessionVersion,
+  })
+}
+
+function onRenamed(summary: SessionSummary) {
+  navigation.applySummary(summary)
+  if (snapshot.value && snapshot.value.sessionId === summary.sessionId) {
+    snapshot.value = {
+      ...snapshot.value,
+      session: {
+        ...snapshot.value.session,
+        title: summary.title ?? snapshot.value.session.title,
+        sessionVersion: summary.sessionVersion,
+      },
+    }
+  }
+}
+
+function closeRename() {
+  renameOpen.value = false
+  renameTarget.value = null
+}
+
 function focusRefresh() { void refresh(true) }
 
 onMounted(() => {
@@ -354,13 +409,31 @@ watch(sessionId, () => {
         <p v-if="listError" class="empty-sessions" role="alert">{{ listError }}</p>
         <p v-if="navigation.busy" class="empty-sessions muted" role="status">正在读取会话…</p>
         <p v-else-if="!navigation.items.length && !listError" class="empty-sessions muted">{{ searchTitle.trim() ? '未找到匹配标题的会话。' : '暂无会话。' }}</p>
-        <button v-for="session in navigation.items" :key="session.sessionId" type="button"
-          class="session-item" :class="{ selected: sessionId === session.sessionId }"
-          :aria-current="sessionId === session.sessionId ? 'page' : undefined"
-          :title="session.title || '未命名会话'"
-          @click="router.push({ path: '/workbench', query: { sessionId: session.sessionId } })">
-          {{ session.title || '未命名会话' }}
-        </button>
+        <div
+          v-for="session in navigation.items"
+          :key="session.sessionId"
+          class="session-row"
+          :class="{ selected: sessionId === session.sessionId }"
+        >
+          <button
+            type="button"
+            class="session-item"
+            :aria-current="sessionId === session.sessionId ? 'page' : undefined"
+            :title="session.title || '未命名会话'"
+            @click="router.push({ path: '/workbench', query: { sessionId: session.sessionId } })"
+          >
+            {{ session.title || '未命名会话' }}
+          </button>
+          <button
+            type="button"
+            class="session-rename"
+            aria-label="重命名会话"
+            title="重命名"
+            @click="openRenameFromList(session, $event)"
+          >
+            ···
+          </button>
+        </div>
         <button v-if="navigation.nextPageCursor" type="button" class="quiet" :disabled="navigation.busy" @click="searchSessions(true)">加载更多会话</button>
         <button v-if="listError" type="button" class="quiet" @click="searchSessions()">重试列表</button>
       </div>
@@ -381,15 +454,21 @@ watch(sessionId, () => {
           <h1>{{ titleText }}</h1>
           <p>{{ subtitleText }}</p>
         </div>
-        <button
-          class="more"
-          type="button"
-          disabled
-          aria-label="当前会话更多操作（即将开放）"
-          title="改名等操作将逐步开放"
-        >
-          ···
-        </button>
+        <div v-if="sessionId && snapshot" class="more-wrap">
+          <button
+            class="more"
+            type="button"
+            aria-label="当前会话更多操作"
+            aria-haspopup="menu"
+            :aria-expanded="headerMenuOpen"
+            @click="headerMenuOpen = !headerMenuOpen"
+          >
+            ···
+          </button>
+          <div v-if="headerMenuOpen" class="more-menu" role="menu">
+            <button type="button" role="menuitem" @click="openRenameFromHeader">重命名</button>
+          </div>
+        </div>
       </header>
 
       <div class="content">
@@ -444,6 +523,13 @@ watch(sessionId, () => {
         :run-active="runActive"
         @accepted="accepted" @auth-required="failed" />
     </main>
+    <RenameSessionDialog
+      :open="renameOpen"
+      :target="renameTarget"
+      @close="closeRename"
+      @renamed="onRenamed"
+      @auth-required="failed"
+    />
   </div>
 </template>
 
@@ -527,14 +613,23 @@ watch(sessionId, () => {
 }
 .employee-select { display: grid; gap: 5px; font-size: 12px; margin-top: 12px; }
 .employee-select select { width: 100%; padding: 6px; }
+.session-row {
+  display: flex; align-items: stretch; gap: 2px; margin-bottom: 3px; border-radius: 8px;
+}
+.session-row.selected { background: #ece7fb; }
+.session-row:hover { background: #f2effc; }
 .session-item {
-  display: block; width: 100%; border: 0; border-radius: 8px; background: transparent;
-  padding: 11px 9px; margin-bottom: 3px; text-align: left; color: inherit;
+  flex: 1; min-width: 0; border: 0; border-radius: 8px; background: transparent;
+  padding: 11px 9px; text-align: left; color: inherit;
   white-space: nowrap; overflow: hidden; text-overflow: ellipsis; cursor: pointer;
 }
-.session-item:hover { background: #f2effc; }
-.session-item.selected { background: #ece7fb; color: var(--brand); }
+.session-row.selected .session-item { color: var(--brand); }
 .session-item:focus-visible { outline: 2px solid var(--brand); outline-offset: -2px; }
+.session-rename {
+  flex-shrink: 0; width: 28px; border: 0; border-radius: 8px; background: transparent;
+  color: var(--muted); cursor: pointer; font-size: 14px; line-height: 1;
+}
+.session-rename:hover { color: var(--brand); background: #e8e3fa; }
 .section-caption {
   margin: 18px 9px 8px;
   font-size: 11px;
@@ -625,6 +720,7 @@ watch(sessionId, () => {
   color: var(--muted);
   margin: 6px 0 0;
 }
+.more-wrap { position: relative; }
 .more {
   border: 1px solid var(--line);
   border-radius: 9px;
@@ -633,7 +729,18 @@ watch(sessionId, () => {
   padding: 6px 10px;
   font-size: 14px;
   line-height: 1;
+  cursor: pointer;
 }
+.more-menu {
+  position: absolute; right: 0; top: calc(100% + 4px); z-index: 5;
+  min-width: 120px; padding: 4px; border: 1px solid var(--line); border-radius: 10px;
+  background: #fff; box-shadow: 0 10px 24px rgba(50, 40, 90, 0.12);
+}
+.more-menu button {
+  display: block; width: 100%; border: 0; border-radius: 7px; background: transparent;
+  text-align: left; padding: 8px 10px; cursor: pointer; color: #292c45; font: inherit;
+}
+.more-menu button:hover { background: #f2effc; color: var(--brand); }
 .content {
   flex: 1;
   min-height: 0;
