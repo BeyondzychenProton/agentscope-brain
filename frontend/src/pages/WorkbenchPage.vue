@@ -9,6 +9,10 @@ import { SessionNavigation, type SessionSummary } from '../features/workbench/se
 import TextComposer from '../features/workbench/TextComposer.vue'
 import MarkdownBody from '../features/workbench/MarkdownBody.vue'
 import RenameSessionDialog from '../features/workbench/RenameSessionDialog.vue'
+import ProcessTimeline from '../features/workbench/ProcessTimeline.vue'
+import { applyProcessBatch, emptyProcessState } from '../features/workbench/processTimelineReducer'
+import { processPlaceholderNotice, shouldHideRunWatchBanner } from '../features/workbench/processTimelineView'
+import type { ProcessBatch } from '../features/workbench/processProtocol'
 import type { Receipt } from '../features/workbench/composer'
 import { RunWatch, type RunWatchObserve } from '../features/workbench/runWatch'
 import type { RenameTarget } from '../features/workbench/sessionTitle'
@@ -21,6 +25,7 @@ import {
   type Page,
   type Snapshot,
 } from '../features/workbench/history'
+import happyPathBatches from '../features/workbench/fixtures/process-timeline/happy-path.json' with { type: 'json' }
 
 const auth = useAuth()
 const router = useRouter()
@@ -62,6 +67,33 @@ const runWatch = reactive(new RunWatch(() => reloadForWatch()))
 const runActive = computed(() => runWatch.active || snapshotRunActive.value)
 const canSendText = computed(() => textInputAvailable.value && !runActive.value)
 const avatarText = computed(() => (auth.identity?.displayName ?? '用').slice(0, 1))
+const processState = reactive(emptyProcessState())
+const processProtocolEnabled = ref(false)
+const wantFixture = computed(() => route.query.processFixture === '1')
+const hideRunWatchBanner = computed(() => shouldHideRunWatchBanner({
+  processProtocolEnabled: processProtocolEnabled.value,
+  hasProcessSteps: processState.steps.length > 0,
+  runActive: runActive.value || wantFixture.value,
+}))
+
+function applyFixturePreview() {
+  let next = emptyProcessState()
+  for (const batch of happyPathBatches as ProcessBatch[]) {
+    next = applyProcessBatch(next, batch)
+  }
+  Object.assign(processState, next)
+  processProtocolEnabled.value = true
+}
+
+function clearProcessPreview() {
+  Object.assign(processState, emptyProcessState())
+  processProtocolEnabled.value = false
+}
+
+function syncProcessFixture() {
+  if (wantFixture.value) applyFixturePreview()
+  else clearProcessPreview()
+}
 
 function assistantIds() {
   return messages.value.filter(message => message.senderKind === 'ASSISTANT').map(message => message.messageId)
@@ -363,6 +395,7 @@ function onVisibilityRefresh() {
 }
 
 onMounted(() => {
+  syncProcessFixture()
   void refresh()
   document.addEventListener('visibilitychange', onVisibilityRefresh)
 })
@@ -373,6 +406,9 @@ onUnmounted(() => {
 watch(sessionId, () => {
   runWatch.stop()
   void selectHistory()
+})
+watch(wantFixture, () => {
+  syncProcessFixture()
 })
 </script>
 
@@ -479,7 +515,7 @@ watch(sessionId, () => {
 
         <section v-if="snapshot" class="chat" aria-label="正式文字历史">
           <p class="history-note">正式文字记录</p>
-          <p v-if="runWatch.notice || snapshotRunActive" class="readonly-note" role="status">
+          <p v-if="!hideRunWatchBanner && (runWatch.notice || snapshotRunActive)" class="readonly-note" role="status">
             {{ runWatch.notice || (snapshotRunActive ? '消息已接纳，等待执行。' : '') }}
           </p>
           <p
@@ -504,6 +540,17 @@ watch(sessionId, () => {
               <p v-else class="message-text">{{ text.body }}</p>
             </template>
           </article>
+          <!-- B 阶段挂在全部正式消息之后；A 再按 run 插到对应用户消息后。 -->
+          <ProcessTimeline
+            v-if="processProtocolEnabled && (runActive || processState.steps.length || wantFixture)"
+            :steps="processState.steps"
+            :synthetic="wantFixture"
+            :placeholder="processPlaceholderNotice({
+              hasProcessSteps: processState.steps.length > 0,
+              runWatchNotice: runWatch.notice,
+              snapshotWaiting: snapshotRunActive,
+            })"
+          />
           <p v-if="!messages.length" class="muted">此会话还没有可读取的正式文字消息。</p>
         </section>
 
