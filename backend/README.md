@@ -55,6 +55,8 @@ Spring Boot 自动读取本目录下的 `config/application.yaml`；不再使用
 
 首次改密（#35）使用短平台事务锁定用户后更新凭据／安全版本／用户修改来源并追加身份审计，随后轮换 Session ID／CSRF，保存沿用原认证时间与绝对期限的新上下文。提交异常只独立核对本请求的编码哈希、版本及审计，不重跑改密；无法证明时安全退出并返回 `AUTH_OUTCOME_UNCERTAIN`。SQL 已提交但 Session 保存失败为 `PASSWORD_CHANGED_RELOGIN_REQUIRED`；响应等待请求末尾 Session JDBC 保存完成，避免提前返回成功。默认测试覆盖提交回执丢失、原子回滚、并发与最终保存失败；真实 MySQL 隔离验证显式运行 `python db/tests/执行首次改密隔离验收.py`，不读取共用 YAML 或改真实账号。
 
+固定 24 小时绝对期限、活动不续期、多浏览器并行与仅退出当前会话（#36）沿用登录时写入的 `authenticatedAt`／`absoluteExpiresAt`；服务端用 `Clock` 判定，隔离验收可通过 `brain.auth.clock-instant`／`brain.auth.clock-offset` 夹具覆盖恰到期边界，不缩短 `Duration.ofHours(24)`。显式运行 `python db/tests/执行认证期限与并行退出隔离验收.py`；受控时钟只用于自建回环实例，不与 #37 撤权／停用在同一真实数据集并发。
+
 - `src/main/` 仅保留已装配的运行逻辑及必要资源。`StartupReadiness`、发布完整性校验和结构基线是实际启动准入，不是测试探针，必须随应用保留。
 - 单元测试、依赖兼容性测试及其辅助类统一放 `src/test/java/`，合成配置／夹具放 `src/test/resources/`。历史探针仍在仓库 `archive/`，数据库隔离执行器仍在 `db/tests/`，均不进入生产 JAR。
 - 工程检查拒绝生产源码中的测试类命名、测试目录、测试库导入和测试资源。`mvnw verify` 在打包后另执行 1 项产物隔离检查，核对所有编译后的测试类、测试配置及测试依赖未进入正式 JAR；`target/` 中的测试编译输出和报告属于可再生构建结果。

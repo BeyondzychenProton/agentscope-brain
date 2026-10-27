@@ -12,6 +12,9 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.time.Clock;
+import java.time.Duration;
+import java.time.Instant;
+import java.time.ZoneOffset;
 import java.util.Set;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
@@ -35,7 +38,18 @@ import org.springframework.http.ResponseCookie;
 
 @Configuration(proxyBeanMethods = false)
 class AuthenticationConfiguration {
-    @Bean Clock authenticationClock() { return Clock.systemUTC(); }
+    /**
+     * Production leaves both unset. Isolation acceptance may pin or offset the clock to cover the
+     * fixed 24-hour absolute deadline without shortening {@code Duration.ofHours(24)}.
+     */
+    @Bean Clock authenticationClock(
+            @Value("${brain.auth.clock-instant:}") String fixedInstant,
+            @Value("${brain.auth.clock-offset:PT0S}") Duration offset) {
+        if (fixedInstant != null && !fixedInstant.isBlank()) {
+            return Clock.fixed(Instant.parse(fixedInstant), ZoneOffset.UTC);
+        }
+        return offset.isZero() ? Clock.systemUTC() : Clock.offset(Clock.systemUTC(), offset);
+    }
     @Bean SecurityContextRepository authenticationContexts() { return new HttpSessionSecurityContextRepository(); }
     @Bean CsrfTokenRepository authenticationCsrf() { return new HttpSessionCsrfTokenRepository(); }
     @Bean UserDetailsService noImplicitAccounts() {

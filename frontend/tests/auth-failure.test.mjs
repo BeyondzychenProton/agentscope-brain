@@ -11,10 +11,25 @@ import { createPinia, setActivePinia } from 'pinia'
 const frontend = fileURLToPath(new URL('../', import.meta.url))
 await mkdir(path.join(frontend, 'target'), { recursive: true })
 const temporary = await mkdtemp(path.join(frontend, 'target', 'auth-tests-'))
-for (const [source, name] of [['src/transport/http.ts', 'http.mjs'], ['src/features/auth/store.ts', 'store.mjs']]) {
+for (const [source, name] of [
+  ['src/transport/http.ts', 'http.mjs'],
+  ['src/features/auth/tabRecovery.ts', 'tabRecovery.mjs'],
+  ['src/features/auth/store.ts', 'store.mjs'],
+]) {
   const text = await readFile(path.join(frontend, source), 'utf8')
   const output = ts.transpileModule(text, { compilerOptions: { target: ts.ScriptTarget.ES2022, module: ts.ModuleKind.ESNext } }).outputText
-  await writeFile(path.join(temporary, name), output.replace('../../transport/http', './http.mjs'))
+  await writeFile(path.join(temporary, name), output
+    .replace('../../transport/http', './http.mjs')
+    .replace('./tabRecovery', './tabRecovery.mjs'))
+}
+const memory = new Map()
+globalThis.sessionStorage = {
+  get length() { return memory.size },
+  key(index) { return [...memory.keys()][index] ?? null },
+  getItem(key) { return memory.has(key) ? memory.get(key) : null },
+  setItem(key, value) { memory.set(key, String(value)) },
+  removeItem(key) { memory.delete(key) },
+  clear() { memory.clear() },
 }
 const { useAuth } = await import(pathToFileURL(path.join(temporary, 'store.mjs')).href)
 const originalFetch = globalThis.fetch

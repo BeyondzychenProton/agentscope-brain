@@ -1,6 +1,7 @@
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
 import { ApiFailure, read, write } from '../../transport/http'
+import { clearCurrentTabRecovery } from './tabRecovery'
 
 export interface Identity {
   authStage: 'PASSWORD_CHANGE_REQUIRED' | 'READY'
@@ -9,6 +10,8 @@ export interface Identity {
   authenticatedAt: string
   absoluteExpiresAt: string
   maskedPhone?: string
+  employees?: Array<{ employeeId: string; displayName: string; canStartRun: boolean; readOnly: boolean;
+    unavailableReason: string | null; capabilities: import('../workbench/history').Capability }>
 }
 
 export const useAuth = defineStore('auth', () => {
@@ -20,7 +23,12 @@ export const useAuth = defineStore('auth', () => {
     try { identity.value = await read<Identity>('/api/me') }
     catch (error) {
       identity.value = null
-      if (!(error instanceof ApiFailure && error.status === 401)) { unavailable.value = true; throw error }
+      if (error instanceof ApiFailure && error.status === 401) {
+        clearCurrentTabRecovery()
+        return
+      }
+      unavailable.value = true
+      throw error
     }
   }
   async function login(phone: string, password: string) {
@@ -38,13 +46,17 @@ export const useAuth = defineStore('auth', () => {
       } else if (failure.status === 401) {
         passwordNotice.value = '登录状态已失效，请重新登录后确认当前账号状态。'
       }
-      if (passwordNotice.value) { identity.value = null }
+      if (passwordNotice.value) {
+        identity.value = null
+        clearCurrentTabRecovery()
+      }
       throw failure
     }
   }
   async function logout() {
     await write<void>('/api/auth/logout')
     identity.value = null
+    clearCurrentTabRecovery()
   }
   return { identity, unavailable, passwordNotice, restore, login, logout, changeInitialPassword }
 })

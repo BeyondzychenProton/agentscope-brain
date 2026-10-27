@@ -1,0 +1,109 @@
+{
+  "mysql_version": "8.0.45",
+  "tables": 30,
+  "expected_rejections": 0,
+  "positive_checks": 0,
+  "inspection_checks": 0,
+  "concurrency_checks": 0,
+  "framework_kv_tested": false,
+  "application_integration_tested": true,
+  "probes": {},
+  "cases": [
+    {
+      "case": "13-01-login-records-authenticated-and-absolute-deadline",
+      "result": "PASS"
+    },
+    {
+      "case": "13-02-protected-read-and-csrf-keep-absolute-deadline",
+      "result": "PASS"
+    },
+    {
+      "case": "13-02-protected-read-and-csrf-keep-absolute-deadline",
+      "result": "PASS"
+    },
+    {
+      "case": "13-02-protected-read-and-csrf-keep-absolute-deadline",
+      "result": "PASS"
+    },
+    {
+      "case": "13-03-activity-does-not-rewrite-persisted-absolute-deadline",
+      "result": "PASS"
+    },
+    {
+      "case": "13-04-two-independent-browsers-both-valid",
+      "result": "PASS"
+    },
+    {
+      "case": "13-05-same-browser-tabs-share-current-session",
+      "result": "PASS"
+    },
+    {
+      "case": "13-06-logout-requires-csrf",
+      "result": "PASS"
+    },
+    {
+      "case": "13-07-logout-only-current-session",
+      "result": "PASS"
+    },
+    {
+      "case": "13-08-logout-does-not-create-run-or-meeting-cancel",
+      "result": "PASS"
+    },
+    {
+      "case": "13-09-controlled-clock-just-before-deadline-still-valid",
+      "result": "PASS"
+    },
+    {
+      "case": "13-10-controlled-clock-exact-deadline-rejects",
+      "result": "PASS"
+    },
+    {
+      "case": "13-11-expiry-clears-current-security-context",
+      "result": "PASS"
+    },
+    {
+      "case": "13-12-controlled-clock-after-deadline-rejects",
+      "result": "PASS"
+    },
+    {
+      "case": "13-13-expiry-does-not-create-run-or-meeting-cancel",
+      "result": "PASS"
+    },
+    {
+      "case": "13-14-production-cookie-contract",
+      "result": "PASS"
+    },
+    {
+      "case": "13-15-development-cookie-separated",
+      "result": "PASS"
+    },
+    {
+      "case": "13-16-packaged-cookie-profiles-remain-separated",
+      "result": "PASS"
+    },
+    {
+      "case": "13-18-no-external-or-business-execution",
+      "result": "PASS"
+    },
+    {
+      "case": "13-19-production-duration-rule-unchanged",
+      "result": "PASS"
+    }
+  ],
+  "upstreamCalls": 0,
+  "packagedJarSha256": "1fc609dd9c8df0ef895198825903911bb24477a22a45022e92c28663b20486b9",
+  "sharedDatasetUsed": false,
+  "clockInstantsExercised": [
+    "just-before",
+    "exact",
+    "after"
+  ],
+  "issue": 36,
+  "executedAt": "2026-10-27T03:33:21.258836+00:00",
+  "temporaryInstanceRemoved": true,
+  "platformTables": 30,
+  "nativeTables": 5,
+  "runtimeTotalTables": 35,
+  "syntheticDataRemovedWithOwnedInstance": true,
+  "realAcceptance": "Pending shared-dataset browser parallel login/logout; this run uses synthetic data only"
+}

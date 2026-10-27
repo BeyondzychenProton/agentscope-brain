@@ -1,0 +1,14 @@
+{
+  "issue": 36,
+  "executedAt": "2026-10-27T03:35:54.800443+00:00",
+  "database": "agentscope_brain",
+  "tables": 35,
+  "springSessions": 0,
+  "businessRuns": 0,
+  "passwordChangeRequired": 0,
+  "credentialVersion": 2,
+  "successfulInitialPasswordAudits": 1,
+  "packagedJarSha256": "1fc609dd9c8df0ef895198825903911bb24477a22a45022e92c28663b20486b9",
+  "clockFixtureUsedOnSharedDataset": false,
+  "result": "PASS"
+}
