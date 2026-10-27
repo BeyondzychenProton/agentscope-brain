@@ -13,6 +13,7 @@
     "test:sessions": "node --test tests/sessions.test.mjs",
     "test:history": "node --test tests/history.test.mjs",
     "test:run-watch": "node --test tests/run-watch.test.mjs",
+    "test:process-timeline": "node --test tests/process-timeline-reducer.test.mjs",
     "test:markdown": "node --test tests/markdown.test.mjs",
     "test:session-title": "node --test tests/session-title.test.mjs",
     "build": "vite build",
