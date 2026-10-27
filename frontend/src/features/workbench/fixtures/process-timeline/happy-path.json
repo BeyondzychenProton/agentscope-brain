@@ -1,0 +1,84 @@
+[
+  {
+    "protocolVersion": "web-projection-process-v1",
+    "sessionId": "1001",
+    "streamId": "proc-stream-demo",
+    "seq": "1",
+    "previousSeq": "0",
+    "cursor": "demo-cursor-1",
+    "occurredAt": "2026-10-27T10:00:00Z",
+    "changes": [
+      {
+        "type": "PROCESS_STEP_UPSERT",
+        "stepId": "step-stage-1",
+        "runId": "9001",
+        "kind": "STAGE",
+        "title": "理解请求",
+        "summary": null,
+        "status": "RUNNING",
+        "orderAnchor": { "seq": "1", "index": "0" },
+        "viewRevision": "1",
+        "collapsedByDefault": false,
+        "operationId": null
+      },
+      {
+        "type": "PROCESS_STEP_UPSERT",
+        "stepId": "step-tool-1",
+        "runId": "9001",
+        "kind": "TOOL_STEP",
+        "title": "本地计算",
+        "summary": "17 × 23",
+        "status": "RUNNING",
+        "orderAnchor": { "seq": "1", "index": "1" },
+        "viewRevision": "1",
+        "collapsedByDefault": false,
+        "operationId": "op-1"
+      }
+    ]
+  },
+  {
+    "protocolVersion": "web-projection-process-v1",
+    "sessionId": "1001",
+    "streamId": "proc-stream-demo",
+    "seq": "2",
+    "previousSeq": "1",
+    "cursor": "demo-cursor-2",
+    "occurredAt": "2026-10-27T10:00:05Z",
+    "changes": [
+      {
+        "type": "PROCESS_STEP_UPSERT",
+        "stepId": "step-stage-1",
+        "runId": "9001",
+        "kind": "STAGE",
+        "title": "理解请求",
+        "summary": null,
+        "status": "DONE",
+        "orderAnchor": { "seq": "1", "index": "0" },
+        "viewRevision": "2",
+        "collapsedByDefault": false,
+        "operationId": null
+      },
+      {
+        "type": "PROCESS_STEP_UPSERT",
+        "stepId": "step-tool-1",
+        "runId": "9001",
+        "kind": "TOOL_STEP",
+        "title": "本地计算",
+        "summary": "17 × 23",
+        "status": "DONE",
+        "orderAnchor": { "seq": "1", "index": "1" },
+        "viewRevision": "2",
+        "collapsedByDefault": false,
+        "operationId": "op-1"
+      },
+      {
+        "type": "PROCESS_STEP_DETAIL_SET",
+        "stepId": "step-tool-1",
+        "detail": "17 × 23 → 391",
+        "detailVersion": "1",
+        "byteLength": "18",
+        "sha256": "demo-not-a-real-hash"
+      }
+    ]
+  }
+]

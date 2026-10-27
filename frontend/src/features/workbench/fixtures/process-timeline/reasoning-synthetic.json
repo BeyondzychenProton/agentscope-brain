@@ -1,0 +1,24 @@
+{
+  "protocolVersion": "web-projection-process-v1",
+  "sessionId": "1001",
+  "streamId": "proc-stream-reasoning-demo",
+  "seq": "1",
+  "previousSeq": "0",
+  "cursor": "reasoning-cursor-1",
+  "occurredAt": "2026-10-27T12:00:00Z",
+  "changes": [
+    {
+      "type": "PROCESS_STEP_UPSERT",
+      "stepId": "step-reasoning-1",
+      "runId": "9003",
+      "kind": "REASONING",
+      "title": "深度思考",
+      "summary": "合成演示步骤",
+      "status": "DONE",
+      "orderAnchor": { "seq": "1", "index": "0" },
+      "viewRevision": "1",
+      "collapsedByDefault": true,
+      "operationId": null
+    }
+  ]
+}

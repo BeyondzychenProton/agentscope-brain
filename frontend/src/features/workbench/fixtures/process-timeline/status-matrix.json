@@ -1,0 +1,89 @@
+[
+  {
+    "protocolVersion": "web-projection-process-v1",
+    "sessionId": "1001",
+    "streamId": "proc-stream-status-matrix",
+    "seq": "1",
+    "previousSeq": "0",
+    "cursor": "matrix-cursor-1",
+    "occurredAt": "2026-10-27T11:00:00Z",
+    "changes": [
+      {
+        "type": "PROCESS_STEP_UPSERT",
+        "stepId": "step-waiting-1",
+        "runId": "9002",
+        "kind": "STAGE",
+        "title": "等待用户确认",
+        "summary": "需选择会议室",
+        "status": "WAITING",
+        "orderAnchor": { "seq": "1", "index": "0" },
+        "viewRevision": "1",
+        "collapsedByDefault": false,
+        "operationId": null
+      },
+      {
+        "type": "PROCESS_STEP_UPSERT",
+        "stepId": "step-failed-1",
+        "runId": "9002",
+        "kind": "TOOL_STEP",
+        "title": "查询空闲会议室",
+        "summary": "上游超时",
+        "status": "FAILED",
+        "orderAnchor": { "seq": "1", "index": "1" },
+        "viewRevision": "1",
+        "collapsedByDefault": false,
+        "operationId": "op-fail-1"
+      }
+    ]
+  },
+  {
+    "protocolVersion": "web-projection-process-v1",
+    "sessionId": "1001",
+    "streamId": "proc-stream-status-matrix",
+    "seq": "2",
+    "previousSeq": "1",
+    "cursor": "matrix-cursor-2",
+    "occurredAt": "2026-10-27T11:00:10Z",
+    "changes": [
+      {
+        "type": "PROCESS_STEP_UPSERT",
+        "stepId": "step-interrupted-1",
+        "runId": "9002",
+        "kind": "STAGE",
+        "title": "执行预订",
+        "summary": "用户中断",
+        "status": "INTERRUPTED",
+        "orderAnchor": { "seq": "2", "index": "0" },
+        "viewRevision": "1",
+        "collapsedByDefault": false,
+        "operationId": null
+      },
+      {
+        "type": "PROCESS_STEP_UPSERT",
+        "stepId": "step-unknown-1",
+        "runId": "9002",
+        "kind": "TOOL_STEP",
+        "title": "同步日历",
+        "summary": "状态未上报",
+        "status": "UNKNOWN",
+        "orderAnchor": { "seq": "2", "index": "1" },
+        "viewRevision": "1",
+        "collapsedByDefault": false,
+        "operationId": "op-unknown-1"
+      },
+      {
+        "type": "PROCESS_STEP_UPSERT",
+        "stepId": "step-cancelled-1",
+        "runId": "9002",
+        "kind": "STAGE",
+        "title": "发送邀请",
+        "summary": "已取消",
+        "status": "CANCELLED",
+        "orderAnchor": { "seq": "2", "index": "2" },
+        "viewRevision": "1",
+        "collapsedByDefault": false,
+        "operationId": null
+      }
+    ]
+  }
+]
