@@ -27,10 +27,14 @@ foreach ($root in @($sourceRoot, $testRoot)) {
         $parentPath = [IO.Path]::GetDirectoryName($relativePath).Replace('\','/').Replace('/','.')
         $expectedPackage = 'com.agentscope.brain' + $(if ($parentPath) { '.' + $parentPath } else { '' })
         if ($declaredPackage -ne $expectedPackage) { $failures.Add("Package/path mismatch: $relativePath") }
-        if ($root -eq $sourceRoot -and $file.Name -match '(Probe|Test|Fixture)\.java$') {
+        if ($root -eq $sourceRoot -and ($file.Name -cmatch '(Test|Tests|IT|Probe|Fixture|Stub|Fake|Mock|TestSupport)\.java$' -or
+                $relativePath -match '(^|/)(tests?|fixtures?|probes?|testsupport)/')) {
             $failures.Add("Test-only source in production: $relativePath")
         }
         if ($root -ne $sourceRoot) { continue }
+        if ($text -match '(?m)^import\s+(?:static\s+)?(?:org\.(?:junit|mockito|assertj|hamcrest|testcontainers)\.|org\.springframework\.(?:boot\.test|test)\.)') {
+            $failures.Add("Test library imported by production source: $relativePath")
+        }
         $sourceModule = ($relativePath -split '/')[0]
         foreach ($reference in [regex]::Matches($text, '(?m)^import\s+(?:static\s+)?com\.agentscope\.brain\.(\w+)\.([^;]+);')) {
             $targetModule = $reference.Groups[1].Value
@@ -45,9 +49,11 @@ if (Get-ChildItem -LiteralPath $backendRoot -Filter 'pom.xml' -File -Recurse | W
     $failures.Add('Nested Maven module in formal backend')
 }
 $forbiddenResources = @(Get-ChildItem -LiteralPath (Join-Path $backendRoot 'src/main/resources') -File -Recurse |
-    Where-Object { $_.Name -match '^(resource\.txt|application\.(yaml|yml)|application-shared\.(yaml|yml)|\.env.*)$' })
+    Where-Object { $_.Name -match '^(resource\.txt|application\.(yaml|yml)|application-(shared|test)\.(yaml|yml)|\.env.*)$' -or
+        $_.Name -match '\.private\.' -or
+        [IO.Path]::GetRelativePath((Join-Path $backendRoot 'src/main/resources'), $_.FullName).Replace('\','/') -match '(^|/)(tests?|fixtures?|probes?|mocks?|stubs?)/' })
 foreach ($file in $forbiddenResources) { $failures.Add("Private file in packaged resources: $($file.Name)") }
 
 if ($failures.Count -gt 0) { throw ($failures -join [Environment]::NewLine) }
-Write-Output 'Backend layout, package paths, module imports and resource placement: PASS'
+Write-Output 'Backend layout, package paths, module imports, test isolation and resource placement: PASS'
 Write-Output 'Import checks do not detect reflection, fully qualified calls or transaction correctness; review those in each change.'

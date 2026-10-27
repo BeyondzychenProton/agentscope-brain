@@ -1,0 +1,30 @@
+{
+  "date": "2026-10-27",
+  "baseCommit": "efa4dc6c16fa581acc13359dcc7c7ba876f01643",
+  "isolatedSourceSnapshot": true,
+  "unrelatedWorkingChangesExcluded": true,
+  "unitTests": {
+    "tests": 23,
+    "failures": 0,
+    "errors": 0
+  },
+  "productionArtifactCheck": {
+    "tests": 1,
+    "failures": 0,
+    "errors": 0
+  },
+  "deliberateTestClassLeakRejected": true,
+  "restoredArtifactCheck": "PASS",
+  "productionJarSha256": "fd8b9ce4548511260465b120f45b1ea6bba1eddd78902a1dcb3d9b2d246918cd",
+  "sourceSha256": {
+    "backend/README.md": "0d1b773971aa9a71458dc8171d47fd46843dc2a1d3a663ea759ed899b01ef026",
+    "backend/\u5f00\u53d1\u89c4\u8303.md": "2f899b1b5e26ff335be0cec745fb5024493d5ad568a0d17bf5ed787c6fba9460",
+    "backend/pom.xml": "72d3becfd5a01355522efc983202a0699174dcc009f89328b1e048a890a94e9b",
+    "backend/scripts/\u68c0\u67e5\u5de5\u7a0b\u89c4\u8303.ps1": "fd7c6c10957c855a6f09039a6b4f39b4aa2aea8a63004700fdcd909ef0a34736",
+    "backend/src/test/java/com/agentscope/brain/interaction/internal/validation/ClosedDraft7Validator.java": "24153995173a778241f6de298283bc29bddba0a46cedbc31d91366f55ceca7a7",
+    "backend/src/test/java/com/agentscope/brain/architecture/ProductionArtifactIT.java": "2bfcb6433bea276cb54a92e92bdefa81299645db7f461f50aca5e916c5d01438"
+  },
+  "removedProductionSource": "backend/src/main/java/com/agentscope/brain/interaction/internal/validation/ClosedDraft7Validator.java",
+  "runtimeIdentityAndReadinessUnchanged": true,
+  "sharedResourcesAccessed": false
+}

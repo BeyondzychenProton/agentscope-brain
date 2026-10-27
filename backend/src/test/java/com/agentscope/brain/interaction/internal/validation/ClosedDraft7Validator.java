@@ -10,10 +10,10 @@ import java.util.Map;
 import tools.jackson.databind.json.JsonMapper;
 
 /**
- * 应用侧 draft-07 兼容准入入口。只接纳封闭 Schema，不开放引用或方言替换。
- * form-v1 白名单、资源预算、严格时间表示和业务校验由后续交互切片接入。
+ * 固定依赖兼容性测试使用的 draft-07 校验辅助，不随生产 JAR 发布。
+ * 正式 form-v1 校验入口随交互用例实现，不把测试辅助当作已经装配的业务能力。
  */
-public final class ClosedDraft7Validator {
+final class ClosedDraft7Validator {
     private static final String DIALECT = "http://json-schema.org/draft-07/schema#";
     private final JsonMapper mapper = JsonMapper.builder().build();
     private final SchemaRegistry registry = SchemaRegistry.withDialects(

@@ -19,7 +19,7 @@ backend/
 └── 开发规范.md
 ```
 
-业务模块当前用 `package-info.java` 落实职责；`api/` 与 `internal/` 随真实用例建立，不批量生成空 Controller／Service／Mapper。已有 Schema 校验实现位于 `interaction/internal/validation/`。
+业务模块当前用 `package-info.java` 落实职责；`api/` 与 `internal/` 随真实用例建立，不批量生成空 Controller／Service／Mapper。尚未接入业务的 draft-07 兼容性校验辅助放在 `src/test/java/` 的对应包中，不随应用发布。
 
 ## 构建与检查
 
@@ -50,6 +50,12 @@ Spring Boot 自动读取本目录下的 `config/application.yaml`；不再使用
 启动把平台 01～06 登录结构基线、SDK 和 Session 三类实际元数据分别与 `readiness/structure-v1.tsv` 核对，再核验普通用户、来源／凭据／号码、授权／当前发布、发布／绑定／Skill／资源摘要以及本机受控引用。文件 `config/release-catalog.private.json` 保存 #29 冻结引用清单，已被 Git 忽略、不打包；也可用私有 YAML 的 `brain.bootstrap.reference-catalog` 指向受控本地文件。合法停用／撤权是策略状态，不是数据缺失。检查不连接模型、MCP 或 MinIO。
 
 默认 `verify` 的 23 项测试只用 H2／合成数据。MySQL 与生产 JAR 的受限登录验收显式运行仓库根目录 `python db/tests/执行Web受限登录隔离验收.py`，它只创建并清理自己核验过的回环 MySQL；不读取共用 YAML。真实数据集不用该故障执行器。
+
+## 生产与测试隔离
+
+- `src/main/` 仅保留已装配的运行逻辑及必要资源。`StartupReadiness`、发布完整性校验和结构基线是实际启动准入，不是测试探针，必须随应用保留。
+- 单元测试、依赖兼容性测试及其辅助类统一放 `src/test/java/`，合成配置／夹具放 `src/test/resources/`。历史探针仍在仓库 `archive/`，数据库隔离执行器仍在 `db/tests/`，均不进入生产 JAR。
+- 工程检查拒绝生产源码中的测试类命名、测试目录、测试库导入和测试资源。`mvnw verify` 在打包后另执行 1 项产物隔离检查，核对所有编译后的测试类、测试配置及测试依赖未进入正式 JAR；`target/` 中的测试编译输出和报告属于可再生构建结果。
 
 ## 历史验证
 
