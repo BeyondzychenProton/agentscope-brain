@@ -28,6 +28,9 @@ const snapshot = ref<Snapshot | null>(null)
 const messages = ref<DisplayMessage[]>([])
 const nextPageCursor = ref<string | null>(null)
 let loadSeq = 0
+let runPollTimer: ReturnType<typeof setTimeout> | null = null
+let runPollGeneration = 0
+const runNotice = ref('')
 const navigation = reactive(new SessionNavigation())
 const searchTitle = ref('')
 const listError = ref('')
@@ -53,15 +56,73 @@ const avatarText = computed(() => (auth.identity?.displayName ?? '用').slice(0,
 
 function clear() {
   ++loadSeq
+  stopRunPoll()
   navigation.clear()
   clearHistory()
   capabilities.value = []
 }
 
 function clearHistory() {
+  stopRunPoll()
   snapshot.value = null
   messages.value = []
   nextPageCursor.value = null
+  runNotice.value = ''
+}
+
+function stopRunPoll() {
+  runPollGeneration += 1
+  if (runPollTimer) {
+    clearTimeout(runPollTimer)
+    runPollTimer = null
+  }
+}
+
+function failedRunNotice(reason: string | null | undefined) {
+  if (reason === 'MODEL_Arrearage' || reason === 'Arrearage') {
+    return '模型服务拒绝执行（账号欠费或不可用）。请在百炼控制台恢复额度后重试发送。'
+  }
+  if (reason?.startsWith('MODEL_')) {
+    return `模型调用失败（${reason}）。请检查模型配置后重试发送。`
+  }
+  return '本轮执行失败，没有正式回复。请稍后重试发送。'
+}
+
+function scheduleRunPoll(session: string, runId: string, attempt = 0) {
+  stopRunPoll()
+  const generation = runPollGeneration
+  const delay = Math.min(1500 + attempt * 500, 5000)
+  runPollTimer = setTimeout(() => {
+    void (async () => {
+      if (generation !== runPollGeneration || sessionId.value !== session) return
+      try {
+        await loadHistory(loadSeq)
+        if (generation !== runPollGeneration || sessionId.value !== session) return
+        const active = snapshot.value?.runs ?? []
+        const hasAssistant = messages.value.some(message => message.senderKind === 'ASSISTANT')
+        const failed = active.find(run => run.status === 'FAILED')
+        if (failed) {
+          runNotice.value = failedRunNotice(failed.processingStatus)
+          return
+        }
+        if (!active.length) {
+          runNotice.value = hasAssistant ? '' : '本轮执行已结束，但没有正式回复。请刷新后核对，或稍后重试发送。'
+          return
+        }
+        runNotice.value = active.some(run => run.processingStatus === 'RUNNING' || run.status === 'RUNNING')
+          ? '正在调用模型，请稍候…'
+          : '消息已接纳，等待执行。'
+        if (attempt >= 60) {
+          runNotice.value = '执行仍在进行或结果未就绪，请刷新后继续查看。'
+          return
+        }
+        scheduleRunPoll(session, runId, attempt + 1)
+      } catch {
+        if (generation !== runPollGeneration) return
+        runNotice.value = '执行状态读取未完成，请刷新后查看。'
+      }
+    })()
+  }, delay)
 }
 
 function reason(code: string | null | undefined) {
@@ -232,10 +293,12 @@ async function logout() {
 async function accepted(receipt: Receipt) {
   if (!receipt.result) return
   searchTitle.value = ''
+  runNotice.value = '消息已接纳，等待执行。'
   if (sessionId.value !== receipt.result.sessionId) {
     await router.replace({ path: '/workbench', query: { sessionId: receipt.result.sessionId } })
   }
   await refresh(true)
+  scheduleRunPoll(receipt.result.sessionId, receipt.result.runId)
 }
 
 function newChat() {
@@ -257,6 +320,8 @@ onUnmounted(() => {
   window.removeEventListener('focus', focusRefresh)
 })
 watch(sessionId, () => {
+  stopRunPoll()
+  runNotice.value = ''
   void selectHistory()
 })
 </script>
@@ -340,7 +405,11 @@ watch(sessionId, () => {
 
         <section v-if="snapshot" class="chat" aria-label="正式文字历史">
           <p class="history-note">正式文字记录</p>
-          <p v-if="snapshot.runs?.length" class="readonly-note" role="status">消息已接纳，等待执行。本页尚未提供自动执行与回复。</p>
+          <p v-if="runNotice || snapshot.runs?.length" class="readonly-note" role="status">
+            {{ runNotice || ((snapshot.runs ?? []).some(run => run.processingStatus === 'RUNNING' || run.status === 'RUNNING')
+              ? '正在调用模型，请稍候…'
+              : '消息已接纳，等待执行。') }}
+          </p>
           <p
             v-if="historyCapability?.unavailableReason"
             class="readonly-note"

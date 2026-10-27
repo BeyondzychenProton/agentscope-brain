@@ -87,9 +87,9 @@ Spring Boot 自动读取本目录下的 `config/application.yaml`；不再使用
 
 实现 `POST /api/session-intents`、`GET /api/session-intents/{intentId}`、`POST /api/submissions`、`GET /api/submissions/{submissionKey}` 和 `POST /api/submissions/{submissionKey}/close`，沿用既定 DTO／CSRF／可信身份约定。只接纳有效 UTF-8、非空且不超过 256 KiB 的完整文字及空 uploadIds；图片不静默退化成文字。标题由原文确定性生成，不调用模型。
 
-此切片默认关闭，由 `brain.conversation.text-submission-enabled` 显式开启。未修改本机共享 YAML，未在共享库创建容量／记忆事实。开启前还须有受控预置的 2／16 `runtime_capacity` 及有效 `memory_profile`；缺失或计数不一致拒绝接纳，不在启动／GET 中补造。记忆接缝只锁定已有控制事实、分配输入序号并捕获代次／修订／策略，不执行 KV 初始化、记忆学习或 SDK。
+由 `brain.conversation.text-submission-enabled` 控制接纳；同开关驱动本进程 `OrdinaryRunWorker` 领取 WAITING 并调用 `brain.resources.model`。开启前须有受控预置的 2／16 `runtime_capacity` 及 READY `memory_profile`；缺失或计数不一致拒绝接纳，不在启动／GET 中补造。可用 `db/maintenance/enable-ordinary-text-execution.sql` 显式补齐控制事实。记忆接缝只锁定已有控制事实、分配输入序号并捕获代次／修订／策略，不执行 KV 初始化或记忆学习。
 
-预登记独立提交；接纳事务按 C0→身份→员工／固定发布／授权→意图／提交→memory_profile→Session→消息／Run→dispatch→展示／审计进行。容量、正式用户消息、Run、意图绑定、永久提交结果和 v1 不可变文字投影原子提交；普通等待最多 16，同 Session 一个活动 Run。没有执行器／自动领取、SDK 或模型调用；页面显示接纳／等待事实。已接纳的原键先返回原结果，不被当前容量、授权撤销或功能关闭覆盖。不存在控制行但存在正式消息时保留待核对，拒绝重建／封闭为未接纳。
+预登记独立提交；接纳事务按 C0→身份→员工／固定发布／授权→意图／提交→memory_profile→Session→消息／Run→dispatch→展示／审计进行。容量、正式用户消息、Run、意图绑定、永久提交结果和 v1 不可变文字投影原子提交；普通等待最多 16，同 Session 一个活动 Run。本进程按 `brain.runtime.ordinary-poll-ms` 领取普通 WAITING，事务外调用兼容聊天接口，成功后写一条 ASSISTANT 正式回复并释放许可；失败进入可观察失败／待核对，不写假回复。已接纳的原键先返回原结果，不被当前容量、授权撤销或功能关闭覆盖。不存在控制行但存在正式消息时保留待核对，拒绝重建／封闭为未接纳。过程时间线／SSE／工具步骤仍属后续切片。
 
 close 在身份和原控制行锁内与接纳互斥；未观察过的键可落无目标、无语义摘要的永久墓碑。已有完整登记保留原语义。GET 无记录是 UNOBSERVED，不证明排除了在途写者。提交事务／基础设施错误返回受控不明，前端保留原键回查，不自动重跑接纳。
 

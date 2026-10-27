@@ -223,7 +223,7 @@ public class TextSubmission {
         }
         projection.append(new AcceptedTextProjection.Fact(user.userId(),located.employeeId(),sid,release.releaseId(),
                 (String)session.get("title"),version,uuid((byte[])session.get("projection_stream_id")),seq,
-                value(session,"last_projection_seq"),mid,no,block,run,p.text(),now));
+                value(session,"last_projection_seq"),mid,no,block,run,p.text(),now,"USER","ACCEPTED"));
         jdbc.update("""
             INSERT INTO conversation_audit_event(actor_user_id,target_user_id,session_id,run_id,action_code,outcome,
                 entry_kind,occurred_at,gmt_create,gmt_modified) VALUES(?,?,?,?,'ORDINARY_TEXT_ACCEPTED','SUCCESS','WEB',?,?,?)

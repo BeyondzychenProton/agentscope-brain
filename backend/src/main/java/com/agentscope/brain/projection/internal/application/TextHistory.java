@@ -42,18 +42,44 @@ public class TextHistory {
         var owned = owned(sessionId);
         var active=jdbc.queryForList("SELECT id,status FROM business_run WHERE session_id=? AND status NOT IN ('SUCCEEDED','FAILED','CANCELLED')",sessionId);
         var runs=new ArrayList<QueuedRun>();
+        if(active.size()>1) { throw new ProjectionReadFailure(503,"PROJECTION_SCOPE_UNAVAILABLE"); }
         for(var run:active) {
-            long verified=count("""
-                SELECT COUNT(*) FROM runtime_dispatch d JOIN ordinary_submission o ON o.accepted_run_id=d.run_id
-                JOIN business_run r ON r.id=d.run_id
-                WHERE d.run_id=? AND d.session_id=? AND d.user_id=? AND d.status='WAITING' AND d.permit_state='NONE'
-                AND d.counts_toward_waiting=1 AND d.dispatch_kind='ORDINARY' AND d.source_kind='ORDINARY_SUBMISSION'
-                AND d.source_id=o.id AND o.status='ACCEPTED' AND o.user_id=d.user_id AND o.accepted_session_id=d.session_id
-                AND o.accepted_message_id=r.input_message_id AND r.actor_user_id=d.user_id AND r.status='ACCEPTED'
-                AND NOT EXISTS(SELECT 1 FROM runtime_sdk_call k WHERE k.run_id=r.id)
-                """,run.get("id"),sessionId,owned.userId());
-            if(!"ACCEPTED".equals(run.get("status")) || verified!=1 || active.size()!=1) { throw new ProjectionReadFailure(503,"PROJECTION_SCOPE_UNAVAILABLE"); }
-            runs.add(new QueuedRun(String.valueOf(run.get("id")),"ACCEPTED","WAITING"));
+            String status=String.valueOf(run.get("status"));
+            if("ACCEPTED".equals(status)) {
+                long waiting=count("""
+                    SELECT COUNT(*) FROM runtime_dispatch d JOIN ordinary_submission o ON o.accepted_run_id=d.run_id
+                    JOIN business_run r ON r.id=d.run_id
+                    WHERE d.run_id=? AND d.session_id=? AND d.user_id=? AND d.status='WAITING' AND d.permit_state='NONE'
+                    AND d.counts_toward_waiting=1 AND d.dispatch_kind='ORDINARY' AND d.source_kind='ORDINARY_SUBMISSION'
+                    AND d.source_id=o.id AND o.status='ACCEPTED' AND o.user_id=d.user_id AND o.accepted_session_id=d.session_id
+                    AND o.accepted_message_id=r.input_message_id AND r.actor_user_id=d.user_id AND r.status='ACCEPTED'
+                    AND NOT EXISTS(SELECT 1 FROM runtime_sdk_call k WHERE k.run_id=r.id)
+                    """,run.get("id"),sessionId,owned.userId());
+                if(waiting!=1) { throw new ProjectionReadFailure(503,"PROJECTION_SCOPE_UNAVAILABLE"); }
+                runs.add(new QueuedRun(String.valueOf(run.get("id")),"ACCEPTED","WAITING"));
+            } else if("RUNNING".equals(status)) {
+                long held=count("""
+                    SELECT COUNT(*) FROM runtime_dispatch d
+                    WHERE d.run_id=? AND d.session_id=? AND d.user_id=? AND d.status='CLAIMED' AND d.permit_state='HELD'
+                    AND d.dispatch_kind='ORDINARY' AND d.work_kind='ORIGINAL_RUN'
+                    AND EXISTS(SELECT 1 FROM runtime_sdk_call k WHERE k.run_id=d.run_id AND k.dispatch_id=d.id)
+                    """,run.get("id"),sessionId,owned.userId());
+                if(held!=1) { throw new ProjectionReadFailure(503,"PROJECTION_SCOPE_UNAVAILABLE"); }
+                runs.add(new QueuedRun(String.valueOf(run.get("id")),"RUNNING","RUNNING"));
+            } else {
+                throw new ProjectionReadFailure(503,"PROJECTION_SCOPE_UNAVAILABLE");
+            }
+        }
+        if (runs.isEmpty()) {
+            var failed = jdbc.queryForList("""
+                    SELECT id,status,reconcile_reason FROM business_run
+                    WHERE session_id=? AND status='FAILED' ORDER BY id DESC LIMIT 1
+                    """, sessionId);
+            if (!failed.isEmpty()) {
+                String reason = failed.get(0).get("reconcile_reason") == null ? "FAILED"
+                        : String.valueOf(failed.get(0).get("reconcile_reason"));
+                runs.add(new QueuedRun(String.valueOf(failed.get(0).get("id")), "FAILED", reason));
+            }
         }
         // Do not return an apparently complete snapshot for functionality deferred to stage 2.
         if (owned.session().get("source_session_id") != null

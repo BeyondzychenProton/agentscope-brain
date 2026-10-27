@@ -7,5 +7,5 @@ public interface AcceptedTextProjection {
     void append(Fact fact);
     record Fact(String userId,String employeeId,String sessionId,String releaseId,String title,String sessionVersion,
         String streamId,String seq,String previousSeq,String messageId,String messageNo,String blockId,
-        String runId,String text,LocalDateTime now) { }
+        String runId,String text,LocalDateTime now,String senderKind,String runStatus) { }
 }

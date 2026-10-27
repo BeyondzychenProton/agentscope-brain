@@ -29,13 +29,16 @@ public class AcceptedTextWriter implements AcceptedTextProjection {
             var content=new LinkedHashMap<String,Object>(ref);
             content.putAll(Map.of("type","CONTENT_SET","runId",f.runId(),"baseContentVersion","0","firstSeq",f.seq(),
                     "firstPosition",3,"status","CLOSED","closeReason","COMPLETED"));
-            var message=Map.of("type","MESSAGE_COMMIT","messageId",f.messageId(),"messageNo",f.messageNo(),"senderKind","USER",
-                    "runId",f.runId(),"initialRunId",f.runId(),"acceptedAt",f.now().format(java.time.format.DateTimeFormatter.ofPattern("uuuu-MM-dd'T'HH:mm:ss.SSSSSS'Z'")),
-                    "contents",List.of(ref),"replacesContentIds",List.of());
+            var message=new LinkedHashMap<String,Object>(Map.of("type","MESSAGE_COMMIT","messageId",f.messageId(),"messageNo",f.messageNo(),
+                    "senderKind",f.senderKind(),"runId",f.runId(),"acceptedAt",
+                    f.now().format(java.time.format.DateTimeFormatter.ofPattern("uuuu-MM-dd'T'HH:mm:ss.SSSSSS'Z'")),
+                    "contents",List.of(ref),"replacesContentIds",List.of()));
+            if("USER".equals(f.senderKind())) message.put("initialRunId",f.runId());
+            else message.put("producedByRunId",f.runId());
             var session=new LinkedHashMap<String,Object>(Map.of("type","SESSION_SET","sessionId",f.sessionId(),"employeeId",f.employeeId(),
                     "sessionVersion",f.sessionVersion(),"viewRevision",f.seq(),"lifecycleStatus","ACTIVE","recoveryStatus","READY"));
             session.put("title",f.title());
-            var run=Map.of("type","RUN_SET","runId",f.runId(),"status","ACCEPTED","inputMessageId",f.messageId(),"viewRevision",f.seq());
+            var run=Map.of("type","RUN_SET","runId",f.runId(),"status",f.runStatus(),"viewRevision",f.seq());
             String cursor=cursors.encode(new HistoryCursor.Position("stream",f.userId(),f.sessionId(),f.streamId(),f.seq(),f.messageNo(),"0"));
             byte[] payload=json.writeValueAsBytes(Map.of("protocolVersion",TextHistory.PROTOCOL,"sessionId",f.sessionId(),"streamId",f.streamId(),
                     "seq",f.seq(),"previousSeq",f.previousSeq(),"cursor",cursor,"occurredAt",f.now().format(java.time.format.DateTimeFormatter.ofPattern("uuuu-MM-dd'T'HH:mm:ss.SSSSSS'Z'")),
