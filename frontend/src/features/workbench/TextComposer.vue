@@ -1,13 +1,27 @@
 <script setup lang="ts">
-import { onUnmounted, reactive, watch } from 'vue'
+import { computed, onUnmounted, reactive, watch } from 'vue'
 import { ApiFailure } from '../../transport/http'
 import { TextComposerState, type Receipt } from './composer'
 
-const props = defineProps<{ userId: string; employeeId: string; sessionId: string | null; available: boolean; canSend: boolean }>()
+const props = defineProps<{
+  userId: string
+  employeeId: string
+  sessionId: string | null
+  available: boolean
+  canSend: boolean
+  /** Ordinary run in flight: keep draft editable, disable send, no queue/interrupt. */
+  runActive?: boolean
+}>()
 const emit = defineEmits<{ accepted: [receipt: Receipt]; authRequired: [failure: ApiFailure]; pending: [value: boolean] }>()
 const state = reactive(new TextComposerState())
 let composing = false
 let compositionEndedAt = 0
+const gateNotice = computed(() => {
+  if (state.pending || state.notice) return state.notice
+  if (props.runActive) return '本轮结束后可发送'
+  if (!props.available) return '当前会话暂不可发送文字。'
+  return ''
+})
 async function operate(action: () => Promise<Receipt | undefined>) {
   try {
     const receipt = await action()
@@ -33,9 +47,9 @@ function keydown(event: KeyboardEvent) {
 </script>
 
 <template>
-  <section v-if="state.draft && (available || state.pending || state.draft.text)" class="composer" aria-label="文字发送">
+  <section v-if="state.draft" class="composer" aria-label="文字发送">
     <p v-if="state.storageWarning" class="composer-warning" role="status">{{ state.storageWarning }}</p>
-    <p v-if="state.notice" class="composer-notice" role="status">{{ state.notice }}</p>
+    <p v-if="gateNotice" class="composer-notice" role="status">{{ gateNotice }}</p>
     <textarea v-model="state.draft.text" aria-label="输入消息" rows="3" placeholder="输入文字，Enter 发送，Shift+Enter 换行"
       :readonly="state.pending || state.busy"
       @input="state.persist()" @keydown="keydown" @compositionstart="composing = true"

@@ -8,6 +8,7 @@ import { ApiFailure, read } from '../transport/http'
 import { SessionNavigation } from '../features/workbench/sessions'
 import TextComposer from '../features/workbench/TextComposer.vue'
 import type { Receipt } from '../features/workbench/composer'
+import { RunWatch, type RunWatchObserve } from '../features/workbench/runWatch'
 import {
   basePath,
   displayMessages,
@@ -28,9 +29,6 @@ const snapshot = ref<Snapshot | null>(null)
 const messages = ref<DisplayMessage[]>([])
 const nextPageCursor = ref<string | null>(null)
 let loadSeq = 0
-let runPollTimer: ReturnType<typeof setTimeout> | null = null
-let runPollGeneration = 0
-const runNotice = ref('')
 const navigation = reactive(new SessionNavigation())
 const searchTitle = ref('')
 const listError = ref('')
@@ -51,78 +49,71 @@ const subtitleText = computed(() =>
 const textInputAvailable = computed(() => (sessionId.value
   ? Boolean(snapshot.value?.session.allowedActions?.includes('START_RUN'))
   : Boolean(capabilities.value.find(c => c.employeeId === employeeId.value)?.textSubmissionAvailable)))
-const canSendText = computed(() => !busy.value && textInputAvailable.value)
+const snapshotRunActive = computed(() => (snapshot.value?.runs ?? []).some(run =>
+  run.status === 'WAITING' || run.status === 'RUNNING'
+  || run.processingStatus === 'WAITING' || run.processingStatus === 'RUNNING'))
+const runWatch = reactive(new RunWatch(() => reloadForWatch()))
+const runActive = computed(() => runWatch.active || snapshotRunActive.value)
+const canSendText = computed(() => textInputAvailable.value && !runActive.value)
 const avatarText = computed(() => (auth.identity?.displayName ?? '用').slice(0, 1))
+
+function assistantIds() {
+  return messages.value.filter(message => message.senderKind === 'ASSISTANT').map(message => message.messageId)
+}
+
+function toObserve(): RunWatchObserve | null {
+  const value = snapshot.value
+  const target = sessionId.value
+  if (!value || !target || value.sessionId !== target) return null
+  return {
+    sessionId: value.sessionId,
+    runs: (value.runs ?? []).map(run => ({
+      runId: run.runId,
+      status: run.status,
+      processingStatus: run.processingStatus,
+    })),
+    assistantMessageIds: assistantIds(),
+  }
+}
+
+async function reloadForWatch(): Promise<RunWatchObserve | null> {
+  const seq = loadSeq
+  const target = sessionId.value
+  if (!target) return null
+  try {
+    // Poll path must not resume/re-queue; RunWatch.apply owns the transition.
+    await loadHistory(seq, false)
+    if (seq !== loadSeq || sessionId.value !== target) return null
+    return toObserve()
+  } catch (failure) {
+    if (failure instanceof ApiFailure && (failure.status === 401 || failure.code === 'PASSWORD_CHANGE_REQUIRED')) {
+      runWatch.stop()
+      await failed(failure)
+      return null
+    }
+    throw failure
+  }
+}
 
 function clear() {
   ++loadSeq
-  stopRunPoll()
+  runWatch.stop()
   navigation.clear()
   clearHistory()
   capabilities.value = []
 }
 
 function clearHistory() {
-  stopRunPoll()
+  runWatch.stop()
   snapshot.value = null
   messages.value = []
   nextPageCursor.value = null
-  runNotice.value = ''
 }
 
-function stopRunPoll() {
-  runPollGeneration += 1
-  if (runPollTimer) {
-    clearTimeout(runPollTimer)
-    runPollTimer = null
-  }
-}
-
-function failedRunNotice(reason: string | null | undefined) {
-  if (reason === 'MODEL_Arrearage' || reason === 'Arrearage') {
-    return '模型服务拒绝执行（账号欠费或不可用）。请在百炼控制台恢复额度后重试发送。'
-  }
-  if (reason?.startsWith('MODEL_')) {
-    return `模型调用失败（${reason}）。请检查模型配置后重试发送。`
-  }
-  return '本轮执行失败，没有正式回复。请稍后重试发送。'
-}
-
-function scheduleRunPoll(session: string, runId: string, attempt = 0) {
-  stopRunPoll()
-  const generation = runPollGeneration
-  const delay = Math.min(1500 + attempt * 500, 5000)
-  runPollTimer = setTimeout(() => {
-    void (async () => {
-      if (generation !== runPollGeneration || sessionId.value !== session) return
-      try {
-        await loadHistory(loadSeq)
-        if (generation !== runPollGeneration || sessionId.value !== session) return
-        const active = snapshot.value?.runs ?? []
-        const hasAssistant = messages.value.some(message => message.senderKind === 'ASSISTANT')
-        const failed = active.find(run => run.status === 'FAILED')
-        if (failed) {
-          runNotice.value = failedRunNotice(failed.processingStatus)
-          return
-        }
-        if (!active.length) {
-          runNotice.value = hasAssistant ? '' : '本轮执行已结束，但没有正式回复。请刷新后核对，或稍后重试发送。'
-          return
-        }
-        runNotice.value = active.some(run => run.processingStatus === 'RUNNING' || run.status === 'RUNNING')
-          ? '正在调用模型，请稍候…'
-          : '消息已接纳，等待执行。'
-        if (attempt >= 60) {
-          runNotice.value = '执行仍在进行或结果未就绪，请刷新后继续查看。'
-          return
-        }
-        scheduleRunPoll(session, runId, attempt + 1)
-      } catch {
-        if (generation !== runPollGeneration) return
-        runNotice.value = '执行状态读取未完成，请刷新后查看。'
-      }
-    })()
-  }, delay)
+function syncRunWatch() {
+  const observe = toObserve()
+  if (observe) runWatch.resume(observe)
+  else if (!sessionId.value) runWatch.stop()
 }
 
 function reason(code: string | null | undefined) {
@@ -192,7 +183,7 @@ async function refresh(keepView = false) {
   }
 }
 
-async function loadHistory(seq: number) {
+async function loadHistory(seq: number, syncWatch = true) {
     const target = sessionId.value
     if (target) {
       const value = await read<Snapshot>(
@@ -211,6 +202,9 @@ async function loadHistory(seq: number) {
         selectedEmployeeId.value = value.session.employeeId
         await searchSessions()
       }
+      if (syncWatch && seq === loadSeq) syncRunWatch()
+    } else if (syncWatch) {
+      runWatch.stop()
     }
 }
 
@@ -293,12 +287,11 @@ async function logout() {
 async function accepted(receipt: Receipt) {
   if (!receipt.result) return
   searchTitle.value = ''
-  runNotice.value = '消息已接纳，等待执行。'
   if (sessionId.value !== receipt.result.sessionId) {
     await router.replace({ path: '/workbench', query: { sessionId: receipt.result.sessionId } })
   }
   await refresh(true)
-  scheduleRunPoll(receipt.result.sessionId, receipt.result.runId)
+  runWatch.start(receipt.result.sessionId, receipt.result.runId, assistantIds())
 }
 
 function newChat() {
@@ -320,8 +313,7 @@ onUnmounted(() => {
   window.removeEventListener('focus', focusRefresh)
 })
 watch(sessionId, () => {
-  stopRunPoll()
-  runNotice.value = ''
+  runWatch.stop()
   void selectHistory()
 })
 </script>
@@ -405,10 +397,8 @@ watch(sessionId, () => {
 
         <section v-if="snapshot" class="chat" aria-label="正式文字历史">
           <p class="history-note">正式文字记录</p>
-          <p v-if="runNotice || snapshot.runs?.length" class="readonly-note" role="status">
-            {{ runNotice || ((snapshot.runs ?? []).some(run => run.processingStatus === 'RUNNING' || run.status === 'RUNNING')
-              ? '正在调用模型，请稍候…'
-              : '消息已接纳，等待执行。') }}
+          <p v-if="runWatch.notice || snapshotRunActive" class="readonly-note" role="status">
+            {{ runWatch.notice || (snapshotRunActive ? '消息已接纳，等待执行。' : '') }}
           </p>
           <p
             v-if="historyCapability?.unavailableReason"
@@ -443,9 +433,10 @@ watch(sessionId, () => {
           </p>
         </div>
       </div>
-      <TextComposer v-if="auth.identity && employeeId && (!sessionId || snapshot)"
+      <TextComposer v-if="auth.identity && employeeId"
         :user-id="auth.identity.userId" :employee-id="snapshot?.session.employeeId || employeeId"
         :session-id="sessionId || null" :available="textInputAvailable" :can-send="canSendText"
+        :run-active="runActive"
         @accepted="accepted" @auth-required="failed" />
     </main>
   </div>
