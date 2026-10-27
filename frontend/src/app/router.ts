@@ -16,6 +16,7 @@ export const router = createRouter({
 
 router.beforeEach(async (to) => {
   const auth = useAuth()
+  if (to.path === '/login' && auth.passwordNotice) { return true }
   try { await auth.restore() }
   catch { return to.path === '/login' ? true : '/login' }
   const identity = auth.identity

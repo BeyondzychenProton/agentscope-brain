@@ -1,0 +1,45 @@
+{
+  "scope": "synthetic login and page observation; password submission tested separately over HTTP",
+  "initialForm": {
+    "assets": [
+      "/assets/index-owa-a1ON.js",
+      "/assets/index-FqOR2ij8.css"
+    ],
+    "height": 720,
+    "passwordInputs": [
+      {
+        "empty": true,
+        "id": "current-password"
+      },
+      {
+        "empty": true,
+        "id": "new-password"
+      },
+      {
+        "empty": true,
+        "id": "confirm-password"
+      }
+    ],
+    "scrollWidth": 1280,
+    "submitRect": {
+      "bottom": 640.4583740234375,
+      "height": 46,
+      "left": 428.6666870117187,
+      "right": 851.3333740234375,
+      "top": 594.4583740234375,
+      "width": 422.6666870117187,
+      "x": 428.6666870117187,
+      "y": 594.4583740234375
+    },
+    "width": 1280
+  },
+  "readyAccount": {
+    "workbenchVisible": true,
+    "refreshPreservedReady": true,
+    "logoutReturnedToLogin": true,
+    "passwordEntrySubmittedByBrowser": false
+  },
+  "browser": "Codex in-app browser",
+  "browserVersion": "not exposed by read-only browser surface",
+  "packagedJarSha256": "b48248f39982ac30030352ac8fd545ba21e5c78c41fba187dbb8267603777fb2"
+}

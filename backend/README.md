@@ -49,9 +49,11 @@ Spring Boot 自动读取本目录下的 `config/application.yaml`；不再使用
 
 启动把平台 01～06 登录结构基线、SDK 和 Session 三类实际元数据分别与 `readiness/structure-v1.tsv` 核对，再核验普通用户、来源／凭据／号码、授权／当前发布、发布／绑定／Skill／资源摘要以及本机受控引用。文件 `config/release-catalog.private.json` 保存 #29 冻结引用清单，已被 Git 忽略、不打包；也可用私有 YAML 的 `brain.bootstrap.reference-catalog` 指向受控本地文件。合法停用／撤权是策略状态，不是数据缺失。检查不连接模型、MCP 或 MinIO。
 
-默认 `verify` 的 23 项测试只用 H2／合成数据。MySQL 与生产 JAR 的受限登录验收显式运行仓库根目录 `python db/tests/执行Web受限登录隔离验收.py`，它只创建并清理自己核验过的回环 MySQL；不读取共用 YAML。真实数据集不用该故障执行器。
+默认 `verify` 使用 H2／合成数据。MySQL 与生产 JAR 的受限登录验收显式运行仓库根目录 `python db/tests/执行Web受限登录隔离验收.py`，它只创建并清理自己核验过的回环 MySQL；不读取共用 YAML。真实数据集不用该故障执行器。
 
 ## 生产与测试隔离
+
+首次改密（#35）使用短平台事务锁定用户后更新凭据／安全版本／用户修改来源并追加身份审计，随后轮换 Session ID／CSRF，保存沿用原认证时间与绝对期限的新上下文。提交异常只独立核对本请求的编码哈希、版本及审计，不重跑改密；无法证明时安全退出并返回 `AUTH_OUTCOME_UNCERTAIN`。SQL 已提交但 Session 保存失败为 `PASSWORD_CHANGED_RELOGIN_REQUIRED`；响应等待请求末尾 Session JDBC 保存完成，避免提前返回成功。默认测试覆盖提交回执丢失、原子回滚、并发与最终保存失败；真实 MySQL 隔离验证显式运行 `python db/tests/执行首次改密隔离验收.py`，不读取共用 YAML 或改真实账号。
 
 - `src/main/` 仅保留已装配的运行逻辑及必要资源。`StartupReadiness`、发布完整性校验和结构基线是实际启动准入，不是测试探针，必须随应用保留。
 - 单元测试、依赖兼容性测试及其辅助类统一放 `src/test/java/`，合成配置／夹具放 `src/test/resources/`。历史探针仍在仓库 `archive/`，数据库隔离执行器仍在 `db/tests/`，均不进入生产 JAR。

@@ -1,0 +1,11 @@
+{
+  "issue": 35,
+  "observedAt": "2026-10-27T02:21:41.029791+00:00",
+  "database": "agentscope_brain",
+  "operation": "read-only connection preflight",
+  "writes": 0,
+  "credentialChanged": false,
+  "state": "UNAVAILABLE",
+  "failureClass": "OperationalError",
+  "driverCode": 2003
+}

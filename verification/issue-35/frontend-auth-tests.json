@@ -1,0 +1,20 @@
+{
+  "issue": 35,
+  "executedAt": "2026-10-27T02:54:14.959270+00:00",
+  "command": "npm run test:auth",
+  "node": "24.22.1",
+  "npm": "11.19.1",
+  "tests": 7,
+  "passed": 7,
+  "failed": 0,
+  "realServicesCalled": false,
+  "runtimeSourceChanged": false,
+  "packagedJarUnchanged": true,
+  "sourceSha256": {
+    "frontend/tests/auth-failure.test.mjs": "65cdc3d05dc3a56cf651b2f086a694505d9a44c3d05fde11840131d962ea5f05",
+    "frontend/src/features/auth/store.ts": "87577f3bc33a01c7bea590d469f1e08048dab0d877011ddc500f18c863713cea",
+    "frontend/src/transport/http.ts": "3044f608fdf18a7cd5900b56f09df04a5a68807206b5ee0c5b38186e801dff23",
+    "frontend/package.json": "054acdeb33f9555ebe1a8efca267332a332fba407d2028eef64b4b92f51e7619",
+    "frontend/package-lock.json": "fe2a6a87a6692dccdbf2de1497f6c211c6b574e3e245ccc08baf825e006af7a2"
+  }
+}

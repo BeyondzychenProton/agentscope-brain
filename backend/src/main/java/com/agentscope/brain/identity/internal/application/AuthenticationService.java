@@ -72,4 +72,7 @@ public class AuthenticationService {
         return value != null && !value.isEmpty() && StandardCharsets.UTF_8.newEncoder().canEncode(value)
                 && value.getBytes(StandardCharsets.UTF_8).length <= 72;
     }
+
+    public boolean passwordMatches(String raw, String hash) { return encoder.matches(raw, hash); }
+    public String encodePassword(String raw) { return encoder.encode(raw); }
 }

@@ -5,6 +5,7 @@ import com.agentscope.brain.identity.internal.domain.AuthFailure;
 import com.agentscope.brain.identity.internal.domain.PlatformPrincipal;
 import com.agentscope.brain.identity.internal.readiness.StartupReadiness;
 import com.agentscope.brain.identity.internal.web.AuthResponses;
+import com.agentscope.brain.identity.internal.web.AuthController;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -28,6 +29,9 @@ import org.springframework.security.web.csrf.HttpSessionCsrfTokenRepository;
 import org.springframework.security.web.access.intercept.AuthorizationFilter;
 import org.springframework.session.web.http.SessionRepositoryFilter;
 import org.springframework.web.filter.OncePerRequestFilter;
+import org.springframework.web.util.ContentCachingResponseWrapper;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.ResponseCookie;
 
 @Configuration(proxyBeanMethods = false)
 class AuthenticationConfiguration {
@@ -85,7 +89,9 @@ class AuthenticationConfiguration {
     }
 
     /** Wrap SessionRepositoryFilter too: database failure while reading/saving sessions must never become a login success. */
-    @Bean FilterRegistrationBean<OncePerRequestFilter> authInfrastructureBoundary(StartupReadiness readiness) {
+    @Bean FilterRegistrationBean<OncePerRequestFilter> authInfrastructureBoundary(StartupReadiness readiness,
+            @Value("${server.servlet.session.cookie.name:SESSION}") String cookieName,
+            @Value("${server.servlet.session.cookie.secure:false}") boolean secureCookie) {
         var filter = new OncePerRequestFilter() {
             @Override protected void doFilterInternal(HttpServletRequest req, HttpServletResponse res, FilterChain chain)
                     throws IOException, ServletException {
@@ -94,13 +100,30 @@ class AuthenticationConfiguration {
                     res.setHeader("Pragma", "no-cache");
                     if (!readiness.ready()) { AuthResponses.error(res, 503, "APPLICATION_NOT_READY"); return; }
                 }
-                try { chain.doFilter(req, res); }
-                catch (DataAccessException failure) {
+                // Hold the password response until SessionRepositoryFilter's final save has also
+                // completed. An end-of-request JDBC failure must not leak a 200 success body.
+                var buffered = req.getRequestURI().equals("/api/auth/password/initial")
+                        ? new ContentCachingResponseWrapper(res) : null;
+                var target = buffered == null ? res : buffered;
+                try { chain.doFilter(req, target); }
+                catch (RuntimeException failure) {
+                    var committed = Boolean.TRUE.equals(req.getAttribute(AuthController.PASSWORD_SQL_COMMITTED));
+                    if (!(failure instanceof DataAccessException) && !committed
+                            && req.getAttribute(AuthController.PASSWORD_FAILURE) == null) { throw failure; }
                     SecurityContextHolder.clearContext();
                     if (res.isCommitted()) { throw failure; }
-                    res.resetBuffer();
-                    AuthResponses.error(res, 503, "AUTH_DATA_UNAVAILABLE");
+                    target.resetBuffer();
+                    String code = committed ? "PASSWORD_CHANGED_RELOGIN_REQUIRED"
+                            : (String) req.getAttribute(AuthController.PASSWORD_FAILURE);
+                    if (code != null) { req.setAttribute(AuthController.PASSWORD_FAILURE, code); }
+                    AuthResponses.error(target, 503, code == null ? "AUTH_DATA_UNAVAILABLE" : code);
                 }
+                if (req.getAttribute(AuthController.PASSWORD_FAILURE) != null) {
+                    // Also works when the session store is down and server-side deletion fails.
+                    target.addHeader("Set-Cookie", ResponseCookie.from(cookieName, "").path("/").httpOnly(true)
+                            .secure(secureCookie).sameSite("Lax").maxAge(0).build().toString());
+                }
+                if (buffered != null) { buffered.copyBodyToResponse(); }
             }
         };
         var registration = new FilterRegistrationBean<OncePerRequestFilter>(filter);

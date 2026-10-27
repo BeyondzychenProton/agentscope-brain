@@ -1,0 +1,88 @@
+{
+  "executedAt": "2026-10-27T03:16:26.917016+00:00",
+  "scope": "Issue 35 implementation and approved login visual/copy update",
+  "javaTests": [
+    {
+      "suite": "com.agentscope.brain.architecture.ApplicationAssemblyTest",
+      "tests": 1,
+      "failures": 0,
+      "errors": 0
+    },
+    {
+      "suite": "com.agentscope.brain.architecture.NativeStructureContractTest",
+      "tests": 2,
+      "failures": 0,
+      "errors": 0
+    },
+    {
+      "suite": "com.agentscope.brain.identity.internal.application.AuthenticationServiceTest",
+      "tests": 5,
+      "failures": 0,
+      "errors": 0
+    },
+    {
+      "suite": "com.agentscope.brain.identity.internal.application.InitialPasswordServiceTest",
+      "tests": 8,
+      "failures": 0,
+      "errors": 0
+    },
+    {
+      "suite": "com.agentscope.brain.identity.internal.security.PasswordResponseBoundaryTest",
+      "tests": 2,
+      "failures": 0,
+      "errors": 0
+    },
+    {
+      "suite": "com.agentscope.brain.interaction.internal.validation.ClosedDraft7ValidatorTest",
+      "tests": 10,
+      "failures": 0,
+      "errors": 0
+    },
+    {
+      "suite": "com.agentscope.brain.interaction.internal.validation.SdkToolValidatorTest",
+      "tests": 3,
+      "failures": 0,
+      "errors": 0
+    },
+    {
+      "suite": "com.agentscope.brain.release.ReleaseInputCompatibilityTest",
+      "tests": 2,
+      "failures": 0,
+      "errors": 0
+    },
+    {
+      "suite": "com.agentscope.brain.runtime.internal.application.WorkingContextRunUseCaseTest",
+      "tests": 12,
+      "failures": 0,
+      "errors": 0
+    },
+    {
+      "suite": "com.agentscope.brain.architecture.ProductionArtifactIT",
+      "tests": 1,
+      "failures": 0,
+      "errors": 0
+    }
+  ],
+  "frontendAuthTests": 7,
+  "frontendTypecheck": "PASS",
+  "frontendBuild": "PASS",
+  "backendCleanVerify": "PASS",
+  "packagedJarSha256": "79f7fdde0e3bcc0b9bd96b6e03e1e4f7d572f430fd8310e3e5cfd29c94eeecfb",
+  "issue35AcceptedPreUiJarSha256": "b48248f39982ac30030352ac8fd545ba21e5c78c41fba187dbb8267603777fb2",
+  "backendClassesAndLibrariesEqualToAcceptedJar": true,
+  "frontendPackagedBytesMatch": true,
+  "frontendAssets": [
+    "BOOT-INF/classes/static/assets/index-CWFkar8x.js",
+    "BOOT-INF/classes/static/assets/index-R8Xg2iBv.css"
+  ],
+  "sourceSha256": {
+    "frontend/src/pages/LoginPage.vue": "3f0cd6036f7de66ae9af8743ca84e776f152ec8ad82c4955b93bd7c42e5ffd76",
+    "frontend/src/pages/login.css": "7e012fc0dcf23fe79456e10db3833e48ebe913a38034f7bb2c63b1357992b84b",
+    "frontend/src/features/auth/store.ts": "87577f3bc33a01c7bea590d469f1e08048dab0d877011ddc500f18c863713cea",
+    "frontend/src/transport/http.ts": "3044f608fdf18a7cd5900b56f09df04a5a68807206b5ee0c5b38186e801dff23",
+    "frontend/package.json": "054acdeb33f9555ebe1a8efca267332a332fba407d2028eef64b4b92f51e7619",
+    "frontend/package-lock.json": "fe2a6a87a6692dccdbf2de1497f6c211c6b574e3e245ccc08baf825e006af7a2"
+  },
+  "deployment": false,
+  "acceptanceDriverSha256": "ee62602abcd021eb18996e74d3eea6ae90c5c08d462722c7800a19a26216c537"
+}

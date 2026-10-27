@@ -1,6 +1,7 @@
 package com.agentscope.brain.identity.internal.web;
 
 import com.agentscope.brain.identity.internal.application.AuthenticationService;
+import com.agentscope.brain.identity.internal.application.InitialPasswordService;
 import com.agentscope.brain.identity.internal.domain.AuthFailure;
 import com.agentscope.brain.identity.internal.domain.PlatformPrincipal;
 import jakarta.servlet.http.HttpServletRequest;
@@ -18,15 +19,21 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 public class AuthController {
+    public static final String PASSWORD_SQL_COMMITTED = AuthController.class.getName() + ".passwordCommitted";
+    public static final String PASSWORD_FAILURE = AuthController.class.getName() + ".passwordFailure";
     private final AuthenticationService authentication;
+    private final InitialPasswordService passwords;
     private final SecurityContextRepository contexts;
     private final CsrfTokenRepository csrf;
+    private final java.time.Clock clock;
 
-    public AuthController(AuthenticationService authentication, SecurityContextRepository contexts, CsrfTokenRepository csrf) {
-        this.authentication = authentication; this.contexts = contexts; this.csrf = csrf;
+    public AuthController(AuthenticationService authentication, InitialPasswordService passwords,
+            SecurityContextRepository contexts, CsrfTokenRepository csrf, java.time.Clock clock) {
+        this.authentication = authentication; this.passwords = passwords; this.contexts = contexts; this.csrf = csrf; this.clock = clock;
     }
 
     public record LoginRequest(String phone, String password) { }
+    public record PasswordRequest(String currentPassword, String newPassword) { }
     public record AuthDto(String authStage, String userId, String displayName, Instant authenticatedAt, Instant absoluteExpiresAt) { }
     public record MeDto(String authStage, String userId, String displayName, Instant authenticatedAt,
             Instant absoluteExpiresAt, String maskedPhone, List<Object> employees) { }
@@ -73,7 +80,40 @@ public class AuthController {
     }
 
     @PostMapping("/api/auth/password/initial")
-    public void initialPassword() { throw new AuthFailure(501, "INITIAL_PASSWORD_CHANGE_NOT_IMPLEMENTED"); }
+    public AuthDto initialPassword(@RequestBody PasswordRequest input, HttpServletRequest request, HttpServletResponse response) {
+        try {
+            var updated = passwords.change(principal(), input.currentPassword(), input.newPassword());
+            request.setAttribute(PASSWORD_SQL_COMMITTED, Boolean.TRUE);
+            var user = authentication.current(updated);
+            request.changeSessionId();
+            var session = request.getSession(false);
+            session.setMaxInactiveInterval((int) Math.max(1,
+                    java.time.Duration.between(clock.instant(), updated.absoluteExpiresAt()).getSeconds()));
+            csrf.saveToken(null, request, response);
+            var context = SecurityContextHolder.createEmptyContext();
+            context.setAuthentication(UsernamePasswordAuthenticationToken.authenticated(updated, null, List.of()));
+            SecurityContextHolder.setContext(context);
+            contexts.saveContext(context, request, response);
+            return new AuthDto("READY", user.userId(), user.displayName(), updated.authenticatedAt(), updated.absoluteExpiresAt());
+        } catch (RuntimeException failure) {
+            String code = Boolean.TRUE.equals(request.getAttribute(PASSWORD_SQL_COMMITTED))
+                    ? "PASSWORD_CHANGED_RELOGIN_REQUIRED"
+                    : failure instanceof AuthFailure auth && auth.getMessage().equals("AUTH_OUTCOME_UNCERTAIN")
+                        ? "AUTH_OUTCOME_UNCERTAIN" : null;
+            if (code != null) {
+                request.setAttribute(PASSWORD_FAILURE, code);
+                abandonContext(request);
+                throw new AuthFailure(503, code);
+            }
+            throw failure;
+        }
+    }
+
+    public static void abandonContext(HttpServletRequest request) {
+        SecurityContextHolder.clearContext();
+        try { if (request.getSession(false) != null) { request.getSession(false).invalidate(); } }
+        catch (RuntimeException unavailable) { /* The client cookie is also expired by the outer boundary. */ }
+    }
 
     public static PlatformPrincipal principal() {
         var auth = SecurityContextHolder.getContext().getAuthentication();
