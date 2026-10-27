@@ -9,6 +9,7 @@
     "dev": "vite --host 127.0.0.1",
     "typecheck": "vue-tsc --noEmit",
     "test:auth": "node --test tests/auth-failure.test.mjs tests/tab-recovery.test.mjs",
+    "test:sessions": "node --test tests/sessions.test.mjs",
     "test:history": "node --test tests/history.test.mjs",
     "build": "vite build",
     "preview": "vite preview --host 127.0.0.1"

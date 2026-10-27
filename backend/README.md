@@ -74,3 +74,11 @@ Spring Boot 自动读取本目录下的 `config/application.yaml`；不再使用
 ## 历史验证
 
 #24—#28 的探针与验收材料已移至 [阶段 0 归档](../archive/stage0-backend/ARCHIVE.md)。它们不再进入正式构建。后续新证据放到仓库 `verification/issue-<编号>/`，临时构建报告放 `target/`；原始历史证据保持不变。
+
+## 会话列表读取（#42 首个切片）
+
+`GET /api/sessions?employeeId=<id>&q=<title>&pageCursor=<cursor>&limit=50` 读取本人未归档会话，limit 范围 1～100。标题搜索在数据库全范围执行，`%`、`_`、`!` 为字面字符；首尾空白去除，查询最多 200 Unicode 码点，控制字符和无效代理码拒绝。公开 ID／行版本保持十进制字符串，`updatedAt` 映射 UTC `last_activity_at`，按该字段和会话 ID 倒序键集分页。列表页是各自读取时点的一致视图；不是跨页冻结快照，业务活动导致排序变化时重新查询刷新列表。
+
+游标绑定用途、当前可信用户、员工、规范化查询和继续位置；每页重新核实身份与可读范围。默认沿用 `brain.projection.cursor-key`；也可用 `brain.conversation.cursor-key` 配置独立的至少 32 字节 Base64 key。两者均缺失时使用进程随机 key，重启后旧分页定位返回 `409 CURSOR_INVALID`，重新搜索即可。撤权／员工不可执行不妨碍本人历史列表；受限改密、账号失效和跨用户员工定位仍拒绝。缺结构返回受控不可用，不自动建表。
+
+此读取切片的 `allowedActions` 为空；`activeRun` 只读取已持久的 Run ID／状态，`processingStatus` 暂为 null，待运行切片交付实际调度解释。读取不产生消息／Run／dispatch，不访问 SDK／模型／会议服务。改名及普通发送尚未交付。隔离验收入口与结果见 [#42 记录](../verification/issue-42/验收记录.md)。

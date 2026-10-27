@@ -8,6 +8,8 @@ Vue／TypeScript／Vite 独立工程。`package.json` 固定全部直接依赖�
 npm ci --ignore-scripts --no-audit --no-fund
 npm run typecheck
 npm run test:auth
+npm run test:history
+npm run test:sessions
 npm run build
 ```
 
@@ -21,4 +23,6 @@ npm run build
 
 当前交付登录、受限首次改密、海卓工作台壳与 TEXT 历史深链。新密码至少 12 个 Unicode 码点、有效 UTF-8 不超过 72 字节；密码仅用于本次请求，提交结束和离页清除，不进入 Pinia、草稿或浏览器持久存储。正常成功进入基础工作台；密码已改但会话保存失败引导使用新密码重新登录，提交结果不明停止再次提交并提示先验证登录。写请求均不自动重试。
 
-工作台壳对齐范围精简原型：海卓紫系、会话侧栏骨架（新建／禁用搜索／空列表／侧栏底退出）、主区标题槽与欢迎文案；正式会话列表、改名、composer、发送与运行过程后置。每次进入／窗口聚焦从 `me`／`capabilities` 复核身份；可通过 `/workbench?sessionId=<本人业务会话ID>` 在同一聊天壳内只读查看正式文字历史。固定版本正文经 UTF-8 长度和 SHA-256 校验后原样显示，不解释 HTML、链接或 Markdown；撤权保留本人历史与只读说明，401 清除当前显示并回登录，跨用户引用显示受控不可读。`npm run test:history` 验证真实 TypeScript 模块的固定版本、摘要、拒绝部分页及零写读取。
+工作台沿用海卓紫系外壳，侧栏接入真实最近会话、服务端全范围标题搜索与分页；搜索输入后按 Enter 或点击搜索，输入法组词时 Enter 不提交。点选打开已有 TEXT 历史并高亮，支持浏览器前进／后退及深链刷新；多员工按当前可见身份选择各自会话空间。新建仅清除当前会话定位，不创建空 Session。改名、composer、发送与运行过程仍待后续切片。每次进入／窗口聚焦从 `me`／`capabilities` 复核身份；可通过 `/workbench?sessionId=<本人业务会话ID>` 在同一聊天壳内只读查看正式文字历史。固定版本正文经 UTF-8 长度和 SHA-256 校验后原样显示，不解释 HTML、链接或 Markdown；撤权保留本人历史与只读说明，401 清除当前显示并回登录，跨用户引用显示受控不可读。`npm run test:history` 验证真实 TypeScript 模块的固定版本、摘要、拒绝部分页及零写读取。
+
+#42 首个切片的 `test:sessions` 使用真实导航状态类验证只读 HTTP、精确 ID、服务端搜索条件、分页、迟到响应和退出清理，配合 `db/tests/执行会话列表只读隔离验收.py --browser` 在打包 JAR、独占回环 MySQL、本机 Chrome／Edge 上验证实际页面。浏览器自动化依赖只装入本地忽略目录，详见 `verification/issue-42/验收记录.md`。

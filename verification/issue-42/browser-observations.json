@@ -1,0 +1,40 @@
+[
+  {
+    "channel": "chrome",
+    "version": "155.0.8059.85",
+    "mode": "headless PC, installed browser",
+    "cases": [
+      "real login",
+      "50+12 pagination",
+      "unloaded title search",
+      "literal HTML title",
+      "empty search",
+      "selection and TEXT history",
+      "revoked read only",
+      "refresh and highlight",
+      "local new intent",
+      "401 clears navigation"
+    ],
+    "businessWrites": 0,
+    "result": "PASS"
+  },
+  {
+    "channel": "msedge",
+    "version": "156.0.4314.42",
+    "mode": "headless PC, installed browser",
+    "cases": [
+      "real login",
+      "50+12 pagination",
+      "unloaded title search",
+      "literal HTML title",
+      "empty search",
+      "selection and TEXT history",
+      "revoked read only",
+      "refresh and highlight",
+      "local new intent",
+      "401 clears navigation"
+    ],
+    "businessWrites": 0,
+    "result": "PASS"
+  }
+]

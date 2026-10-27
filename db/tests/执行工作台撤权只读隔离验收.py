@@ -70,7 +70,7 @@ class Client:
         return self.request('POST', path, body, {token['headerName']: token['token']})
 
 
-def run_isolated(mysql_client, browser):
+def run_isolated(mysql_client, browser, *, jar_path=None, navigation_checks=None):
     port = int(next(x.split('=', 1)[1] for x in mysql_client if x.startswith('--port=')))
     c = pymysql.connect(host='127.0.0.1', port=port, user='root', password='', database='memory_schema_probe',
                         charset='utf8mb4', autocommit=False)
@@ -90,7 +90,7 @@ def run_isolated(mysql_client, browser):
     upstream_thread.start()
     upstream_url = f'http://127.0.0.1:{upstream.server_port}'
     java = Path('D:/code environment/jdk/jdk-17.0.9/bin/java.exe')
-    jar = ROOT / 'backend/target/issue37-build/agentscope-brain-backend-0.1.0-SNAPSHOT.jar'
+    jar = jar_path or ROOT / 'backend/target/issue37-build/agentscope-brain-backend-0.1.0-SNAPSHOT.jar'
     cases = []
     process = None
     log = None
@@ -310,6 +310,8 @@ def run_isolated(mysql_client, browser):
             checked('14-18-corrupt-fixed-version-not-rebuilt',client.request('GET',content_url)[0]==410)
             sql('UPDATE projection_content_version SET body_sha256=%s WHERE content_id=%s',(hashlib.sha256(bodies[3].encode()).digest(),uuid.UUID(content_ids[3]).bytes))
             checked('14-19-missing-version-not-substituted',client.request('GET',content_url.replace('contentVersion=1','contentVersion=2'))[0]==410)
+            if navigation_checks is not None:
+                navigation_checks(sql, client, origin, start, login, checked)
             if browser:
                 sql("UPDATE employee_use_grant SET grant_status='REVOKED',revoked_by=1,revoked_at=NOW(6)")
                 done = ROOT/'backend/target/issue37-browser-done'

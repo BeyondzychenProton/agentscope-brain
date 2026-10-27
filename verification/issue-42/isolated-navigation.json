@@ -1,0 +1,206 @@
+{
+  "mysql_version": "8.0.45",
+  "tables": 44,
+  "expected_rejections": 0,
+  "positive_checks": 0,
+  "inspection_checks": 0,
+  "concurrency_checks": 0,
+  "framework_kv_tested": false,
+  "application_integration_tested": true,
+  "probes": {},
+  "cases": [
+    {
+      "case": "14-01-current-trusted-identity-and-release-capability",
+      "result": "PASS"
+    },
+    {
+      "case": "14-02-client-owner-and-cache-cannot-select-principal",
+      "result": "PASS"
+    },
+    {
+      "case": "14-03-snapshot-bounded-view-and-string-identifiers",
+      "result": "PASS"
+    },
+    {
+      "case": "14-04-signed-history-page",
+      "result": "PASS"
+    },
+    {
+      "case": "14-05-fixed-utf8-text-digest-and-no-store",
+      "result": "PASS"
+    },
+    {
+      "case": "14-06-revocation-keeps-account-and-history-readable",
+      "result": "PASS"
+    },
+    {
+      "case": "14-07-unimplemented-writes-remain-server-denied:/api/submissions",
+      "result": "PASS"
+    },
+    {
+      "case": "14-07-unimplemented-writes-remain-server-denied:/api/session-intents",
+      "result": "PASS"
+    },
+    {
+      "case": "14-07-unimplemented-writes-remain-server-denied:/api/runs/1/continue",
+      "result": "PASS"
+    },
+    {
+      "case": "14-08-cross-user-session-and-unknown-employee-404",
+      "result": "PASS"
+    },
+    {
+      "case": "14-09-cross-user-content-404",
+      "result": "PASS"
+    },
+    {
+      "case": "14-10-old-security-context-cannot-read",
+      "result": "PASS"
+    },
+    {
+      "case": "14-11-account-disable-stops-reading-and-login",
+      "result": "PASS"
+    },
+    {
+      "case": "14-12-disable-is-valid-policy-at-startup",
+      "result": "PASS"
+    },
+    {
+      "case": "14-13-restart-keeps-revocation-and-password",
+      "result": "PASS"
+    },
+    {
+      "case": "14-14-repeated-bootstrap-does-not-regrant-or-reset",
+      "result": "PASS"
+    },
+    {
+      "case": "14-15-release-disable-valid-history-preserved",
+      "result": "PASS"
+    },
+    {
+      "case": "14-16-fixed-history-upper-bound-after-append",
+      "result": "PASS"
+    },
+    {
+      "case": "14-17-cursor-tamper-and-protocol-rejected",
+      "result": "PASS"
+    },
+    {
+      "case": "14-18-corrupt-fixed-version-not-rebuilt",
+      "result": "PASS"
+    },
+    {
+      "case": "14-19-missing-version-not-substituted",
+      "result": "PASS"
+    },
+    {
+      "case": "42-01-list-is-authenticated-and-not-cached",
+      "result": "PASS"
+    },
+    {
+      "case": "42-02-exact-keyset-order-no-duplicates-or-foreign-archived-rows",
+      "result": "PASS"
+    },
+    {
+      "case": "42-02b-utc-microsecond-sort-position",
+      "result": "PASS"
+    },
+    {
+      "case": "42-03-search-finds-title-beyond-first-fifty",
+      "result": "PASS"
+    },
+    {
+      "case": "42-04-literal-search:%",
+      "result": "PASS"
+    },
+    {
+      "case": "42-04-literal-search:_",
+      "result": "PASS"
+    },
+    {
+      "case": "42-04-literal-search:!",
+      "result": "PASS"
+    },
+    {
+      "case": "42-04-literal-search:中文😀",
+      "result": "PASS"
+    },
+    {
+      "case": "42-05-parameterized-search-and-owner-hints-do-not-leak",
+      "result": "PASS"
+    },
+    {
+      "case": "42-06-query-binding-tamper-and-bounds",
+      "result": "PASS"
+    },
+    {
+      "case": "42-07-revoked-user-can-list-and-read-own-text",
+      "result": "PASS"
+    },
+    {
+      "case": "42-08-configured-cursor-survives-restart",
+      "result": "PASS"
+    },
+    {
+      "case": "42-browser-chrome",
+      "result": "PASS"
+    },
+    {
+      "case": "42-browser-msedge",
+      "result": "PASS"
+    },
+    {
+      "case": "42-09-restricted-user-cannot-list",
+      "result": "PASS"
+    },
+    {
+      "case": "42-10-read-navigation-creates-no-execution",
+      "result": "PASS"
+    },
+    {
+      "case": "14-20-structural-reference-corruption-refuses-readiness",
+      "result": "PASS"
+    },
+    {
+      "case": "14-21-no-external-service-probes",
+      "result": "PASS"
+    },
+    {
+      "case": "14-23-no-new-execution-or-meeting-facts",
+      "result": "PASS"
+    },
+    {
+      "case": "14-24-exact-login-baseline-remains-usable",
+      "result": "PASS"
+    },
+    {
+      "case": "14-25-missing-history-revision-is-controlled-unavailable",
+      "result": "PASS"
+    },
+    {
+      "case": "14-26-partial-history-schema-refuses-readiness",
+      "result": "PASS"
+    }
+  ],
+  "upstreamCalls": 0,
+  "packagedJarSha256": "d8fabd32bbfef3690a898ddeb78883e6bf1fac2462a912c547a5292b5d9c2b39",
+  "sharedDatasetUsed": false,
+  "fixtureSessionId": "101",
+  "syntheticFormalMessages": 6,
+  "syntheticRuns": 3,
+  "releaseConfigSha256": "A33318DEB5AACEA9DFF1B768CDC4B397DAE2312DE4670660C90A6DD03A464E18",
+  "modelCalls": 0,
+  "sdkCalls": 0,
+  "meetingWrites": 0,
+  "executionEvidence": "Read graph has no SDK/model/tool dependency; all observed upstream calls and execution ledgers remain zero. Formal rows are synthetic.",
+  "issue": 42,
+  "slice": "read-only session navigation",
+  "executedAt": "2026-10-27T06:21:48.287473+00:00",
+  "temporaryInstanceRemoved": true,
+  "syntheticNavigationRowsRemoved": true,
+  "jarSha256": "d8fabd32bbfef3690a898ddeb78883e6bf1fac2462a912c547a5292b5d9c2b39",
+  "platformTables": 44,
+  "nativeTables": 5,
+  "browserTested": true,
+  "realModelAcceptance": false
+}

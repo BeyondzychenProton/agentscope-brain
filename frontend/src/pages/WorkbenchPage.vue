@@ -1,10 +1,11 @@
 <script setup lang="ts">
-import { computed, onMounted, onUnmounted, ref, watch } from 'vue'
+import { computed, onMounted, onUnmounted, reactive, ref, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { ElButton } from 'element-plus'
 import 'element-plus/es/components/button/style/css'
 import { useAuth } from '../features/auth/store'
 import { ApiFailure, read } from '../transport/http'
+import { SessionNavigation } from '../features/workbench/sessions'
 import {
   basePath,
   displayMessages,
@@ -25,12 +26,17 @@ const snapshot = ref<Snapshot | null>(null)
 const messages = ref<DisplayMessage[]>([])
 const nextPageCursor = ref<string | null>(null)
 let loadSeq = 0
+const navigation = reactive(new SessionNavigation())
+const searchTitle = ref('')
+const listError = ref('')
+const selectedEmployeeId = ref('')
 const sessionId = computed(() => (typeof route.query.sessionId === 'string' ? route.query.sessionId : ''))
 const employees = computed(() => auth.identity?.employees ?? [])
 const historyCapability = computed(() =>
   capabilities.value.find((x) => x.employeeId === snapshot.value?.session.employeeId),
 )
-const employeeLabel = computed(() => employees.value[0]?.displayName ?? '数字员工')
+const employeeId = computed(() => selectedEmployeeId.value || employees.value[0]?.employeeId || '')
+const employeeLabel = computed(() => employees.value.find(x => x.employeeId === (snapshot.value?.session.employeeId || employeeId.value))?.displayName ?? '数字员工')
 const titleText = computed(() => (sessionId.value ? snapshot.value?.session.title || '会话' : '新对话'))
 const subtitleText = computed(() =>
   sessionId.value
@@ -40,7 +46,13 @@ const subtitleText = computed(() =>
 const avatarText = computed(() => (auth.identity?.displayName ?? '用').slice(0, 1))
 
 function clear() {
+  ++loadSeq
+  navigation.clear()
+  clearHistory()
   capabilities.value = []
+}
+
+function clearHistory() {
   snapshot.value = null
   messages.value = []
   nextPageCursor.value = null
@@ -55,10 +67,16 @@ function reason(code: string | null | undefined) {
 }
 
 async function failed(failure: unknown) {
-  clear()
+  clearHistory()
   if (failure instanceof ApiFailure && failure.status === 401) {
+    clear()
+    busy.value = false
     await auth.restore().catch(() => undefined)
     await router.replace('/login')
+  } else if (failure instanceof ApiFailure && failure.code === 'PASSWORD_CHANGE_REQUIRED') {
+    clear()
+    busy.value = false
+    await router.replace('/password/initial')
   } else if (failure instanceof ApiFailure && failure.status === 404) {
     error.value = '该历史会话或内容不存在，或当前账号无权读取。'
   } else {
@@ -70,7 +88,10 @@ async function refresh() {
   const seq = ++loadSeq
   busy.value = true
   error.value = ''
-  clear()
+  clearHistory()
+  capabilities.value = []
+  navigation.clear()
+  listError.value = ''
   try {
     await auth.restore()
     if (seq !== loadSeq) return
@@ -89,20 +110,49 @@ async function refresh() {
     )
     if (seq !== loadSeq) return
     capabilities.value = nextCapabilities
-    if (sessionId.value) {
+    if (!employees.value.some(x => x.employeeId === selectedEmployeeId.value)) {
+      selectedEmployeeId.value = employees.value[0]?.employeeId ?? ''
+    }
+    await searchSessions()
+    if (seq !== loadSeq) return
+    await loadHistory(seq)
+  } catch (failure) {
+    if (seq !== loadSeq) return
+    await failed(failure)
+  } finally {
+    if (seq === loadSeq) busy.value = false
+  }
+}
+
+async function loadHistory(seq: number) {
+    const target = sessionId.value
+    if (target) {
       const value = await read<Snapshot>(
-        `${basePath(sessionId.value)}/snapshot?protocolVersion=${protocol}`,
+        `${basePath(target)}/snapshot?protocolVersion=${protocol}`,
       )
       if (seq !== loadSeq) return
-      if (value.protocolVersion !== protocol || value.sessionId !== sessionId.value) {
+      if (value.protocolVersion !== protocol || value.sessionId !== target) {
         throw new ApiFailure(0, 'CONTENT_INVALID')
       }
-      const rendered = await displayMessages(sessionId.value, value.messages)
+      const rendered = await displayMessages(target, value.messages)
       if (seq !== loadSeq) return
       snapshot.value = value
       messages.value = rendered
       nextPageCursor.value = value.messages.nextPageCursor
+      if (selectedEmployeeId.value !== value.session.employeeId) {
+        selectedEmployeeId.value = value.session.employeeId
+        await searchSessions()
+      }
     }
+}
+
+async function selectHistory() {
+  const seq = ++loadSeq
+  busy.value = true
+  error.value = ''
+  clearHistory()
+  try {
+    await loadHistory(seq)
   } catch (failure) {
     if (seq !== loadSeq) return
     await failed(failure)
@@ -115,18 +165,46 @@ async function older() {
   if (busy.value || !nextPageCursor.value) return
   busy.value = true
   error.value = ''
+  const seq = loadSeq
+  const target = sessionId.value
   try {
     const page = await read<Page>(
-      `${basePath(sessionId.value)}/messages?protocolVersion=${protocol}&pageCursor=${encodeURIComponent(nextPageCursor.value)}`,
+      `${basePath(target)}/messages?protocolVersion=${protocol}&pageCursor=${encodeURIComponent(nextPageCursor.value)}`,
     )
-    const rendered = await displayMessages(sessionId.value, page)
+    const rendered = await displayMessages(target, page)
+    if (seq !== loadSeq) return
     messages.value = [...rendered, ...messages.value]
     nextPageCursor.value = page.nextPageCursor
   } catch (failure) {
+    if (seq !== loadSeq) return
     await failed(failure)
   } finally {
-    busy.value = false
+    if (seq === loadSeq) busy.value = false
   }
+}
+
+async function searchSessions(more = false) {
+  listError.value = ''
+  try {
+    if (more) await navigation.more()
+    else await navigation.search(employeeId.value, searchTitle.value)
+  } catch (failure) {
+    if (failure instanceof ApiFailure && (failure.status === 401 || failure.code === 'PASSWORD_CHANGE_REQUIRED')) {
+      await failed(failure)
+    } else {
+      listError.value = failure instanceof ApiFailure && failure.code === 'CURSOR_INVALID'
+        ? '列表定位已失效，请重新搜索。' : '会话列表读取未完成，请重试。'
+    }
+  }
+}
+
+function guardComposition(event: KeyboardEvent) {
+  if (event.isComposing || event.keyCode === 229) event.preventDefault()
+}
+
+async function changeEmployee() {
+  await router.replace({ path: '/workbench', query: {} })
+  await searchSessions()
 }
 
 async function logout() {
@@ -160,7 +238,7 @@ onUnmounted(() => {
   window.removeEventListener('focus', refresh)
 })
 watch(sessionId, () => {
-  void refresh()
+  void selectHistory()
 })
 </script>
 
@@ -176,18 +254,38 @@ watch(sessionId, () => {
       </div>
 
       <button class="new-chat" type="button" :disabled="busy" @click="newChat">＋ 新建对话</button>
-      <input
+      <label v-if="employees.length > 1" class="employee-select">
+        数字员工
+        <select v-model="selectedEmployeeId" @change="changeEmployee">
+          <option v-for="employee in employees" :key="employee.employeeId" :value="employee.employeeId">{{ employee.displayName }}</option>
+        </select>
+      </label>
+      <form @submit.prevent="searchSessions()" @keydown.enter="guardComposition">
+        <input
+        v-model="searchTitle"
         class="search"
         type="search"
-        disabled
         placeholder="搜索会话标题"
-        aria-label="按会话标题搜索（即将开放）"
-        title="会话搜索将逐步开放"
+        aria-label="搜索会话标题"
+        maxlength="400"
       />
+        <button class="quiet" type="submit" :disabled="!employeeId">搜索</button>
+      </form>
 
       <p class="section-caption">最近会话</p>
       <div class="session-list" aria-live="polite">
-        <p class="empty-sessions muted">暂无会话。正式列表将逐步开放。</p>
+        <p v-if="listError" class="empty-sessions" role="alert">{{ listError }}</p>
+        <p v-if="navigation.busy" class="empty-sessions muted" role="status">正在读取会话…</p>
+        <p v-else-if="!navigation.items.length && !listError" class="empty-sessions muted">{{ searchTitle.trim() ? '未找到匹配标题的会话。' : '暂无会话。' }}</p>
+        <button v-for="session in navigation.items" :key="session.sessionId" type="button"
+          class="session-item" :class="{ selected: sessionId === session.sessionId }"
+          :aria-current="sessionId === session.sessionId ? 'page' : undefined"
+          :title="session.title || '未命名会话'"
+          @click="router.push({ path: '/workbench', query: { sessionId: session.sessionId } })">
+          {{ session.title || '未命名会话' }}
+        </button>
+        <button v-if="navigation.nextPageCursor" type="button" class="quiet" :disabled="navigation.busy" @click="searchSessions(true)">加载更多会话</button>
+        <button v-if="listError" type="button" class="quiet" @click="searchSessions()">重试列表</button>
       </div>
 
       <div class="sidebar-bottom">
@@ -252,7 +350,7 @@ watch(sessionId, () => {
           <h2>{{ auth.identity?.displayName }}，欢迎回来</h2>
           <p class="muted">
             从左侧新建对话开始整理思路。<br />
-            已有文字历史可通过会话链接打开。
+            从左侧选择已有会话，可查看文字历史。
           </p>
         </div>
       </div>
@@ -336,8 +434,18 @@ watch(sessionId, () => {
   border-radius: 9px;
   padding: 9px 11px;
   background: #f7f6fb;
-  color: var(--muted);
+  color: #292c45;
 }
+.employee-select { display: grid; gap: 5px; font-size: 12px; margin-top: 12px; }
+.employee-select select { width: 100%; padding: 6px; }
+.session-item {
+  display: block; width: 100%; border: 0; border-radius: 8px; background: transparent;
+  padding: 11px 9px; margin-bottom: 3px; text-align: left; color: inherit;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis; cursor: pointer;
+}
+.session-item:hover { background: #f2effc; }
+.session-item.selected { background: #ece7fb; color: var(--brand); }
+.session-item:focus-visible { outline: 2px solid var(--brand); outline-offset: -2px; }
 .section-caption {
   margin: 18px 9px 8px;
   font-size: 11px;
