@@ -7,6 +7,7 @@ import { useAuth } from '../features/auth/store'
 import { ApiFailure, read } from '../transport/http'
 import { SessionNavigation } from '../features/workbench/sessions'
 import TextComposer from '../features/workbench/TextComposer.vue'
+import MarkdownBody from '../features/workbench/MarkdownBody.vue'
 import type { Receipt } from '../features/workbench/composer'
 import { RunWatch, type RunWatchObserve } from '../features/workbench/runWatch'
 import {
@@ -417,9 +418,13 @@ watch(sessionId, () => {
             <p class="message-author">
               {{ message.senderKind === 'USER' ? '我' : employeeLabel }}
             </p>
-            <p v-for="(text, index) in message.texts" :key="index" class="message-text">
-              {{ text }}
-            </p>
+            <template v-for="(text, index) in message.texts" :key="index">
+              <MarkdownBody
+                v-if="message.senderKind === 'ASSISTANT' && (text.bodyFormat === 'markdown-v1' || text.bodyFormat === 'plain-text')"
+                :source="text.body"
+              />
+              <p v-else class="message-text">{{ text.body }}</p>
+            </template>
           </article>
           <p v-if="!messages.length" class="muted">此会话还没有可读取的正式文字消息。</p>
         </section>

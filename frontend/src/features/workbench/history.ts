@@ -18,7 +18,8 @@ export interface Snapshot {
   session: { employeeId: string; title: string; allowedActions: string[] }; messages: Page
   runs?: Array<{ runId: string; status: string; processingStatus: string | null }>
 }
-export interface DisplayMessage { messageId: string; senderKind: 'USER' | 'ASSISTANT'; texts: string[] }
+export interface DisplayText { bodyFormat: string; body: string }
+export interface DisplayMessage { messageId: string; senderKind: 'USER' | 'ASSISTANT'; texts: DisplayText[] }
 export const protocol = 'web-projection-v1'
 export function basePath(sessionId: string) { return `/api/sessions/${encodeURIComponent(sessionId)}/projection` }
 
@@ -27,7 +28,7 @@ export async function displayMessages(sessionId: string, page: Page): Promise<Di
   const result: DisplayMessage[] = []
   for (const message of page.items) {
     if (!['USER', 'ASSISTANT'].includes(message.senderKind)) throw new ApiFailure(0, 'CONTENT_INVALID')
-    const texts: string[] = []
+    const texts: DisplayText[] = []
     for (const ref of message.contents) {
       if (ref.kind !== 'TEXT' || !['plain-text', 'markdown-v1'].includes(ref.bodyFormat)) throw new ApiFailure(0, 'CONTENT_INVALID')
       const content = await read<ContentRef & { body: string; nextPartCursor: string | null }>(
@@ -37,7 +38,7 @@ export async function displayMessages(sessionId: string, page: Page): Promise<Di
       if (content.contentId !== ref.contentId || content.contentVersion !== ref.contentVersion || content.bodyFormat !== ref.bodyFormat
         || content.byteCount !== ref.byteCount || BigInt(ref.byteCount) !== BigInt(bytes.length)
         || digest !== ref.sha256 || digest !== content.sha256 || content.nextPartCursor !== null) throw new ApiFailure(0, 'CONTENT_INVALID')
-      texts.push(content.body)
+      texts.push({ bodyFormat: content.bodyFormat, body: content.body })
     }
     result.push({ messageId: message.messageId, senderKind: message.senderKind, texts })
   }

@@ -13,6 +13,7 @@
     "test:sessions": "node --test tests/sessions.test.mjs",
     "test:history": "node --test tests/history.test.mjs",
     "test:run-watch": "node --test tests/run-watch.test.mjs",
+    "test:markdown": "node --test tests/markdown.test.mjs",
     "build": "vite build",
     "preview": "vite preview --host 127.0.0.1"
   },

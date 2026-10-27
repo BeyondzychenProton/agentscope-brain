@@ -24,7 +24,9 @@ public class AcceptedTextWriter implements AcceptedTextProjection {
             byte[] body=f.text().getBytes(StandardCharsets.UTF_8);
             byte[] digest=MessageDigest.getInstance("SHA-256").digest(body);
             String contentId=UUID.randomUUID().toString();
-            var ref=Map.of("contentId",contentId,"contentVersion","1","kind","TEXT","bodyFormat","plain-text",
+            // USER stays plain-text; ASSISTANT uses markdown-v1 per workbench §6 / #21 Q19.
+            String bodyFormat="ASSISTANT".equals(f.senderKind()) ? "markdown-v1" : "plain-text";
+            var ref=Map.of("contentId",contentId,"contentVersion","1","kind","TEXT","bodyFormat",bodyFormat,
                     "byteCount",String.valueOf(body.length),"sha256",HexFormat.of().formatHex(digest));
             var content=new LinkedHashMap<String,Object>(ref);
             content.putAll(Map.of("type","CONTENT_SET","runId",f.runId(),"baseContentVersion","0","firstSeq",f.seq(),
@@ -52,8 +54,8 @@ public class AcceptedTextWriter implements AcceptedTextProjection {
             jdbc.update("""
                     INSERT INTO projection_content_version(content_id,content_version,base_version,change_kind,content_status,close_reason,
                         body_format,payload_storage,body,byte_count,body_sha256,source_kind,source_id,projection_seq,projection_position,gmt_create,gmt_modified)
-                    VALUES(?,1,0,'CONTENT_SET','CLOSED','COMPLETED','plain-text','INLINE',?,?,?,'MESSAGE_BLOCK',?,?,3,?,?)
-                    """,uuid(contentId),body,body.length,digest,f.blockId(),f.seq(),f.now(),f.now());
+                    VALUES(?,1,0,'CONTENT_SET','CLOSED','COMPLETED',?,'INLINE',?,?,?,'MESSAGE_BLOCK',?,?,3,?,?)
+                    """,uuid(contentId),bodyFormat,body,body.length,digest,f.blockId(),f.seq(),f.now(),f.now());
             jdbc.update("""
                     INSERT INTO session_projection_event(session_id,stream_id,seq,previous_seq,protocol_version,batch_payload,
                         byte_count,batch_sha256,change_count,occurred_at,gmt_create,gmt_modified)

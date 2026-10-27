@@ -29,7 +29,8 @@ test('verified text stays literal, IDs stay strings, reads never submit or call 
     return Response.json({ ...ref, body, nextPartCursor: null })
   }
   const result = await displayMessages('101', page)
-  assert.equal(result[0].texts[0], body)
+  assert.equal(result[0].texts[0].body, body)
+  assert.equal(result[0].texts[0].bodyFormat, 'markdown-v1')
   assert.equal(result[0].messageId, '9007199254740993')
   assert.equal(calls.length, 1)
   assert.equal(calls[0].method, 'GET')
