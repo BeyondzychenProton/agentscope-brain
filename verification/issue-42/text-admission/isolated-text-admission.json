@@ -1,0 +1,245 @@
+{
+  "mysql_version": "8.0.45",
+  "tables": 44,
+  "expected_rejections": 0,
+  "positive_checks": 0,
+  "inspection_checks": 0,
+  "concurrency_checks": 0,
+  "framework_kv_tested": false,
+  "application_integration_tested": true,
+  "probes": {},
+  "cases": [
+    {
+      "case": "14-01-current-trusted-identity-and-release-capability",
+      "result": "PASS"
+    },
+    {
+      "case": "14-02-client-owner-and-cache-cannot-select-principal",
+      "result": "PASS"
+    },
+    {
+      "case": "14-03-snapshot-bounded-view-and-string-identifiers",
+      "result": "PASS"
+    },
+    {
+      "case": "14-04-signed-history-page",
+      "result": "PASS"
+    },
+    {
+      "case": "14-05-fixed-utf8-text-digest-and-no-store",
+      "result": "PASS"
+    },
+    {
+      "case": "14-06-revocation-keeps-account-and-history-readable",
+      "result": "PASS"
+    },
+    {
+      "case": "14-07-unimplemented-writes-remain-server-denied:/api/runs/1/continue",
+      "result": "PASS"
+    },
+    {
+      "case": "14-08-cross-user-session-and-unknown-employee-404",
+      "result": "PASS"
+    },
+    {
+      "case": "14-09-cross-user-content-404",
+      "result": "PASS"
+    },
+    {
+      "case": "14-10-old-security-context-cannot-read",
+      "result": "PASS"
+    },
+    {
+      "case": "14-11-account-disable-stops-reading-and-login",
+      "result": "PASS"
+    },
+    {
+      "case": "14-12-disable-is-valid-policy-at-startup",
+      "result": "PASS"
+    },
+    {
+      "case": "14-13-restart-keeps-revocation-and-password",
+      "result": "PASS"
+    },
+    {
+      "case": "14-14-repeated-bootstrap-does-not-regrant-or-reset",
+      "result": "PASS"
+    },
+    {
+      "case": "14-15-release-disable-valid-history-preserved",
+      "result": "PASS"
+    },
+    {
+      "case": "14-16-fixed-history-upper-bound-after-append",
+      "result": "PASS"
+    },
+    {
+      "case": "14-17-cursor-tamper-and-protocol-rejected",
+      "result": "PASS"
+    },
+    {
+      "case": "14-18-corrupt-fixed-version-not-rebuilt",
+      "result": "PASS"
+    },
+    {
+      "case": "14-19-missing-version-not-substituted",
+      "result": "PASS"
+    },
+    {
+      "case": "text-01-unobserved-get-has-no-control-write",
+      "result": "PASS"
+    },
+    {
+      "case": "text-02-prepare-does-not-create-empty-session",
+      "result": "PASS"
+    },
+    {
+      "case": "text-02b-json-identifiers-and-text-must-be-strings",
+      "result": "PASS"
+    },
+    {
+      "case": "text-03-missing-capacity-refuses-without-partial-facts",
+      "result": "PASS"
+    },
+    {
+      "case": "text-04-explicit-close-preserves-registered-semantics",
+      "result": "PASS"
+    },
+    {
+      "case": "text-05-missing-memory-metadata-rolls-back-all-admission",
+      "result": "PASS"
+    },
+    {
+      "case": "text-06-close-unobserved-tombstone-permanently-blocks-late-post",
+      "result": "PASS"
+    },
+    {
+      "case": "text-07-atomic-session-message-run-queue-projection",
+      "result": "PASS"
+    },
+    {
+      "case": "text-08-same-key-returns-exact-original-even-when-run-busy",
+      "result": "PASS"
+    },
+    {
+      "case": "text-09-same-key-different-exact-text-is-conflict",
+      "result": "PASS"
+    },
+    {
+      "case": "text-10-bound-intent-new-key-cannot-create-second-session",
+      "result": "PASS"
+    },
+    {
+      "case": "text-11-close-after-acceptance-returns-original-receipt",
+      "result": "PASS"
+    },
+    {
+      "case": "text-12-accepted-text-is-fixed-version-and-readable-while-queued",
+      "result": "PASS"
+    },
+    {
+      "case": "text-13-existing-busy-session-does-not-append-a-message",
+      "result": "PASS"
+    },
+    {
+      "case": "text-14-revocation-preserves-original-receipt-and-history-denies-new",
+      "result": "PASS"
+    },
+    {
+      "case": "text-15-foreign-session-never-registered",
+      "result": "PASS"
+    },
+    {
+      "case": "text-16-existing-session-appends-with-global-input-order",
+      "result": "PASS"
+    },
+    {
+      "case": "text-17-frozen-release-change-is-rejected-without-switching",
+      "result": "PASS"
+    },
+    {
+      "case": "text-18-projection-failure-rolls-back-message-run-capacity-input-and-binding",
+      "result": "PASS"
+    },
+    {
+      "case": "text-19-restart-and-repeated-reads-never-claim-or-execute",
+      "result": "PASS"
+    },
+    {
+      "case": "text-20-persisted-v1-batch-integrity-and-enumerations",
+      "result": "PASS"
+    },
+    {
+      "case": "text-21-same-key-concurrency-produces-one-message-run-and-queue-entry",
+      "result": "PASS"
+    },
+    {
+      "case": "text-22-accept-close-race-has-one-permanent-outcome",
+      "result": "PASS"
+    },
+    {
+      "case": "text-23-c0-capacity-stops-at-sixteen-without-partial-messages",
+      "result": "PASS"
+    },
+    {
+      "case": "text-24-original-accepted-result-is-returned-even-at-full-capacity",
+      "result": "PASS"
+    },
+    {
+      "case": "text-browser-chrome",
+      "result": "PASS"
+    },
+    {
+      "case": "text-browser-msedge",
+      "result": "PASS"
+    },
+    {
+      "case": "text-25-disabled-feature-denies-new-preparation",
+      "result": "PASS"
+    },
+    {
+      "case": "14-20-structural-reference-corruption-refuses-readiness",
+      "result": "PASS"
+    },
+    {
+      "case": "14-21-no-external-service-probes",
+      "result": "PASS"
+    },
+    {
+      "case": "14-23-no-new-execution-or-meeting-facts",
+      "result": "PASS"
+    },
+    {
+      "case": "14-24-exact-login-baseline-remains-usable",
+      "result": "PASS"
+    },
+    {
+      "case": "14-25-missing-history-revision-is-controlled-unavailable",
+      "result": "PASS"
+    },
+    {
+      "case": "14-26-partial-history-schema-refuses-readiness",
+      "result": "PASS"
+    }
+  ],
+  "upstreamCalls": 0,
+  "packagedJarSha256": "ae83599e53cddc2ad9bcbde9f7ab54a245096a0106a29a1053a5f3093702ba96",
+  "sharedDatasetUsed": false,
+  "fixtureSessionId": "101",
+  "syntheticFormalMessages": 6,
+  "syntheticRuns": 3,
+  "releaseConfigSha256": "A33318DEB5AACEA9DFF1B768CDC4B397DAE2312DE4670660C90A6DD03A464E18",
+  "modelCalls": 0,
+  "sdkCalls": 0,
+  "meetingWrites": 0,
+  "executionEvidence": "The inherited #37 fixture directly seeds 3 terminal Runs and 6 formal messages. New USER messages and ACCEPTED/WAITING Runs in this slice are created by actual authenticated HTTP admission, then cleaned before inherited final counts. Model/SDK/tool executions stay zero. Memory control metadata is synthetic; KV activation is not validated.",
+  "issue": 42,
+  "slice": "text admission and composer",
+  "executedAt": "2026-10-27T07:27:25.150653+00:00",
+  "temporaryInstanceRemoved": true,
+  "jarSha256": "ae83599e53cddc2ad9bcbde9f7ab54a245096a0106a29a1053a5f3093702ba96",
+  "browserTested": true,
+  "admissionCreatesActualUserMessages": true,
+  "agentExecutionImplemented": false,
+  "realModelAcceptance": false
+}

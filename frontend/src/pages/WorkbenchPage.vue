@@ -6,6 +6,8 @@ import 'element-plus/es/components/button/style/css'
 import { useAuth } from '../features/auth/store'
 import { ApiFailure, read } from '../transport/http'
 import { SessionNavigation } from '../features/workbench/sessions'
+import TextComposer from '../features/workbench/TextComposer.vue'
+import type { Receipt } from '../features/workbench/composer'
 import {
   basePath,
   displayMessages,
@@ -40,9 +42,13 @@ const employeeLabel = computed(() => employees.value.find(x => x.employeeId === 
 const titleText = computed(() => (sessionId.value ? snapshot.value?.session.title || '会话' : '新对话'))
 const subtitleText = computed(() =>
   sessionId.value
-    ? `${employeeLabel.value} · 只读文字历史`
+    ? `${employeeLabel.value} · 文字会话`
     : `${employeeLabel.value} · 可以开始整理思路`,
 )
+const textInputAvailable = computed(() => (sessionId.value
+  ? Boolean(snapshot.value?.session.allowedActions?.includes('START_RUN'))
+  : Boolean(capabilities.value.find(c => c.employeeId === employeeId.value)?.textSubmissionAvailable)))
+const canSendText = computed(() => !busy.value && textInputAvailable.value)
 const avatarText = computed(() => (auth.identity?.displayName ?? '用').slice(0, 1))
 
 function clear() {
@@ -84,17 +90,18 @@ async function failed(failure: unknown) {
   }
 }
 
-async function refresh() {
+async function refresh(keepView = false) {
   const seq = ++loadSeq
   busy.value = true
   error.value = ''
-  clearHistory()
-  capabilities.value = []
+  if (!keepView) { clearHistory(); capabilities.value = [] }
   navigation.clear()
   listError.value = ''
   try {
+    const previousUserId = auth.identity?.userId
     await auth.restore()
     if (seq !== loadSeq) return
+    if (previousUserId && previousUserId !== auth.identity?.userId) clearHistory()
     if (!auth.identity) {
       await router.replace('/login')
       return
@@ -147,6 +154,7 @@ async function loadHistory(seq: number) {
 }
 
 async function selectHistory() {
+  if (!capabilities.value.length) { await refresh(); return }
   const seq = ++loadSeq
   busy.value = true
   error.value = ''
@@ -221,6 +229,15 @@ async function logout() {
   }
 }
 
+async function accepted(receipt: Receipt) {
+  if (!receipt.result) return
+  searchTitle.value = ''
+  if (sessionId.value !== receipt.result.sessionId) {
+    await router.replace({ path: '/workbench', query: { sessionId: receipt.result.sessionId } })
+  }
+  await refresh(true)
+}
+
 function newChat() {
   if (sessionId.value) {
     void router.replace({ path: '/workbench', query: {} })
@@ -229,13 +246,15 @@ function newChat() {
   error.value = ''
 }
 
+function focusRefresh() { void refresh(true) }
+
 onMounted(() => {
   void refresh()
-  window.addEventListener('focus', refresh)
+  window.addEventListener('focus', focusRefresh)
 })
 onUnmounted(() => {
   clear()
-  window.removeEventListener('focus', refresh)
+  window.removeEventListener('focus', focusRefresh)
 })
 watch(sessionId, () => {
   void selectHistory()
@@ -320,7 +339,8 @@ watch(sessionId, () => {
         <p v-if="busy" class="muted status-line" role="status">正在读取当前身份与历史…</p>
 
         <section v-if="snapshot" class="chat" aria-label="正式文字历史">
-          <p class="history-note">已有文字历史 · 只读查看</p>
+          <p class="history-note">正式文字记录</p>
+          <p v-if="snapshot.runs?.length" class="readonly-note" role="status">消息已接纳，等待执行。本页尚未提供自动执行与回复。</p>
           <p
             v-if="historyCapability?.unavailableReason"
             class="readonly-note"
@@ -354,6 +374,10 @@ watch(sessionId, () => {
           </p>
         </div>
       </div>
+      <TextComposer v-if="auth.identity && employeeId && (!sessionId || snapshot)"
+        :user-id="auth.identity.userId" :employee-id="snapshot?.session.employeeId || employeeId"
+        :session-id="sessionId || null" :available="textInputAvailable" :can-send="canSendText"
+        @accepted="accepted" @auth-required="failed" />
     </main>
   </div>
 </template>

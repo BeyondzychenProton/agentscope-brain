@@ -2,7 +2,7 @@ import { ApiFailure, read } from '../../transport/http'
 
 export interface Capability {
   employeeId: string; acceptsText: boolean; acceptsImages: boolean; allowedActions: string[]
-  unavailableReason: string | null; imageLimits: Record<string, unknown>
+  unavailableReason: string | null; textSubmissionAvailable?: boolean; imageLimits: Record<string, unknown>
 }
 export interface ContentRef {
   contentId: string; contentVersion: string; kind: string; bodyFormat: string; byteCount: string; sha256: string
@@ -15,7 +15,8 @@ export interface Page {
 }
 export interface Snapshot {
   protocolVersion: string; sessionId: string; streamId: string; watermark: string; cursor: string
-  session: { employeeId: string; title: string }; messages: Page
+  session: { employeeId: string; title: string; allowedActions: string[] }; messages: Page
+  runs?: Array<{ runId: string; status: string; processingStatus: string | null }>
 }
 export interface DisplayMessage { messageId: string; senderKind: 'USER' | 'ASSISTANT'; texts: string[] }
 export const protocol = 'web-projection-v1'

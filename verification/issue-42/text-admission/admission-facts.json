@@ -1,0 +1,146 @@
+{
+  "receipt": {
+    "submissionKey": "6bbff6cb-2db3-4774-9617-ecd2057c0512",
+    "registrationStatus": "ACCEPTED",
+    "submissionVersion": "2",
+    "acceptanceStatus": "ACCEPTED",
+    "processingStatus": "WAITING",
+    "result": {
+      "sessionId": "203",
+      "messageId": "7",
+      "runId": "4"
+    },
+    "reason": null,
+    "allowedActions": []
+  },
+  "snapshot": {
+    "protocolVersion": "web-projection-v1",
+    "sessionId": "203",
+    "streamId": "3899d110-24b4-465d-901d-66e81c0e315a",
+    "watermark": "1",
+    "cursor": "eyJwdXJwb3NlIjoic3RyZWFtIiwidXNlcklkIjoiMSIsInNlc3Npb25JZCI6IjIwMyIsInN0cmVhbUlkIjoiMzg5OWQxMTAtMjRiNC00NjVkLTkwMWQtNjZlODFjMGUzMTVhIiwid2F0ZXJtYXJrIjoiMSIsInVwcGVyIjoiMSIsImJlZm9yZSI6IjAifQ.wu1kQ-eiF5OqRv_PafEysOmOV6ZUPL7pq4qLgiGfPVQ",
+    "session": {
+      "sessionId": "203",
+      "employeeId": "1",
+      "title": "第一行 第二行😀 <img src=x onerror=\"window.__textExecuted=true\">",
+      "sessionVersion": "2",
+      "lifecycleStatus": "ACTIVE",
+      "recoveryStatus": "READY",
+      "allowedActions": []
+    },
+    "messages": {
+      "items": [
+        {
+          "messageId": "7",
+          "messageNo": "1",
+          "senderKind": "USER",
+          "acceptedAt": "2026-10-27T07:26:09.717918Z",
+          "contents": [
+            {
+              "contentId": "48cc410c-3448-4de4-98d5-c5b095c9c8aa",
+              "contentVersion": "1",
+              "kind": "TEXT",
+              "bodyFormat": "plain-text",
+              "byteCount": "74",
+              "sha256": "c0013f43b8ca10e1a9c84a0ac46fd67e93acb93d0983a921532665c706f28b1c"
+            }
+          ]
+        }
+      ],
+      "nextPageCursor": null,
+      "hasMore": false,
+      "messageUpperBound": "1"
+    },
+    "runs": [
+      {
+        "runId": "4",
+        "status": "ACCEPTED",
+        "processingStatus": "WAITING"
+      }
+    ]
+  },
+  "exactTextSha256": "c0013f43b8ca10e1a9c84a0ac46fd67e93acb93d0983a921532665c706f28b1c",
+  "batch": {
+    "sessionId": "203",
+    "changes": [
+      {
+        "sessionId": "203",
+        "employeeId": "1",
+        "type": "SESSION_SET",
+        "viewRevision": "1",
+        "lifecycleStatus": "ACTIVE",
+        "recoveryStatus": "READY",
+        "sessionVersion": "2",
+        "title": "第一行 第二行😀 <img src=x onerror=\"window.__textExecuted=true\">"
+      },
+      {
+        "status": "ACCEPTED",
+        "viewRevision": "1",
+        "runId": "4",
+        "inputMessageId": "7",
+        "type": "RUN_SET"
+      },
+      {
+        "byteCount": "74",
+        "kind": "TEXT",
+        "bodyFormat": "plain-text",
+        "sha256": "c0013f43b8ca10e1a9c84a0ac46fd67e93acb93d0983a921532665c706f28b1c",
+        "contentVersion": "1",
+        "contentId": "48cc410c-3448-4de4-98d5-c5b095c9c8aa",
+        "firstSeq": "1",
+        "baseContentVersion": "0",
+        "closeReason": "COMPLETED",
+        "firstPosition": 3,
+        "type": "CONTENT_SET",
+        "runId": "4",
+        "status": "CLOSED"
+      },
+      {
+        "replacesContentIds": [],
+        "senderKind": "USER",
+        "messageId": "7",
+        "contents": [
+          {
+            "byteCount": "74",
+            "kind": "TEXT",
+            "bodyFormat": "plain-text",
+            "sha256": "c0013f43b8ca10e1a9c84a0ac46fd67e93acb93d0983a921532665c706f28b1c",
+            "contentVersion": "1",
+            "contentId": "48cc410c-3448-4de4-98d5-c5b095c9c8aa"
+          }
+        ],
+        "messageNo": "1",
+        "acceptedAt": "2026-10-27T07:26:09.717918Z",
+        "runId": "4",
+        "initialRunId": "4",
+        "type": "MESSAGE_COMMIT"
+      }
+    ],
+    "cursor": "eyJwdXJwb3NlIjoic3RyZWFtIiwidXNlcklkIjoiMSIsInNlc3Npb25JZCI6IjIwMyIsInN0cmVhbUlkIjoiMzg5OWQxMTAtMjRiNC00NjVkLTkwMWQtNjZlODFjMGUzMTVhIiwid2F0ZXJtYXJrIjoiMSIsInVwcGVyIjoiMSIsImJlZm9yZSI6IjAifQ.wu1kQ-eiF5OqRv_PafEysOmOV6ZUPL7pq4qLgiGfPVQ",
+    "previousSeq": "0",
+    "occurredAt": "2026-10-27T07:26:09.717918Z",
+    "streamId": "3899d110-24b4-465d-901d-66e81c0e315a",
+    "seq": "1",
+    "protocolVersion": "web-projection-v1"
+  },
+  "countsAfterAcceptance": {
+    "business_session": 3,
+    "business_message": 7,
+    "business_run": 4,
+    "runtime_dispatch": 1,
+    "projection_content": 7,
+    "projection_content_version": 7,
+    "session_projection_event": 4
+  },
+  "projectionFailureCounts": {
+    "business_session": 3,
+    "business_message": 8,
+    "business_run": 5,
+    "runtime_dispatch": 2,
+    "projection_content": 8,
+    "projection_content_version": 8,
+    "session_projection_event": 5
+  },
+  "inputSequenceAfterRollback": 5,
+  "sdkAndModelExecutions": 0
+}

@@ -1,0 +1,167 @@
+{
+  "baselineCommit": "064bb6e54f369a62f16ca3b1c85b10afb5d608b3",
+  "branch": "codex/formal-web-implementation",
+  "jarSha256": "ae83599e53cddc2ad9bcbde9f7ab54a245096a0106a29a1053a5f3093702ba96",
+  "backendTests": [
+    {
+      "suite": "com.agentscope.brain.architecture.ApplicationAssemblyTest",
+      "tests": 1,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "suite": "com.agentscope.brain.architecture.NativeStructureContractTest",
+      "tests": 2,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "suite": "com.agentscope.brain.conversation.internal.application.SessionDirectoryTest",
+      "tests": 8,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "suite": "com.agentscope.brain.conversation.internal.application.TextSubmissionContractTest",
+      "tests": 6,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "suite": "com.agentscope.brain.identity.internal.application.AuthenticationServiceTest",
+      "tests": 7,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "suite": "com.agentscope.brain.identity.internal.application.InitialPasswordServiceTest",
+      "tests": 8,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "suite": "com.agentscope.brain.identity.internal.security.PasswordResponseBoundaryTest",
+      "tests": 2,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "suite": "com.agentscope.brain.interaction.internal.validation.ClosedDraft7ValidatorTest",
+      "tests": 10,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "suite": "com.agentscope.brain.interaction.internal.validation.SdkToolValidatorTest",
+      "tests": 3,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "suite": "com.agentscope.brain.projection.internal.application.HistoryCursorTest",
+      "tests": 1,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "suite": "com.agentscope.brain.release.internal.application.CurrentEmployeeAccessTest",
+      "tests": 4,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "suite": "com.agentscope.brain.release.ReleaseInputCompatibilityTest",
+      "tests": 2,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "suite": "com.agentscope.brain.runtime.internal.application.OrdinaryQueueAdmissionTest",
+      "tests": 1,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "suite": "com.agentscope.brain.runtime.internal.application.WorkingContextRunUseCaseTest",
+      "tests": 12,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "suite": "com.agentscope.brain.architecture.ProductionArtifactIT",
+      "tests": 1,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    }
+  ],
+  "frontendTests": {
+    "authAndRecovery": 10,
+    "textHistory": 7,
+    "sessionNavigation": 6,
+    "composer": 10,
+    "total": 33
+  },
+  "typecheck": "PASS",
+  "frontendBuild": "PASS",
+  "engineeringCheck": "PASS",
+  "gitDiffCheck": "PASS",
+  "isolatedCases": 53,
+  "connectionPoolMaximumInIntegration": 2,
+  "dependencyBaseline": {
+    "java": "17.0.9",
+    "maven": "3.9.16",
+    "springBoot": "4.1.2",
+    "agentScopeJava": "2.0.4",
+    "node": "24.22.1",
+    "npm": "11.19.1"
+  },
+  "sourceSha256": {
+    "backend/README.md": "0702de10be2ed522371266c42583848f2312297a4b9ff6b9c79e8400d2fca079",
+    "backend/pom.xml": "68e37873cdcafcab16c76df6a4d4b75a24b3937509fa91455763e974ad96829b",
+    "backend/src/main/java/com/agentscope/brain/conversation/internal/application/TextSubmission.java": "dddb76aa0fb11c4145d2cec2b699b29f722dc7117d5375278d84ef7d12c2dabe",
+    "backend/src/main/java/com/agentscope/brain/conversation/internal/web/TextSubmissionController.java": "bf31fd378c6f1c58fbaf7a99a262c801e742d87b479ed12de464ac5f1f91fb0a",
+    "backend/src/main/java/com/agentscope/brain/identity/api/CurrentUser.java": "9ac646edfec6ba0f4d59e84a17fd9e15d51dbed03c40087f2f0b75939567bb83",
+    "backend/src/main/java/com/agentscope/brain/identity/internal/security/AuthenticationConfiguration.java": "e75977d41358056e01a098709426f52517148c6497aaaf7acaf8bcf33e9b0fc5",
+    "backend/src/main/java/com/agentscope/brain/identity/internal/security/CurrentPlatformUser.java": "1b5fcc6fbabc11f9ff71a815ee9cec0a74d3bf8a40d546643e02a877fe043ca1",
+    "backend/src/main/java/com/agentscope/brain/memory/api/InputAdmission.java": "936f09fff3684d6c0da97531b019461828957d6106197e2f8f228fd58c6bc581",
+    "backend/src/main/java/com/agentscope/brain/memory/internal/application/MemoryInputAdmission.java": "7ad74a06b4d4637e58ae06ac31f3735338102ae6f3a5b43f779201309c80f6fe",
+    "backend/src/main/java/com/agentscope/brain/projection/api/AcceptedTextProjection.java": "924dba17a0f05680a8f58a78208248e642f111c5acd0418718c284fc9f392876",
+    "backend/src/main/java/com/agentscope/brain/projection/internal/application/AcceptedTextWriter.java": "d93a59aa0d589a27f0ee74dcef8125285e7715253c94cd7d5c275a7990f58a39",
+    "backend/src/main/java/com/agentscope/brain/projection/internal/application/TextHistory.java": "72bfe5467cdd1a5f9336bef5646bb13fd04e11c6c703b058b37f6734fa3b2673",
+    "backend/src/main/java/com/agentscope/brain/release/api/EmployeeAccess.java": "71b5f87f61188890515242894136b26fbf7cdac6b534afc7821692e28e52b654",
+    "backend/src/main/java/com/agentscope/brain/release/api/SubmissionRelease.java": "0cf36c499384e0d42b478ebbbd6fd1ffbe34122aee0effded175b94be61490cd",
+    "backend/src/main/java/com/agentscope/brain/release/internal/application/CurrentEmployeeAccess.java": "aaf20527435981bebed63d0142eac555331bf56979e3f013fc871ea01dfd555d",
+    "backend/src/main/java/com/agentscope/brain/release/internal/application/LockedSubmissionRelease.java": "410c41629fc1db7d4b0877139fbbe63eb96f08350f5ee92f93bc8bd8ea47b073",
+    "backend/src/main/java/com/agentscope/brain/runtime/api/OrdinaryDispatch.java": "852325339d9b329d24c7d2e2641da699fffd52cad6cbde2eecd3e98b0f55742e",
+    "backend/src/main/java/com/agentscope/brain/runtime/internal/application/OrdinaryQueueAdmission.java": "d1795f7ecce115a7cceea5c1a0d28514d1be0b14b4f8b5a2a7fe718689ba53c5",
+    "backend/src/test/java/com/agentscope/brain/conversation/internal/application/TextSubmissionContractTest.java": "6a0e9407e7d791e5c1db30f908e0013c883b62cfd62501388b13959dfdc5bb8a",
+    "backend/src/test/java/com/agentscope/brain/runtime/internal/application/OrdinaryQueueAdmissionTest.java": "45a18c666d283f84da1f128943ea88777064e0d88e631653e76a199e39078d93",
+    "db/tests/执行工作台撤权只读隔离验收.py": "7ca30268d47854120f4033a48ffcee3ae7a01e6e352e93a41dd504a2b3419be6",
+    "db/tests/执行文字接纳与Composer隔离验收.py": "e946bf17df879e5595f1ff6dcae11d53bc9750631d673749bd973444150897a6",
+    "frontend/README.md": "4d6fe8ec0fc18ac9c59b5294f3cc8fc639dfa5951721ada77fb130e768475bf4",
+    "frontend/package-lock.json": "fe2a6a87a6692dccdbf2de1497f6c211c6b574e3e245ccc08baf825e006af7a2",
+    "frontend/package.json": "48f9fd4a77ec914655415da7fad8bbb210b3bcb6f3bcef5d0c8fe3b09c7f10c8",
+    "frontend/src/features/auth/store.ts": "33c3f72a50966d1c3d1887b10467f0b708f2e3b030648d6c578051a9823f8e08",
+    "frontend/src/features/workbench/TextComposer.vue": "84864fad2f718a96691882c8f655d7b491947c45f4d55c9747512dfb2d4c7772",
+    "frontend/src/features/workbench/composer.ts": "a3263669adbab690478d6bd7c3ba941baae8430f7bf9bff4b950625b9f9fbfe8",
+    "frontend/src/features/workbench/history.ts": "4f4eba2beec386a8340ac35741766303ed2b355971d93d265d3ff190f0f2d01b",
+    "frontend/src/pages/WorkbenchPage.vue": "f831fa10a888acd1db89b3cca24732f968d6862625fa4cf8dcfae8bbc3156742",
+    "frontend/tests/composer.test.mjs": "c2f8e6990643ae8bd417c113986b2735d914e6c8d825b20abd4642274b772566",
+    "frontend/tests/tab-recovery.test.mjs": "1c92da77a42ffc362ef29d7eeb28a28c4bfc5b1138d79e6a9eb3292ab063a909"
+  }
+}

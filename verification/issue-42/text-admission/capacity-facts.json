@@ -1,0 +1,250 @@
+{
+  "acceptedResults": [
+    {
+      "submissionKey": "3528dbc8-42fe-4358-8cfa-f2b9d33a67ff",
+      "registrationStatus": "ACCEPTED",
+      "submissionVersion": "2",
+      "acceptanceStatus": "ACCEPTED",
+      "processingStatus": "WAITING",
+      "result": {
+        "sessionId": "206",
+        "messageId": "11",
+        "runId": "8"
+      },
+      "reason": null,
+      "allowedActions": []
+    },
+    {
+      "submissionKey": "be8aa27c-165a-48a0-b1d8-1e4ab0b7e2ea",
+      "registrationStatus": "ACCEPTED",
+      "submissionVersion": "2",
+      "acceptanceStatus": "ACCEPTED",
+      "processingStatus": "WAITING",
+      "result": {
+        "sessionId": "209",
+        "messageId": "14",
+        "runId": "11"
+      },
+      "reason": null,
+      "allowedActions": []
+    },
+    {
+      "submissionKey": "932e10e8-8a0b-4f41-a89f-28fe470f7d5c",
+      "registrationStatus": "ACCEPTED",
+      "submissionVersion": "2",
+      "acceptanceStatus": "ACCEPTED",
+      "processingStatus": "WAITING",
+      "result": {
+        "sessionId": "207",
+        "messageId": "12",
+        "runId": "9"
+      },
+      "reason": null,
+      "allowedActions": []
+    },
+    {
+      "submissionKey": "05e2280a-aa6d-4e5a-ae17-25e8cb994cda",
+      "registrationStatus": "ACCEPTED",
+      "submissionVersion": "2",
+      "acceptanceStatus": "ACCEPTED",
+      "processingStatus": "WAITING",
+      "result": {
+        "sessionId": "210",
+        "messageId": "15",
+        "runId": "12"
+      },
+      "reason": null,
+      "allowedActions": []
+    },
+    {
+      "submissionKey": "cc1f82cd-a669-4d04-8d77-2de2fdff6985",
+      "registrationStatus": "ACCEPTED",
+      "submissionVersion": "2",
+      "acceptanceStatus": "ACCEPTED",
+      "processingStatus": "WAITING",
+      "result": {
+        "sessionId": "208",
+        "messageId": "13",
+        "runId": "10"
+      },
+      "reason": null,
+      "allowedActions": []
+    },
+    {
+      "submissionKey": "c758b208-278a-4924-9e87-e168661eb71a",
+      "registrationStatus": "ACCEPTED",
+      "submissionVersion": "2",
+      "acceptanceStatus": "ACCEPTED",
+      "processingStatus": "WAITING",
+      "result": {
+        "sessionId": "211",
+        "messageId": "16",
+        "runId": "13"
+      },
+      "reason": null,
+      "allowedActions": []
+    },
+    {
+      "submissionKey": "67e0cb10-3e57-43e0-ac96-3e910bbeaafb",
+      "registrationStatus": "ACCEPTED",
+      "submissionVersion": "2",
+      "acceptanceStatus": "ACCEPTED",
+      "processingStatus": "WAITING",
+      "result": {
+        "sessionId": "212",
+        "messageId": "17",
+        "runId": "14"
+      },
+      "reason": null,
+      "allowedActions": []
+    },
+    {
+      "submissionKey": "d4b57d2a-b4e6-4711-b36c-35c0b125b6bf",
+      "registrationStatus": "ACCEPTED",
+      "submissionVersion": "2",
+      "acceptanceStatus": "ACCEPTED",
+      "processingStatus": "WAITING",
+      "result": {
+        "sessionId": "214",
+        "messageId": "19",
+        "runId": "16"
+      },
+      "reason": null,
+      "allowedActions": []
+    },
+    {
+      "submissionKey": "366e7133-941c-49c1-807d-e4b7a9ddb59e",
+      "registrationStatus": "ACCEPTED",
+      "submissionVersion": "2",
+      "acceptanceStatus": "ACCEPTED",
+      "processingStatus": "WAITING",
+      "result": {
+        "sessionId": "213",
+        "messageId": "18",
+        "runId": "15"
+      },
+      "reason": null,
+      "allowedActions": []
+    },
+    {
+      "submissionKey": "10cb2a04-6275-4569-b2e1-0a447485ca32",
+      "registrationStatus": "ACCEPTED",
+      "submissionVersion": "2",
+      "acceptanceStatus": "ACCEPTED",
+      "processingStatus": "WAITING",
+      "result": {
+        "sessionId": "216",
+        "messageId": "21",
+        "runId": "18"
+      },
+      "reason": null,
+      "allowedActions": []
+    },
+    {
+      "submissionKey": "25086d83-6aea-4b03-b88e-d4ab7f28ad25",
+      "registrationStatus": "ACCEPTED",
+      "submissionVersion": "2",
+      "acceptanceStatus": "ACCEPTED",
+      "processingStatus": "WAITING",
+      "result": {
+        "sessionId": "215",
+        "messageId": "20",
+        "runId": "17"
+      },
+      "reason": null,
+      "allowedActions": []
+    },
+    {
+      "submissionKey": "e5dcb834-b5c2-4054-965c-f292956ae27c",
+      "registrationStatus": "ACCEPTED",
+      "submissionVersion": "2",
+      "acceptanceStatus": "ACCEPTED",
+      "processingStatus": "WAITING",
+      "result": {
+        "sessionId": "217",
+        "messageId": "22",
+        "runId": "19"
+      },
+      "reason": null,
+      "allowedActions": []
+    },
+    {
+      "submissionKey": "1800a98c-4f30-454f-94eb-32e016b3000a",
+      "registrationStatus": "ACCEPTED",
+      "submissionVersion": "2",
+      "acceptanceStatus": "ACCEPTED",
+      "processingStatus": "WAITING",
+      "result": {
+        "sessionId": "218",
+        "messageId": "23",
+        "runId": "20"
+      },
+      "reason": null,
+      "allowedActions": []
+    },
+    {
+      "submissionKey": "859f7319-235e-4617-aab3-6109bacb3410",
+      "registrationStatus": "ACCEPTED",
+      "submissionVersion": "2",
+      "acceptanceStatus": "ACCEPTED",
+      "processingStatus": "WAITING",
+      "result": {
+        "sessionId": "219",
+        "messageId": "24",
+        "runId": "21"
+      },
+      "reason": null,
+      "allowedActions": []
+    },
+    {
+      "submissionKey": "ecaf2ac6-2530-4739-abfe-41ee687de435",
+      "registrationStatus": "ACCEPTED",
+      "submissionVersion": "2",
+      "acceptanceStatus": "ACCEPTED",
+      "processingStatus": "WAITING",
+      "result": {
+        "sessionId": "220",
+        "messageId": "25",
+        "runId": "22"
+      },
+      "reason": null,
+      "allowedActions": []
+    },
+    {
+      "submissionKey": "26c51a88-e354-47ae-95ba-0a8f0fb96969",
+      "registrationStatus": "ACCEPTED",
+      "submissionVersion": "2",
+      "acceptanceStatus": "ACCEPTED",
+      "processingStatus": "WAITING",
+      "result": {
+        "sessionId": "221",
+        "messageId": "26",
+        "runId": "23"
+      },
+      "reason": null,
+      "allowedActions": []
+    }
+  ],
+  "rejectionCodes": [
+    "EXECUTION_CAPACITY_EXCEEDED",
+    "EXECUTION_CAPACITY_EXCEEDED",
+    "EXECUTION_CAPACITY_EXCEEDED",
+    "EXECUTION_CAPACITY_EXCEEDED"
+  ],
+  "counts": {
+    "business_session": 18,
+    "business_message": 22,
+    "business_run": 19,
+    "runtime_dispatch": 16,
+    "projection_content": 22,
+    "projection_content_version": 22,
+    "session_projection_event": 19
+  },
+  "capacity": {
+    "foreground_limit": 2,
+    "normal_waiting_limit": 16,
+    "occupied_count": 0,
+    "normal_waiting_count": 16
+  },
+  "connectionPoolMaximum": 2
+}

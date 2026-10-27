@@ -84,3 +84,16 @@ test('logout and expired restore clear only this tab application recovery', asyn
   assert.equal(readTabRecovery('composer'), null)
   assert.equal(sessionStorage.getItem('foreign.marker'), 'still-here')
 })
+
+
+test('a trusted identity switch removes prior-user recovery without clearing foreign keys', async () => {
+  const auth = useAuth()
+  auth.identity = { authStage: 'READY', userId: '1' }
+  writeTabRecovery('text.1.1.new', 'old-user-input')
+  sessionStorage.setItem('foreign.marker', 'keep')
+  globalThis.fetch = async () => Response.json({ authStage: 'READY', userId: '2' })
+  await auth.restore()
+  assert.equal(auth.identity.userId, '2')
+  assert.equal(readTabRecovery('text.1.1.new'), null)
+  assert.equal(sessionStorage.getItem('foreign.marker'), 'keep')
+})

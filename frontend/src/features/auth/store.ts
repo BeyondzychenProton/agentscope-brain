@@ -20,7 +20,11 @@ export const useAuth = defineStore('auth', () => {
   const passwordNotice = ref('')
   async function restore() {
     unavailable.value = false
-    try { identity.value = await read<Identity>('/api/me') }
+    try {
+      const restored = await read<Identity>('/api/me')
+      if (identity.value && identity.value.userId !== restored.userId) clearCurrentTabRecovery()
+      identity.value = restored
+    }
     catch (error) {
       identity.value = null
       if (error instanceof ApiFailure && error.status === 401) {

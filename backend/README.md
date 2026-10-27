@@ -2,7 +2,7 @@
 
 单 Spring Boot 应用、单 Maven 模块、一个生产 Java 进程。按业务能力组织代码，完整规则见 [后端开发规范](开发规范.md)；领域术语沿用 [GLOSSARY.md](../GLOSSARY.md)。
 
-当前已实现 #34～#36 的登录、首次改密与固定认证期限，以及 #37 的真实身份／能力读取和受控 TEXT 历史。唯一启动类和九模块布局保持不变；真实发送、完整投影恢复、会议和在线存储仍按各自工单实施。缺必要结构／预置／配置时返回受控不可用，不会生成默认用户或修复数据。
+当前已实现 #34～#36 的登录、首次改密与固定认证期限、#37 的真实身份／能力与 TEXT 历史，以及 #42 的会话导航和默认关闭的普通文字接纳切片。唯一启动类和九模块布局保持不变；真实发送、完整投影恢复、会议和在线存储仍按各自工单实施。缺必要结构／预置／配置时返回受控不可用，不会生成默认用户或修复数据。
 
 ```text
 backend/
@@ -82,3 +82,17 @@ Spring Boot 自动读取本目录下的 `config/application.yaml`；不再使用
 游标绑定用途、当前可信用户、员工、规范化查询和继续位置；每页重新核实身份与可读范围。默认沿用 `brain.projection.cursor-key`；也可用 `brain.conversation.cursor-key` 配置独立的至少 32 字节 Base64 key。两者均缺失时使用进程随机 key，重启后旧分页定位返回 `409 CURSOR_INVALID`，重新搜索即可。撤权／员工不可执行不妨碍本人历史列表；受限改密、账号失效和跨用户员工定位仍拒绝。缺结构返回受控不可用，不自动建表。
 
 此读取切片的 `allowedActions` 为空；`activeRun` 只读取已持久的 Run ID／状态，`processingStatus` 暂为 null，待运行切片交付实际调度解释。读取不产生消息／Run／dispatch，不访问 SDK／模型／会议服务。改名及普通发送尚未交付。隔离验收入口与结果见 [#42 记录](../verification/issue-42/验收记录.md)。
+
+## 普通文字接纳（#42 第二切片）
+
+实现 `POST /api/session-intents`、`GET /api/session-intents/{intentId}`、`POST /api/submissions`、`GET /api/submissions/{submissionKey}` 和 `POST /api/submissions/{submissionKey}/close`，沿用既定 DTO／CSRF／可信身份约定。只接纳有效 UTF-8、非空且不超过 256 KiB 的完整文字及空 uploadIds；图片不静默退化成文字。标题由原文确定性生成，不调用模型。
+
+此切片默认关闭，由 `brain.conversation.text-submission-enabled` 显式开启。未修改本机共享 YAML，未在共享库创建容量／记忆事实。开启前还须有受控预置的 2／16 `runtime_capacity` 及有效 `memory_profile`；缺失或计数不一致拒绝接纳，不在启动／GET 中补造。记忆接缝只锁定已有控制事实、分配输入序号并捕获代次／修订／策略，不执行 KV 初始化、记忆学习或 SDK。
+
+预登记独立提交；接纳事务按 C0→身份→员工／固定发布／授权→意图／提交→memory_profile→Session→消息／Run→dispatch→展示／审计进行。容量、正式用户消息、Run、意图绑定、永久提交结果和 v1 不可变文字投影原子提交；普通等待最多 16，同 Session 一个活动 Run。没有执行器／自动领取、SDK 或模型调用；页面显示接纳／等待事实。已接纳的原键先返回原结果，不被当前容量、授权撤销或功能关闭覆盖。不存在控制行但存在正式消息时保留待核对，拒绝重建／封闭为未接纳。
+
+close 在身份和原控制行锁内与接纳互斥；未观察过的键可落无目标、无语义摘要的永久墓碑。已有完整登记保留原语义。GET 无记录是 UNOBSERVED，不证明排除了在途写者。提交事务／基础设施错误返回受控不明，前端保留原键回查，不自动重跑接纳。
+
+TEXT 快照现在只额外支持有匹配接纳账本、WAITING／NONE／普通等待事实且无 SDK 调用的 ACCEPTED Run；更广运行／过程仍返回受控范围不可用。批次采用已有 web-projection-v1 的 SESSION_SET／RUN_SET／CONTENT_SET／MESSAGE_COMMIT，正文不可变；完整 events／SSE 和 reducer 仍待后续实现。当前列表的调度解释继续保持原切片边界，普通提交回执与文字快照准确读取等待事实。
+
+复现：完成前端构建后，在 backend 执行 `mvnw.cmd -B -ntp -Dbrain.build.directory=target/issue42-text-build verify`，仓库根执行 `python db/tests/执行文字接纳与Composer隔离验收.py --browser`。只使用独占回环 MySQL 和合成身份／前置，浏览器依赖复用本地 `.codex-local/issue-42-browser`。见 [验收记录](../verification/issue-42/text-admission/验收记录.md)。

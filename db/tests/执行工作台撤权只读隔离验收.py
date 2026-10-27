@@ -70,7 +70,7 @@ class Client:
         return self.request('POST', path, body, {token['headerName']: token['token']})
 
 
-def run_isolated(mysql_client, browser, *, jar_path=None, navigation_checks=None):
+def run_isolated(mysql_client, browser, *, jar_path=None, navigation_checks=None, application_arguments=()):
     port = int(next(x.split('=', 1)[1] for x in mysql_client if x.startswith('--port=')))
     c = pymysql.connect(host='127.0.0.1', port=port, user='root', password='', database='memory_schema_probe',
                         charset='utf8mb4', autocommit=False)
@@ -151,13 +151,13 @@ def run_isolated(mysql_client, browser, *, jar_path=None, navigation_checks=None
                 if log is not None:
                     log.close()
 
-            def start(expected_ready=True, profile='dev'):
+            def start(expected_ready=True, profile='dev', extra_arguments=None):
                 nonlocal process, log
                 stop()
                 log = (ROOT / 'backend/target/issue37-isolated-app.log').open('w', encoding='utf-8')
                 process = subprocess.Popen([str(java), '-jar', str(jar), f'--spring.config.location=optional:classpath:/,{config_path.as_uri()}',
                     f'--spring.profiles.active={profile}', f'--server.port={web_port}', '--server.address=127.0.0.1',
-                    '--spring.main.banner-mode=off'], cwd=ROOT / 'backend', stdout=log, stderr=subprocess.STDOUT,
+                    '--spring.main.banner-mode=off',*(application_arguments if extra_arguments is None else extra_arguments)], cwd=ROOT / 'backend', stdout=log, stderr=subprocess.STDOUT,
                     creationflags=getattr(subprocess, 'CREATE_NO_WINDOW', 0))
                 deadline = time.monotonic() + 45
                 while time.monotonic() < deadline:
@@ -263,7 +263,7 @@ def run_isolated(mysql_client, browser, *, jar_path=None, navigation_checks=None
             checked('14-06-revocation-keeps-account-and-history-readable', cap[0]==200 and cap[1]['allowedActions']==[]
                 and cap[1]['unavailableReason']=='EMPLOYEE_USE_REVOKED' and client.request('GET',content_url)[0]==200
                 and client.request('GET','/api/me')[1]['employees'][0]['readOnly'])
-            for endpoint in ['/api/submissions','/api/session-intents','/api/runs/1/continue']:
+            for endpoint in ['/api/runs/1/continue']:
                 checked('14-07-unimplemented-writes-remain-server-denied:'+endpoint,client.post(endpoint,{'userId':'1','owner':'1','employeeId':'1','allowedActions':['START_RUN']})[0]==403)
             checked('14-08-cross-user-session-and-unknown-employee-404',client.request('GET','/api/sessions/202/projection/snapshot'+protocol)[0]==404
                 and client.request('GET','/api/employees/999/capabilities')[0]==404)

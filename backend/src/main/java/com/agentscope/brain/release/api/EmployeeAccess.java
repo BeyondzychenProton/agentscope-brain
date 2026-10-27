@@ -10,7 +10,7 @@ public interface EmployeeAccess {
     /** Mandatory fresh check for a future write boundary; this does not dispatch or create a Run. */
     void requireExecution(String employeeId);
     record Capability(String employeeId, String capabilityContext, boolean acceptsText, boolean acceptsImages,
-            Map<String, Object> imageLimits, List<String> allowedActions, String unavailableReason) { }
+            Map<String, Object> imageLimits, List<String> allowedActions, String unavailableReason, boolean textSubmissionAvailable) { }
     record Employee(String employeeId, String displayName, boolean canStartRun, boolean readOnly,
             String unavailableReason, Capability capabilities) { }
     class Denied extends RuntimeException {

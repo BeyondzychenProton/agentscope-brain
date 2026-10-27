@@ -20,8 +20,9 @@ public class TextHistory {
     private final JdbcTemplate jdbc;
     private final CurrentUser users;
     private final HistoryCursor cursors;
-    public TextHistory(JdbcTemplate jdbc, CurrentUser users, HistoryCursor cursors) {
-        this.jdbc = jdbc; this.users = users; this.cursors = cursors;
+    private final com.agentscope.brain.release.api.SubmissionRelease releases;
+    public TextHistory(JdbcTemplate jdbc, CurrentUser users, HistoryCursor cursors, com.agentscope.brain.release.api.SubmissionRelease releases) {
+        this.jdbc = jdbc; this.users = users; this.cursors = cursors; this.releases=releases;
     }
     public record ContentRef(String contentId, String contentVersion, String kind, String bodyFormat,
             String byteCount, String sha256) { }
@@ -29,8 +30,9 @@ public class TextHistory {
     public record Page(List<Message> items, String nextPageCursor, boolean hasMore, String messageUpperBound) { }
     public record Session(String sessionId, String employeeId, String title, String sessionVersion,
             String lifecycleStatus, String recoveryStatus, List<String> allowedActions) { }
+    public record QueuedRun(String runId,String status,String processingStatus) { }
     public record Snapshot(String protocolVersion, String sessionId, String streamId, String watermark, String cursor,
-            Session session, Page messages) { }
+            Session session, Page messages, List<QueuedRun> runs) { }
     public record Content(String contentId, String contentVersion, String bodyFormat, String body, String byteCount,
             String sha256, String nextPartCursor) { }
     private record Owned(String userId, Map<String, Object> session, String stream) { }
@@ -38,9 +40,23 @@ public class TextHistory {
     public Snapshot snapshot(String sessionId, String protocolVersion, int messageLimit, int processLimit) {
         protocol(protocolVersion); limit(messageLimit); limit(processLimit);
         var owned = owned(sessionId);
+        var active=jdbc.queryForList("SELECT id,status FROM business_run WHERE session_id=? AND status NOT IN ('SUCCEEDED','FAILED','CANCELLED')",sessionId);
+        var runs=new ArrayList<QueuedRun>();
+        for(var run:active) {
+            long verified=count("""
+                SELECT COUNT(*) FROM runtime_dispatch d JOIN ordinary_submission o ON o.accepted_run_id=d.run_id
+                JOIN business_run r ON r.id=d.run_id
+                WHERE d.run_id=? AND d.session_id=? AND d.user_id=? AND d.status='WAITING' AND d.permit_state='NONE'
+                AND d.counts_toward_waiting=1 AND d.dispatch_kind='ORDINARY' AND d.source_kind='ORDINARY_SUBMISSION'
+                AND d.source_id=o.id AND o.status='ACCEPTED' AND o.user_id=d.user_id AND o.accepted_session_id=d.session_id
+                AND o.accepted_message_id=r.input_message_id AND r.actor_user_id=d.user_id AND r.status='ACCEPTED'
+                AND NOT EXISTS(SELECT 1 FROM runtime_sdk_call k WHERE k.run_id=r.id)
+                """,run.get("id"),sessionId,owned.userId());
+            if(!"ACCEPTED".equals(run.get("status")) || verified!=1 || active.size()!=1) { throw new ProjectionReadFailure(503,"PROJECTION_SCOPE_UNAVAILABLE"); }
+            runs.add(new QueuedRun(String.valueOf(run.get("id")),"ACCEPTED","WAITING"));
+        }
         // Do not return an apparently complete snapshot for functionality deferred to stage 2.
         if (owned.session().get("source_session_id") != null
-                || count("SELECT COUNT(*) FROM business_run WHERE session_id=? AND status NOT IN ('SUCCEEDED','FAILED','CANCELLED')", sessionId) > 0
                 || count("SELECT COUNT(*) FROM run_progress p JOIN business_run r ON r.id=p.run_id WHERE r.session_id=?", sessionId) > 0
                 || count("SELECT COUNT(*) FROM projection_content WHERE session_id=? AND content_kind<>'TEXT'", sessionId) > 0) {
             throw new ProjectionReadFailure(503, "PROJECTION_SCOPE_UNAVAILABLE");
@@ -51,9 +67,12 @@ public class TextHistory {
                 new BigInteger(upper).add(BigInteger.ONE).toString());
         var session = new Session(sessionId, number(owned.session(), "employee_id"), (String) owned.session().get("title"),
                 number(owned.session(), "row_version"), (String) owned.session().get("lifecycle_status"),
-                (String) owned.session().get("recovery_status"), List.of());
+                (String) owned.session().get("recovery_status"),
+                active.isEmpty() && "ACTIVE".equals(owned.session().get("lifecycle_status")) && "READY".equals(owned.session().get("recovery_status"))
+                && releases.canSubmit(owned.userId(),number(owned.session(),"employee_id"),number(owned.session(),"employee_release_id"))
+                ? List.of("START_RUN") : List.of());
         var cursor = cursors.encode(new HistoryCursor.Position("stream", owned.userId(), sessionId, owned.stream(), watermark, upper, "0"));
-        return new Snapshot(PROTOCOL, sessionId, owned.stream(), watermark, cursor, session, page(owned, position, messageLimit));
+        return new Snapshot(PROTOCOL, sessionId, owned.stream(), watermark, cursor, session, page(owned, position, messageLimit), List.copyOf(runs));
     }
 
     public Page messages(String sessionId, String protocolVersion, String pageCursor, int pageLimit) {

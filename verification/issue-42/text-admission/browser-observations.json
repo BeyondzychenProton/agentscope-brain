@@ -1,0 +1,42 @@
+[
+  {
+    "browser": "chrome",
+    "version": "155.0.8059.85",
+    "mode": "headless PC installed browser",
+    "cases": [
+      "draft refresh",
+      "synthetic composition Enter blocked",
+      "Shift+Enter newline",
+      "editing during focus authentication check",
+      "accepted user text and waiting Run",
+      "sidebar selection",
+      "read refresh does not resend",
+      "lost HTTP response and receipt GET after refresh",
+      "storage failure retains input",
+      "logout clears tab recovery"
+    ],
+    "submissionPosts": 2,
+    "sdkExecutions": 0,
+    "result": "PASS"
+  },
+  {
+    "browser": "msedge",
+    "version": "156.0.4314.42",
+    "mode": "headless PC installed browser",
+    "cases": [
+      "draft refresh",
+      "synthetic composition Enter blocked",
+      "Shift+Enter newline",
+      "editing during focus authentication check",
+      "accepted user text and waiting Run",
+      "sidebar selection",
+      "read refresh does not resend",
+      "lost HTTP response and receipt GET after refresh",
+      "storage failure retains input",
+      "logout clears tab recovery"
+    ],
+    "submissionPosts": 2,
+    "sdkExecutions": 0,
+    "result": "PASS"
+  }
+]

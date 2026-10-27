@@ -98,9 +98,10 @@ class AuthenticationConfiguration {
                 .requestMatchers(org.springframework.http.HttpMethod.GET, "/api/auth/csrf", "/readyz", "/", "/index.html", "/login", "/password/initial", "/workbench", "/assets/**", "/favicon.ico").permitAll()
                 .requestMatchers(org.springframework.http.HttpMethod.POST, "/api/auth/login").permitAll()
                 .requestMatchers("/api/me", "/api/auth/logout", "/api/auth/password/initial").authenticated()
-                .requestMatchers(org.springframework.http.HttpMethod.GET, "/api/sessions", "/api/employees/*/capabilities",
+                .requestMatchers(org.springframework.http.HttpMethod.GET, "/api/sessions", "/api/session-intents/*", "/api/submissions/*", "/api/employees/*/capabilities",
                         "/api/sessions/*/projection/snapshot", "/api/sessions/*/projection/messages",
                         "/api/sessions/*/projection/content/*").authenticated()
+                .requestMatchers(org.springframework.http.HttpMethod.POST, "/api/session-intents", "/api/submissions", "/api/submissions/*/close").authenticated()
                 .anyRequest().denyAll());
         return http.build();
     }

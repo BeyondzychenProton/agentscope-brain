@@ -14,6 +14,8 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @Transactional(readOnly = true, isolation = Isolation.REPEATABLE_READ)
 public class CurrentEmployeeAccess implements EmployeeAccess {
+    @org.springframework.beans.factory.annotation.Value("${brain.conversation.text-submission-enabled:false}")
+    private boolean textSubmissionAvailable;
     private final JdbcTemplate jdbc;
     private final CurrentUser users;
     private final ObjectMapper json = new ObjectMapper();
@@ -54,7 +56,7 @@ public class CurrentEmployeeAccess implements EmployeeAccess {
                 images = true;
             }
             return new Capability(employeeId, "release:" + row.get("release_id") + ":" + row.get("availability_revision"),
-                    true, images, limits, reason == null ? List.of("START_RUN") : List.of(), reason);
+                    true, images, limits, reason == null ? List.of("START_RUN") : List.of(), reason, textSubmissionAvailable && reason == null);
         } catch (Exception invalid) { throw new Denied(503, "CAPABILITY_UNAVAILABLE"); }
     }
     @Override public void requireExecution(String employeeId) {
