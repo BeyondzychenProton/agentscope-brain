@@ -41,3 +41,7 @@ __pycache__/
 /backend/config/*.env
 /backend/config/*.local
 /backend/config/*.private.json
+
+# Brainstorm / local agent mockups
+.superpowers/
+
