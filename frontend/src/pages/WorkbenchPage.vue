@@ -10,7 +10,18 @@ import TextComposer from '../features/workbench/TextComposer.vue'
 import MarkdownBody from '../features/workbench/MarkdownBody.vue'
 import RenameSessionDialog from '../features/workbench/RenameSessionDialog.vue'
 import ProcessTimeline from '../features/workbench/ProcessTimeline.vue'
-import { applyProcessBatch, emptyProcessState } from '../features/workbench/processTimelineReducer'
+import {
+  processAfter,
+  processHasProjection,
+  processSnapshot,
+  stepsFromSnapshot,
+} from '../features/workbench/processHistory'
+import {
+  applyProcessBatch,
+  emptyProcessState,
+  ProcessBatchError,
+  type ProcessState,
+} from '../features/workbench/processTimelineReducer'
 import { processPlaceholderNotice, shouldHideRunWatchBanner } from '../features/workbench/processTimelineView'
 import type { ProcessBatch } from '../features/workbench/processProtocol'
 import type { Receipt } from '../features/workbench/composer'
@@ -95,6 +106,105 @@ function syncProcessFixture() {
   else clearProcessPreview()
 }
 
+function assignProcessState(next: ProcessState) {
+  Object.assign(processState, next)
+}
+
+function snapshotToProcessState(raw: Awaited<ReturnType<typeof processSnapshot>>): ProcessState {
+  return {
+    steps: stepsFromSnapshot(raw),
+    cursor: typeof raw.cursor === 'string' ? raw.cursor : null,
+    lastSeq: typeof raw.watermark === 'string' ? raw.watermark : '0',
+    streamId: typeof raw.streamId === 'string' && raw.streamId.trim() ? raw.streamId : null,
+    expanded: {},
+  }
+}
+
+function processUnavailable(failure: unknown): boolean {
+  return failure instanceof ApiFailure && (failure.status === 404 || failure.status === 409 || failure.status === 503)
+}
+
+function shouldResnapshotProcess(failure: unknown): boolean {
+  if (failure instanceof ProcessBatchError) {
+    return failure.message === 'SEQ_GAP' || failure.message === 'STREAM_MISMATCH'
+  }
+  if (!(failure instanceof ApiFailure)) return false
+  return failure.status === 409
+    || failure.status === 410
+    || failure.code === 'STREAM_CHANGED'
+    || failure.code === 'CURSOR_INVALID'
+    || failure.code === 'RESET_REQUIRED'
+}
+
+async function loadProcessSnapshot(seq: number, target: string) {
+  const raw = await processSnapshot(target)
+  if (seq !== loadSeq || sessionId.value !== target) return
+  if (!processHasProjection(raw)) {
+    clearProcessPreview()
+    return
+  }
+  processProtocolEnabled.value = true
+  assignProcessState(snapshotToProcessState(raw))
+}
+
+async function catchUpProcess(seq: number, target: string) {
+  const cursor = processState.cursor
+  if (!cursor) {
+    await loadProcessSnapshot(seq, target)
+    return
+  }
+  try {
+    const after = await processAfter(target, cursor)
+    if (seq !== loadSeq || sessionId.value !== target) return
+    let next: ProcessState = {
+      steps: processState.steps.map(step => ({ ...step })),
+      cursor: processState.cursor,
+      lastSeq: processState.lastSeq,
+      streamId: processState.streamId,
+      expanded: { ...processState.expanded },
+    }
+    for (const batch of after.batches ?? []) {
+      next = applyProcessBatch(next, batch as ProcessBatch)
+    }
+    if ((after.batches ?? []).length === 0) {
+      next = {
+        ...next,
+        cursor: typeof after.cursor === 'string' ? after.cursor : next.cursor,
+        lastSeq: typeof after.watermark === 'string' ? after.watermark : next.lastSeq,
+        streamId: typeof after.streamId === 'string' && after.streamId.trim()
+          ? after.streamId
+          : next.streamId,
+      }
+    }
+    processProtocolEnabled.value = true
+    assignProcessState(next)
+  } catch (failure) {
+    if (shouldResnapshotProcess(failure)) {
+      await loadProcessSnapshot(seq, target)
+      return
+    }
+    throw failure
+  }
+}
+
+/** Real process projection after history; fixture path stays synthetic-only. */
+async function loadProcessProjection(seq: number, target: string) {
+  if (wantFixture.value || !target) return
+  try {
+    if (processProtocolEnabled.value && processState.cursor) {
+      await catchUpProcess(seq, target)
+    } else {
+      await loadProcessSnapshot(seq, target)
+    }
+  } catch (failure) {
+    if (processUnavailable(failure)) {
+      if (!processProtocolEnabled.value) clearProcessPreview()
+      return
+    }
+    // Keep chat usable; process is best-effort beside formal history.
+  }
+}
+
 function assistantIds() {
   return messages.value.filter(message => message.senderKind === 'ASSISTANT').map(message => message.messageId)
 }
@@ -146,6 +256,7 @@ function clearHistory() {
   snapshot.value = null
   messages.value = []
   nextPageCursor.value = null
+  if (!wantFixture.value) clearProcessPreview()
 }
 
 function syncRunWatch() {
@@ -240,6 +351,7 @@ async function loadHistory(seq: number, syncWatch = true) {
         selectedEmployeeId.value = value.session.employeeId
         await searchSessions()
       }
+      if (seq === loadSeq) await loadProcessProjection(seq, target)
       if (syncWatch && seq === loadSeq) syncRunWatch()
     } else if (syncWatch) {
       runWatch.stop()
