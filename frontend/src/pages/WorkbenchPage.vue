@@ -358,15 +358,17 @@ function closeRename() {
   renameTarget.value = null
 }
 
-function focusRefresh() { void refresh(true) }
+function onVisibilityRefresh() {
+  if (document.visibilityState === 'visible') void refresh(true)
+}
 
 onMounted(() => {
   void refresh()
-  window.addEventListener('focus', focusRefresh)
+  document.addEventListener('visibilitychange', onVisibilityRefresh)
 })
 onUnmounted(() => {
   clear()
-  window.removeEventListener('focus', focusRefresh)
+  document.removeEventListener('visibilitychange', onVisibilityRefresh)
 })
 watch(sessionId, () => {
   runWatch.stop()
@@ -494,9 +496,6 @@ watch(sessionId, () => {
             class="formal-message"
             :class="message.senderKind.toLowerCase()"
           >
-            <p class="message-author">
-              {{ message.senderKind === 'USER' ? '我' : employeeLabel }}
-            </p>
             <template v-for="(text, index) in message.texts" :key="index">
               <MarkdownBody
                 v-if="message.senderKind === 'ASSISTANT' && (text.bodyFormat === 'markdown-v1' || text.bodyFormat === 'plain-text')"
@@ -773,37 +772,40 @@ watch(sessionId, () => {
   font-size: 13px;
   margin-bottom: 16px;
 }
+.chat {
+  max-width: 720px;
+  width: 100%;
+  margin-inline: auto;
+}
 .formal-message {
   margin: 22px 0;
-  max-width: 760px;
 }
 .formal-message.user {
-  margin-left: auto;
-}
-.message-author {
-  font-size: 12px;
-  font-weight: 600;
-  color: #817b99;
-  margin: 0 0 6px;
-}
-.user .message-author {
-  text-align: right;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
 }
 .message-text {
   white-space: pre-wrap;
   overflow-wrap: anywhere;
   font-size: 15px;
   line-height: 1.9;
-  background: white;
-  border: 1px solid var(--line);
-  border-radius: 12px;
-  padding: 14px 18px;
   margin: 0;
 }
 .user .message-text {
+  width: fit-content;
+  max-width: 70%;
   background: #ece8ff;
-  border-color: #d9d2f8;
+  border: 1px solid #d9d2f8;
+  border-radius: 18px;
+  padding: 10px 16px;
   color: #292c45;
+}
+.formal-message.assistant .message-text {
+  background: transparent;
+  border: 0;
+  border-radius: 0;
+  padding: 0;
 }
 .workbench-welcome {
   text-align: center;
@@ -850,8 +852,8 @@ watch(sessionId, () => {
   .head {
     padding: 0 16px;
   }
-  .formal-message.user {
-    margin-left: 12px;
+  .user .message-text {
+    max-width: min(70%, calc(100% - 12px));
   }
   .workbench-welcome {
     padding: 48px 0;
