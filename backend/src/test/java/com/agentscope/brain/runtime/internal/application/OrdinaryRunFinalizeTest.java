@@ -1,6 +1,9 @@
 package com.agentscope.brain.runtime.internal.application;
 
 import com.agentscope.brain.projection.api.AcceptedTextProjection;
+import com.agentscope.brain.projection.internal.application.HistoryCursor;
+import com.agentscope.brain.projection.internal.application.ProcessStepWriter;
+import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -19,6 +22,7 @@ class OrdinaryRunFinalizeTest {
     private TransactionTemplate tx;
     private OrdinaryRunFinalize finalize;
     private final List<AcceptedTextProjection.Fact> projected = new ArrayList<>();
+    private final List<ProcessStepWriter.Fact> stages = new ArrayList<>();
     private final LocalDateTime now = LocalDateTime.of(2026, 10, 27, 9, 0, 0);
     private byte[] claimToken;
 
@@ -28,24 +32,29 @@ class OrdinaryRunFinalizeTest {
         tx = new TransactionTemplate(new DataSourceTransactionManager(source));
         claimToken = uuid();
         projected.clear();
+        stages.clear();
         AcceptedTextProjection projection = fact -> projected.add(fact);
-        finalize = new OrdinaryRunFinalize(jdbc, projection);
+        ProcessStepWriter processWriter = new ProcessStepWriter(jdbc, new HistoryCursor("")) {
+            @Override public void upsertStage(Fact f) { stages.add(f); }
+        };
+        finalize = new OrdinaryRunFinalize(jdbc, projection, processWriter);
         jdbc.execute("""
             CREATE TABLE runtime_capacity(id BIGINT PRIMARY KEY,singleton_key INT,foreground_limit INT,normal_waiting_limit INT,
               occupied_count INT,normal_waiting_count INT,boot_epoch BIGINT,row_version BIGINT,gmt_modified TIMESTAMP)
             """);
         jdbc.execute("""
             CREATE TABLE runtime_dispatch(id BIGINT PRIMARY KEY,status VARCHAR(16),permit_state VARCHAR(16),claim_token BINARY(16),
-              claim_fence BIGINT,finished_at TIMESTAMP,row_version BIGINT,gmt_modified TIMESTAMP,run_id BIGINT,session_id BIGINT)
+              claim_fence BIGINT,finished_at TIMESTAMP,reason_code VARCHAR(64),row_version BIGINT,gmt_modified TIMESTAMP,
+              run_id BIGINT,session_id BIGINT)
             """);
         jdbc.execute("""
             CREATE TABLE business_run(id BIGINT PRIMARY KEY,session_id BIGINT,status VARCHAR(24),row_version BIGINT,
-              ended_at TIMESTAMP,gmt_modified TIMESTAMP,actor_user_id BIGINT,employee_release_id BIGINT)
+              ended_at TIMESTAMP,reconcile_reason VARCHAR(255),gmt_modified TIMESTAMP,actor_user_id BIGINT,employee_release_id BIGINT)
             """);
         jdbc.execute("""
             CREATE TABLE runtime_sdk_call(id BIGINT PRIMARY KEY,status VARCHAR(32),save_status VARCHAR(16),readback_status VARCHAR(16),
               saved_state_sha256 BINARY(32),readback_state_sha256 BINARY(32),verified_at TIMESTAMP,ended_at TIMESTAMP,
-              outcome_kind VARCHAR(32),row_version BIGINT,gmt_modified TIMESTAMP,claim_fence BIGINT,dispatch_id BIGINT)
+              outcome_kind VARCHAR(64),row_version BIGINT,gmt_modified TIMESTAMP,claim_fence BIGINT,dispatch_id BIGINT)
             """);
         jdbc.execute("""
             CREATE TABLE business_session(id BIGINT PRIMARY KEY,user_id BIGINT,employee_id BIGINT,employee_release_id BIGINT,
@@ -63,8 +72,8 @@ class OrdinaryRunFinalizeTest {
             """);
         jdbc.update("INSERT INTO runtime_capacity VALUES(1,1,2,16,1,0,7,3,?)", now);
         jdbc.update("INSERT INTO business_session VALUES(10,100,5,50,'hello',4,1,1,?,?,?)", uuid(), now, now);
-        jdbc.update("INSERT INTO business_run VALUES(20,10,'RUNNING',2,NULL,?,100,50)", now);
-        jdbc.update("INSERT INTO runtime_dispatch VALUES(30,'CLAIMED','HELD',?,1,NULL,2,?,20,10)", claimToken, now);
+        jdbc.update("INSERT INTO business_run VALUES(20,10,'RUNNING',2,NULL,NULL,?,100,50)", now);
+        jdbc.update("INSERT INTO runtime_dispatch VALUES(30,'CLAIMED','HELD',?,1,NULL,NULL,2,?,20,10)", claimToken, now);
         jdbc.update("""
             INSERT INTO runtime_sdk_call VALUES(60,'STARTED','NONE','NONE',NULL,NULL,NULL,NULL,NULL,1,?,1,30)
             """, now);
@@ -90,6 +99,11 @@ class OrdinaryRunFinalizeTest {
         assertThat(jdbc.queryForObject("SELECT status FROM runtime_sdk_call WHERE id=60", String.class)).isEqualTo("VERIFIED");
         assertThat(projected).hasSize(1);
         assertThat(projected.get(0).text()).isEqualTo("assistant reply");
+        assertThat(stages).hasSize(1);
+        assertThat(stages.get(0).title()).isEqualTo("执行完成");
+        assertThat(stages.get(0).status()).isEqualTo("DONE");
+        assertThat(stages.get(0).stepId()).isEqualTo(
+                UUID.nameUUIDFromBytes("stage-20".getBytes(StandardCharsets.UTF_8)).toString());
 
         AtomicReference<RuntimeException> second = new AtomicReference<>();
         try {
@@ -100,6 +114,21 @@ class OrdinaryRunFinalizeTest {
         } catch (RuntimeException ex) { second.set(ex); }
         assertThat(jdbc.queryForObject("SELECT COUNT(*) FROM business_message WHERE produced_by_run_id=20", Integer.class)).isEqualTo(1);
         assertThat(projected).hasSize(1);
+        assertThat(stages).hasSize(1);
+    }
+
+    @Test void failEmitsFailedStage() {
+        var lease = new OrdinaryRunClaim.Lease("30", "20", "10", "100", "5", "50", "slot", "60",
+                uuidString(claimToken), "1", "7");
+        tx.execute(status -> {
+            finalize.fail(lease, "MODEL_OR_FINALIZE_FAILED", now);
+            return null;
+        });
+        assertThat(jdbc.queryForObject("SELECT status FROM business_run WHERE id=20", String.class)).isEqualTo("FAILED");
+        assertThat(stages).hasSize(1);
+        assertThat(stages.get(0).title()).isEqualTo("执行失败");
+        assertThat(stages.get(0).status()).isEqualTo("FAILED");
+        assertThat(stages.get(0).summary()).isEqualTo("MODEL_OR_FINALIZE_FAILED");
     }
 
     private static byte[] uuid() {

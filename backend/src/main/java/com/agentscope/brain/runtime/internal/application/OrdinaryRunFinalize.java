@@ -1,10 +1,11 @@
 package com.agentscope.brain.runtime.internal.application;
 
 import com.agentscope.brain.projection.api.AcceptedTextProjection;
+import com.agentscope.brain.projection.internal.application.ProcessStepSecurity;
+import com.agentscope.brain.projection.internal.application.ProcessStepWriter;
 import java.math.BigInteger;
 import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
-import java.security.MessageDigest;
 import java.sql.Statement;
 import java.time.LocalDateTime;
 import java.util.Map;
@@ -21,10 +22,12 @@ import org.springframework.transaction.annotation.Transactional;
 public class OrdinaryRunFinalize {
     private final JdbcTemplate jdbc;
     private final AcceptedTextProjection projection;
+    private final ProcessStepWriter processWriter;
 
-    public OrdinaryRunFinalize(JdbcTemplate jdbc, AcceptedTextProjection projection) {
+    public OrdinaryRunFinalize(JdbcTemplate jdbc, AcceptedTextProjection projection, ProcessStepWriter processWriter) {
         this.jdbc = jdbc;
         this.projection = projection;
+        this.processWriter = processWriter;
     }
 
     public void succeed(OrdinaryRunClaim.Lease lease, String text, byte[] stateDigest, LocalDateTime now) {
@@ -91,6 +94,9 @@ public class OrdinaryRunFinalize {
         projection.append(new AcceptedTextProjection.Fact(lease.userId(), lease.employeeId(), lease.sessionId(), lease.releaseId(),
                 (String) session.get("title"), version, uuid((byte[]) session.get("projection_stream_id")), seq,
                 value(session, "last_projection_seq"), mid, no, block, lease.runId(), text, now, "ASSISTANT", "SUCCEEDED"));
+        processWriter.upsertStage(new ProcessStepWriter.Fact(
+                lease.userId(), lease.sessionId(), lease.runId(), stageStepId(lease.runId()),
+                "执行完成", null, "DONE", false, null, null, now));
     }
 
     public void fail(OrdinaryRunClaim.Lease lease, String reason, LocalDateTime now) {
@@ -118,6 +124,13 @@ public class OrdinaryRunFinalize {
                 UPDATE runtime_capacity SET occupied_count=occupied_count-1,row_version=row_version+1,gmt_modified=?
                 WHERE singleton_key=1 AND occupied_count>0 AND boot_epoch=?
                 """, now, lease.bootEpoch());
+        processWriter.upsertStage(new ProcessStepWriter.Fact(
+                lease.userId(), lease.sessionId(), lease.runId(), stageStepId(lease.runId()),
+                "执行失败", ProcessStepSecurity.redactDisplayText(reason), "FAILED", false, null, null, now));
+    }
+
+    private static String stageStepId(String runId) {
+        return UUID.nameUUIDFromBytes(("stage-" + runId).getBytes(StandardCharsets.UTF_8)).toString();
     }
 
     private Map<String, Object> lockOne(String sql, Object... args) {
