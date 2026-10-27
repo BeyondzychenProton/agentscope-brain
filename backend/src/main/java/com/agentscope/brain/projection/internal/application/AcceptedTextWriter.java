@@ -34,7 +34,7 @@ public class AcceptedTextWriter implements AcceptedTextProjection {
             var message=new LinkedHashMap<String,Object>(Map.of("type","MESSAGE_COMMIT","messageId",f.messageId(),"messageNo",f.messageNo(),
                     "senderKind",f.senderKind(),"runId",f.runId(),"acceptedAt",
                     f.now().format(java.time.format.DateTimeFormatter.ofPattern("uuuu-MM-dd'T'HH:mm:ss.SSSSSS'Z'")),
-                    "contents",List.of(ref),"replacesContentIds",List.of()));
+                    "contents",List.of(ref),"replacesContentIds",f.replacesContentIds()));
             if("USER".equals(f.senderKind())) message.put("initialRunId",f.runId());
             else message.put("producedByRunId",f.runId());
             var session=new LinkedHashMap<String,Object>(Map.of("type","SESSION_SET","sessionId",f.sessionId(),"employeeId",f.employeeId(),

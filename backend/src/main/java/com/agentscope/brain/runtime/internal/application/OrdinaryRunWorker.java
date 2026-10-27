@@ -52,7 +52,7 @@ public class OrdinaryRunWorker {
         OrdinaryRunClaim.Lease lease = write.execute(status -> claim.claimNext(now(), executorRef));
         if (lease == null) return;
         try {
-            String text = toolLoop.run(lease.userId(), lease.releaseId(), dialogue(lease));
+            String text = toolLoop.run(lease, dialogue(lease));
             byte[] digest = sha((lease.runId() + '\n' + text).getBytes(StandardCharsets.UTF_8));
             write.execute(status -> {
                 finalize.succeed(lease, text, digest, now());
@@ -62,6 +62,7 @@ public class OrdinaryRunWorker {
             String reason = failure instanceof IllegalStateException
                     ? truncate(failure.getMessage()) : "MODEL_OR_FINALIZE_FAILED";
             write.execute(status -> {
+                toolLoop.closeOpenPreviewsFailed(lease);
                 finalize.fail(lease, reason, now());
                 return null;
             });

@@ -1,6 +1,7 @@
 package com.agentscope.brain.runtime.internal.application;
 
 import com.agentscope.brain.projection.api.AcceptedTextProjection;
+import com.agentscope.brain.projection.api.StreamingReplyProjection;
 import com.agentscope.brain.projection.internal.application.HistoryCursor;
 import com.agentscope.brain.projection.internal.application.ProcessStepWriter;
 import java.nio.charset.StandardCharsets;
@@ -34,10 +35,16 @@ class OrdinaryRunFinalizeTest {
         projected.clear();
         stages.clear();
         AcceptedTextProjection projection = fact -> projected.add(fact);
+        StreamingReplyProjection streaming = new StreamingReplyProjection() {
+            @Override public Handle publishCumulative(Context context, String cumulativeText, LocalDateTime at) {
+                return new Handle("00000000-0000-0000-0000-000000000001", "1");
+            }
+            @Override public void close(Context context, String contentId, String closeReason, String replacementMessageId, LocalDateTime at) { }
+        };
         ProcessStepWriter processWriter = new ProcessStepWriter(jdbc, new HistoryCursor("")) {
             @Override public void upsertStage(Fact f) { stages.add(f); }
         };
-        finalize = new OrdinaryRunFinalize(jdbc, projection, processWriter);
+        finalize = new OrdinaryRunFinalize(jdbc, projection, streaming, processWriter);
         jdbc.execute("""
             CREATE TABLE runtime_capacity(id BIGINT PRIMARY KEY,singleton_key INT,foreground_limit INT,normal_waiting_limit INT,
               occupied_count INT,normal_waiting_count INT,boot_epoch BIGINT,row_version BIGINT,gmt_modified TIMESTAMP)
@@ -69,6 +76,11 @@ class OrdinaryRunFinalizeTest {
         jdbc.execute("""
             CREATE TABLE message_content_block(id BIGINT AUTO_INCREMENT PRIMARY KEY,message_id BIGINT,block_no INT,block_kind VARCHAR(16),
               text_content CLOB,gmt_create TIMESTAMP,gmt_modified TIMESTAMP)
+            """);
+        jdbc.execute("""
+            CREATE TABLE projection_content(
+              content_id BINARY(16) PRIMARY KEY,owner_user_id BIGINT,session_id BIGINT,run_id BIGINT,
+              content_kind VARCHAR(24),status VARCHAR(16))
             """);
         jdbc.update("INSERT INTO runtime_capacity VALUES(1,1,2,16,1,0,7,3,?)", now);
         jdbc.update("INSERT INTO business_session VALUES(10,100,5,50,'hello',4,1,1,?,?,?)", uuid(), now, now);

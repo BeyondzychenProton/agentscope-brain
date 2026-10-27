@@ -8,4 +8,10 @@ class OrdinaryToolLoopTest {
         assertThat(OrdinaryToolLoop.looksLikeToolMarkup("<tool_call><function=identity.resolve>")).isTrue();
         assertThat(OrdinaryToolLoop.looksLikeToolMarkup("董佳怡的手机号是 13800000000")).isFalse();
     }
+
+    @Test void truncatesLongToolArgsForLogs() {
+        String longArgs = "x".repeat(600);
+        assertThat(OrdinaryToolLoop.truncate(longArgs)).hasSize(513).endsWith("…");
+        assertThat(OrdinaryToolLoop.truncate("short")).isEqualTo("short");
+    }
 }

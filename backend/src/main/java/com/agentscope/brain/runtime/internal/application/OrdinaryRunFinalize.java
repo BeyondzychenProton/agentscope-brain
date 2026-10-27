@@ -1,6 +1,7 @@
 package com.agentscope.brain.runtime.internal.application;
 
 import com.agentscope.brain.projection.api.AcceptedTextProjection;
+import com.agentscope.brain.projection.api.StreamingReplyProjection;
 import com.agentscope.brain.projection.internal.application.ProcessStepSecurity;
 import com.agentscope.brain.projection.internal.application.ProcessStepWriter;
 import java.math.BigInteger;
@@ -8,6 +9,7 @@ import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
 import java.sql.Statement;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -22,11 +24,17 @@ import org.springframework.transaction.annotation.Transactional;
 public class OrdinaryRunFinalize {
     private final JdbcTemplate jdbc;
     private final AcceptedTextProjection projection;
+    private final StreamingReplyProjection streaming;
     private final ProcessStepWriter processWriter;
 
-    public OrdinaryRunFinalize(JdbcTemplate jdbc, AcceptedTextProjection projection, ProcessStepWriter processWriter) {
+    public OrdinaryRunFinalize(
+            JdbcTemplate jdbc,
+            AcceptedTextProjection projection,
+            StreamingReplyProjection streaming,
+            ProcessStepWriter processWriter) {
         this.jdbc = jdbc;
         this.projection = projection;
+        this.streaming = streaming;
         this.processWriter = processWriter;
     }
 
@@ -49,7 +57,6 @@ public class OrdinaryRunFinalize {
         var session = lockOne("SELECT * FROM business_session WHERE id=? AND user_id=? FOR UPDATE",
                 lease.sessionId(), lease.userId());
         String no = plus(value(session, "last_message_no"));
-        String seq = plus(value(session, "last_projection_seq"));
         String version = plus(value(session, "row_version"));
         String mid = insert("""
                 INSERT INTO business_message(session_id,user_id,employee_id,message_no,input_sequence,sender_kind,submission_key,
@@ -87,13 +94,31 @@ public class OrdinaryRunFinalize {
                 """, now, lease.bootEpoch()) != 1) {
             throw new IllegalStateException("CAPACITY_RELEASE_LOST");
         }
+        List<String> replaces = List.of();
+        var open = jdbc.queryForList("""
+                SELECT content_id FROM projection_content
+                WHERE session_id=? AND owner_user_id=? AND run_id=? AND content_kind='TEXT' AND status='OPEN'
+                FOR UPDATE
+                """, lease.sessionId(), lease.userId(), lease.runId());
+        if (open.size() == 1) {
+            String previewId = uuid((byte[]) open.get(0).get("content_id"));
+            streaming.close(
+                    new StreamingReplyProjection.Context(
+                            lease.userId(), lease.sessionId(), lease.runId(), lease.sdkCallId()),
+                    previewId, "PROMOTED", mid, now);
+            replaces = List.of(previewId);
+            session = lockOne("SELECT * FROM business_session WHERE id=? AND user_id=? FOR UPDATE",
+                    lease.sessionId(), lease.userId());
+        }
+        String previousSeq = value(session, "last_projection_seq");
+        String seq = plus(previousSeq);
         jdbc.update("""
                 UPDATE business_session SET last_message_no=?,last_projection_seq=?,row_version=?,last_activity_at=?,gmt_modified=?
                 WHERE id=?
                 """, no, seq, version, now, now, lease.sessionId());
         projection.append(new AcceptedTextProjection.Fact(lease.userId(), lease.employeeId(), lease.sessionId(), lease.releaseId(),
                 (String) session.get("title"), version, uuid((byte[]) session.get("projection_stream_id")), seq,
-                value(session, "last_projection_seq"), mid, no, block, lease.runId(), text, now, "ASSISTANT", "SUCCEEDED"));
+                previousSeq, mid, no, block, lease.runId(), text, now, "ASSISTANT", "SUCCEEDED", replaces));
         processWriter.upsertStage(new ProcessStepWriter.Fact(
                 lease.userId(), lease.sessionId(), lease.runId(), stageStepId(lease.runId()),
                 "执行完成", null, "DONE", false, null, null, now));

@@ -13,10 +13,15 @@ export interface FormalMessage {
 export interface Page {
   items: FormalMessage[]; nextPageCursor: string | null; hasMore: boolean; messageUpperBound: string
 }
+export interface OpenPreview {
+  contentId: string; contentVersion: string; runId: string; status: string
+  bodyFormat: string; body: string; byteCount: string; sha256: string
+}
 export interface Snapshot {
   protocolVersion: string; sessionId: string; streamId: string; watermark: string; cursor: string
   session: { employeeId: string; title: string; sessionVersion?: string; allowedActions: string[] }; messages: Page
   runs?: Array<{ runId: string; status: string; processingStatus: string | null }>
+  openPreviews?: OpenPreview[]
 }
 export interface DisplayText { bodyFormat: string; body: string }
 export interface DisplayMessage { messageId: string; senderKind: 'USER' | 'ASSISTANT'; texts: DisplayText[] }

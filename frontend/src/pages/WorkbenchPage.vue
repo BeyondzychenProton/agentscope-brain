@@ -36,6 +36,12 @@ import {
   type Page,
   type Snapshot,
 } from '../features/workbench/history'
+import {
+  emptyTextProjectionState,
+  seedOpenPreviews,
+  type TextProjectionState,
+} from '../features/workbench/textProjectionReducer'
+import { ProjectionSubscription, type SubscriptionStatus } from '../features/workbench/projectionSubscription'
 import happyPathBatches from '../features/workbench/fixtures/process-timeline/happy-path.json' with { type: 'json' }
 
 const auth = useAuth()
@@ -80,12 +86,68 @@ const canSendText = computed(() => textInputAvailable.value && !runActive.value)
 const avatarText = computed(() => (auth.identity?.displayName ?? '用').slice(0, 1))
 const processState = reactive(emptyProcessState())
 const processProtocolEnabled = ref(false)
+const textProjection = reactive(emptyTextProjectionState())
+const sseStatus = ref<SubscriptionStatus>('idle')
+const projectionSub = new ProjectionSubscription({
+  onState(next) { Object.assign(textProjection, next) },
+  onStatus(status) { sseStatus.value = status },
+  onCommit() { void reloadAfterCommit() },
+  onAuthRequired() { void failed(new ApiFailure(401, 'UNAUTHORIZED')) },
+})
+const previewList = computed(() => Object.values(textProjection.previews))
+const sseStatusLabel = computed(() => {
+  switch (sseStatus.value) {
+    case 'live': return 'live'
+    case 'connecting': return 'connecting'
+    case 'degraded_poll': return 'poll'
+    case 'paused': return 'paused'
+    default: return sseStatus.value
+  }
+})
 const wantFixture = computed(() => route.query.processFixture === '1')
 const hideRunWatchBanner = computed(() => shouldHideRunWatchBanner({
   processProtocolEnabled: processProtocolEnabled.value,
   hasProcessSteps: processState.steps.length > 0,
   runActive: runActive.value || wantFixture.value,
 }))
+
+async function reloadAfterCommit() {
+  const seq = loadSeq
+  const target = sessionId.value
+  if (!target) return
+  try {
+    await loadHistory(seq, true)
+  } catch (failure) {
+    if (failure instanceof ApiFailure && (failure.status === 401 || failure.code === 'PASSWORD_CHANGE_REQUIRED')) {
+      await failed(failure)
+    }
+  }
+}
+
+function syncTextProjection(value: Snapshot, target: string) {
+  const seeded = seedOpenPreviews(emptyTextProjectionState(), {
+    streamId: value.streamId,
+    watermark: value.watermark,
+    cursor: value.cursor,
+    openPreviews: (value.openPreviews ?? []).map(row => ({
+      contentId: row.contentId,
+      contentVersion: row.contentVersion,
+      runId: row.runId,
+      body: row.body,
+      status: row.status,
+    })),
+  })
+  Object.assign(textProjection, seeded)
+  const active = (value.runs ?? []).some(run =>
+    run.status === 'WAITING' || run.status === 'RUNNING'
+    || run.processingStatus === 'WAITING' || run.processingStatus === 'RUNNING')
+  if (active && seeded.cursor) {
+    projectionSub.start(target, { ...seeded, previews: { ...seeded.previews } }, true)
+  } else {
+    projectionSub.stop()
+    projectionSub.setRunActive(false)
+  }
+}
 
 function applyFixturePreview() {
   let next = emptyProcessState()
@@ -253,6 +315,9 @@ function clear() {
 
 function clearHistory() {
   runWatch.stop()
+  projectionSub.stop()
+  Object.assign(textProjection, emptyTextProjectionState())
+  sseStatus.value = 'idle'
   snapshot.value = null
   messages.value = []
   nextPageCursor.value = null
@@ -351,10 +416,12 @@ async function loadHistory(seq: number, syncWatch = true) {
         selectedEmployeeId.value = value.session.employeeId
         await searchSessions()
       }
+      if (seq === loadSeq) syncTextProjection(value, target)
       if (seq === loadSeq) await loadProcessProjection(seq, target)
       if (syncWatch && seq === loadSeq) syncRunWatch()
     } else if (syncWatch) {
       runWatch.stop()
+      projectionSub.stop()
     }
 }
 
@@ -517,6 +584,7 @@ onUnmounted(() => {
 })
 watch(sessionId, () => {
   runWatch.stop()
+  projectionSub.stop()
   void selectHistory()
 })
 watch(wantFixture, () => {
@@ -626,7 +694,15 @@ watch(wantFixture, () => {
         <p v-if="busy" class="muted status-line" role="status">正在读取当前身份与历史…</p>
 
         <section v-if="snapshot" class="chat" aria-label="正式文字历史">
-          <p class="history-note">正式文字记录</p>
+          <p class="history-note">
+            正式文字记录
+            <span
+              v-if="sseStatus !== 'idle'"
+              class="sse-badge"
+              :data-sse="sseStatus"
+              role="status"
+            >SSE {{ sseStatusLabel }}</span>
+          </p>
           <p v-if="!hideRunWatchBanner && (runWatch.notice || snapshotRunActive)" class="readonly-note" role="status">
             {{ runWatch.notice || (snapshotRunActive ? '消息已接纳，等待执行。' : '') }}
           </p>
@@ -652,7 +728,7 @@ watch(wantFixture, () => {
               <p v-else class="message-text">{{ text.body }}</p>
             </template>
           </article>
-          <!-- B 阶段挂在全部正式消息之后；A 再按 run 插到对应用户消息后。 -->
+          <!-- Variant A: user bubbles (formal) → process block → streaming formal-reply preview. -->
           <ProcessTimeline
             v-if="processProtocolEnabled && (runActive || processState.steps.length || wantFixture)"
             :steps="processState.steps"
@@ -663,7 +739,17 @@ watch(wantFixture, () => {
               snapshotWaiting: snapshotRunActive,
             })"
           />
-          <p v-if="!messages.length" class="muted">此会话还没有可读取的正式文字消息。</p>
+          <article
+            v-for="preview in previewList"
+            :key="'preview-' + preview.contentId"
+            class="formal-message assistant preview"
+            aria-label="正式回复预览"
+          >
+            <span class="preview-live">生成中</span>
+            <MarkdownBody :source="preview.body" />
+            <span class="preview-caret" aria-hidden="true">▍</span>
+          </article>
+          <p v-if="!messages.length && !previewList.length" class="muted">此会话还没有可读取的正式文字消息。</p>
         </section>
 
         <div v-else-if="!busy && !error" class="workbench-welcome">
@@ -921,7 +1007,35 @@ watch(wantFixture, () => {
   font-size: 12px;
   color: var(--muted);
   margin: 0 0 16px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
 }
+.sse-badge {
+  font-size: 11px;
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: #e8e4ff;
+  color: #4338ca;
+}
+.sse-badge[data-sse="live"] { background: #d1fae5; color: #047857; }
+.sse-badge[data-sse="degraded_poll"] { background: #fef3c7; color: #b45309; }
+.sse-badge[data-sse="paused"] { background: #fee2e2; color: #b91c1c; }
+.formal-message.preview {
+  position: relative;
+  line-height: 1.85;
+}
+.preview-live {
+  position: absolute;
+  top: -6px;
+  left: 0;
+  font-size: 11px;
+  color: #7c3aed;
+}
+.preview-caret {
+  animation: preview-blink 1s step-end infinite;
+}
+@keyframes preview-blink { 50% { opacity: 0; } }
 .readonly-note {
   background: #fff5e0;
   color: #795d21;
