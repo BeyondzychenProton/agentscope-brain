@@ -100,7 +100,10 @@ class AuthenticationConfiguration {
                 .requestMatchers("/api/me", "/api/auth/logout", "/api/auth/password/initial").authenticated()
                 .requestMatchers(org.springframework.http.HttpMethod.GET, "/api/sessions", "/api/session-intents/*", "/api/submissions/*", "/api/employees/*/capabilities",
                         "/api/sessions/*/projection/snapshot", "/api/sessions/*/projection/messages",
-                        "/api/sessions/*/projection/content/*").authenticated()
+                        "/api/sessions/*/projection/content/*",
+                        "/api/sessions/*/projection/process/snapshot",
+                        "/api/sessions/*/projection/process/after",
+                        "/api/sessions/*/projection/process/steps/*/detail").authenticated()
                 .requestMatchers(org.springframework.http.HttpMethod.POST, "/api/session-intents", "/api/submissions", "/api/submissions/*/close").authenticated()
                 // PathPattern + HttpMethod-only matchers have denied PATCH in some Boot builds; allow the path for authenticated users.
                 .requestMatchers("/api/sessions/*/title", "/api/sessions/{sessionId}/title").authenticated()
