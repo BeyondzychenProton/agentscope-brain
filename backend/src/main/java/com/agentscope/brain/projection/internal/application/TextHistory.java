@@ -31,8 +31,12 @@ public class TextHistory {
     public record Session(String sessionId, String employeeId, String title, String sessionVersion,
             String lifecycleStatus, String recoveryStatus, List<String> allowedActions) { }
     public record QueuedRun(String runId,String status,String processingStatus) { }
+    public record OpenPreview(String contentId, String contentVersion, String runId, String status,
+            String bodyFormat, String body, String byteCount, String sha256) { }
     public record Snapshot(String protocolVersion, String sessionId, String streamId, String watermark, String cursor,
-            Session session, Page messages, List<QueuedRun> runs) { }
+            Session session, Page messages, List<QueuedRun> runs, List<OpenPreview> openPreviews) { }
+    public record Events(String protocolVersion, String sessionId, String streamId, String headSeq,
+            String lastCursor, boolean hasMore, List<Map<String, Object>> batches) { }
     public record Content(String contentId, String contentVersion, String bodyFormat, String body, String byteCount,
             String sha256, String nextPartCursor) { }
     private record Owned(String userId, Map<String, Object> session, String stream) { }
@@ -81,9 +85,12 @@ public class TextHistory {
                 runs.add(new QueuedRun(String.valueOf(failed.get(0).get("id")), "FAILED", reason));
             }
         }
-        // Do not return an apparently complete snapshot for functionality deferred to stage 2.
+        // Stage-1 TEXT only: allow TEXT_DELTA streaming progress / OPEN TEXT previews (#43).
         if (owned.session().get("source_session_id") != null
-                || count("SELECT COUNT(*) FROM run_progress p JOIN business_run r ON r.id=p.run_id WHERE r.session_id=?", sessionId) > 0
+                || count("""
+                    SELECT COUNT(*) FROM run_progress p JOIN business_run r ON r.id=p.run_id
+                    WHERE r.session_id=? AND p.event_kind<>'TEXT_DELTA'
+                    """, sessionId) > 0
                 || count("SELECT COUNT(*) FROM projection_content WHERE session_id=? AND content_kind<>'TEXT'", sessionId) > 0) {
             throw new ProjectionReadFailure(503, "PROJECTION_SCOPE_UNAVAILABLE");
         }
@@ -98,7 +105,54 @@ public class TextHistory {
                 && releases.canSubmit(owned.userId(),number(owned.session(),"employee_id"),number(owned.session(),"employee_release_id"))
                 ? List.of("START_RUN") : List.of());
         var cursor = cursors.encode(new HistoryCursor.Position("stream", owned.userId(), sessionId, owned.stream(), watermark, upper, "0"));
-        return new Snapshot(PROTOCOL, sessionId, owned.stream(), watermark, cursor, session, page(owned, position, messageLimit), List.copyOf(runs));
+        return new Snapshot(PROTOCOL, sessionId, owned.stream(), watermark, cursor, session,
+                page(owned, position, messageLimit), List.copyOf(runs), openPreviews(owned, sessionId));
+    }
+
+    public Events events(String sessionId, String protocolVersion, String after, int limit) {
+        protocol(protocolVersion);
+        limit(limit);
+        var owned = owned(sessionId);
+        var position = cursors.decode(after);
+        if (!position.userId().equals(owned.userId()) || !position.sessionId().equals(sessionId)) {
+            throw new ProjectionReadFailure(404, "NOT_FOUND");
+        }
+        if (!"stream".equals(position.purpose())) {
+            throw new ProjectionReadFailure(409, "CURSOR_INVALID");
+        }
+        if (!position.streamId().equals(owned.stream())) {
+            throw new ProjectionReadFailure(409, "STREAM_CHANGED");
+        }
+        String head = number(owned.session(), "last_projection_seq");
+        if (new BigInteger(position.watermark()).compareTo(new BigInteger(head)) > 0) {
+            throw new ProjectionReadFailure(410, "RESET_REQUIRED");
+        }
+        var rows = jdbc.queryForList("""
+                SELECT seq,batch_payload FROM session_projection_event
+                WHERE session_id=? AND stream_id=? AND protocol_version=? AND seq>?
+                ORDER BY seq ASC LIMIT ?
+                """, sessionId, uuidBytes(UUID.fromString(owned.stream())), PROTOCOL,
+                position.watermark(), limit + 1);
+        boolean more = rows.size() > limit;
+        var selected = rows.subList(0, Math.min(limit, rows.size()));
+        var batches = new ArrayList<Map<String, Object>>();
+        String lastCursor = after;
+        String lastSeq = position.watermark();
+        for (var row : selected) {
+            try {
+                @SuppressWarnings("unchecked")
+                Map<String, Object> batch = new com.fasterxml.jackson.databind.ObjectMapper()
+                        .readValue((byte[]) row.get("batch_payload"), Map.class);
+                batches.add(batch);
+                lastSeq = number(row, "seq");
+                lastCursor = cursors.encode(new HistoryCursor.Position(
+                        "stream", owned.userId(), sessionId, owned.stream(), lastSeq,
+                        number(owned.session(), "last_message_no"), "0"));
+            } catch (Exception corrupt) {
+                throw new ProjectionReadFailure(503, "PROJECTION_READ_UNAVAILABLE");
+            }
+        }
+        return new Events(PROTOCOL, sessionId, owned.stream(), head, lastCursor, more, List.copyOf(batches));
     }
 
     public Page messages(String sessionId, String protocolVersion, String pageCursor, int pageLimit) {
@@ -129,6 +183,18 @@ public class TextHistory {
         if (!Arrays.equals((byte[]) heads.get(0).get("stream_id"), (byte[]) owned.session().get("projection_stream_id"))) {
             throw new ProjectionReadFailure(409, "STREAM_CHANGED");
         }
+        if (!"TEXT".equals(heads.get(0).get("content_kind"))) {
+            throw new ProjectionReadFailure(410, "CONTENT_VERSION_UNAVAILABLE");
+        }
+        String headStatus = String.valueOf(heads.get(0).get("status"));
+        if ("OPEN".equals(headStatus)) {
+            var openRows = jdbc.queryForList("""
+                    SELECT * FROM projection_content_version
+                    WHERE content_id=? AND content_version=? AND content_status='OPEN' AND payload_storage='INLINE'
+                    """, id, contentVersion);
+            if (openRows.size() != 1) { throw new ProjectionReadFailure(410, "CONTENT_VERSION_UNAVAILABLE"); }
+            return bodyOf(contentId, contentVersion, openRows.get(0), null);
+        }
         var rows = jdbc.queryForList("""
                 SELECT v.*,b.text_content,m.sender_kind FROM projection_content_version v
                 JOIN message_content_block b ON v.source_kind='MESSAGE_BLOCK' AND b.id=v.source_id AND b.block_kind='TEXT'
@@ -137,11 +203,15 @@ public class TextHistory {
                 """, sessionId, owned.userId(), id, contentVersion);
         if (rows.size() != 1) { throw new ProjectionReadFailure(410, "CONTENT_VERSION_UNAVAILABLE"); }
         var row = rows.get(0);
-        if (!"TEXT".equals(heads.get(0).get("content_kind")) || !"CLOSED".equals(row.get("content_status"))) {
+        if (!"CLOSED".equals(row.get("content_status"))) {
             throw new ProjectionReadFailure(410, "CONTENT_VERSION_UNAVAILABLE");
         }
+        return bodyOf(contentId, contentVersion, row, row.get("text_content"));
+    }
+
+    private Content bodyOf(String contentId, String contentVersion, Map<String, Object> row, Object fixedText) {
         byte[] body = "FIXED_REF".equals(row.get("payload_storage"))
-                ? String.valueOf(row.get("text_content")).getBytes(StandardCharsets.UTF_8) : (byte[]) row.get("body");
+                ? String.valueOf(fixedText).getBytes(StandardCharsets.UTF_8) : (byte[]) row.get("body");
         try {
             if (body == null || body.length > 262144 || body.length != ((Number) row.get("byte_count")).intValue()
                     || !MessageDigest.isEqual(MessageDigest.getInstance("SHA-256").digest(body), (byte[]) row.get("body_sha256")))
@@ -150,6 +220,39 @@ public class TextHistory {
             return new Content(contentId, contentVersion, String.valueOf(row.get("body_format")), text, String.valueOf(body.length),
                     HexFormat.of().formatHex((byte[]) row.get("body_sha256")), null);
         } catch (Exception corrupt) { throw new ProjectionReadFailure(410, "CONTENT_VERSION_UNAVAILABLE"); }
+    }
+
+    private List<OpenPreview> openPreviews(Owned owned, String sessionId) {
+        var rows = jdbc.queryForList("""
+                SELECT c.content_id,c.run_id,c.current_version,c.status,v.body_format,v.body,v.byte_count,v.body_sha256
+                FROM projection_content c
+                JOIN projection_content_version v ON v.content_id=c.content_id AND v.content_version=c.current_version
+                WHERE c.session_id=? AND c.owner_user_id=? AND c.content_kind='TEXT' AND c.status='OPEN'
+                  AND v.payload_storage='INLINE'
+                ORDER BY c.first_seq ASC,c.first_position ASC
+                LIMIT 16
+                """, sessionId, owned.userId());
+        var out = new ArrayList<OpenPreview>();
+        for (var row : rows) {
+            byte[] body = (byte[]) row.get("body");
+            if (body == null) continue;
+            try {
+                String text = StandardCharsets.UTF_8.newDecoder().onMalformedInput(CodingErrorAction.REPORT)
+                        .decode(ByteBuffer.wrap(body)).toString();
+                out.add(new OpenPreview(
+                        uuid((byte[]) row.get("content_id")),
+                        number(row, "current_version"),
+                        number(row, "run_id"),
+                        String.valueOf(row.get("status")),
+                        String.valueOf(row.get("body_format")),
+                        text,
+                        number(row, "byte_count"),
+                        HexFormat.of().formatHex((byte[]) row.get("body_sha256"))));
+            } catch (Exception ignored) {
+                throw new ProjectionReadFailure(503, "PROJECTION_READ_UNAVAILABLE");
+            }
+        }
+        return List.copyOf(out);
     }
 
     private Page page(Owned owned, HistoryCursor.Position p, int limit) {

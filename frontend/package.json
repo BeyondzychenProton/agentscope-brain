@@ -7,6 +7,7 @@
   "packageManager": "npm@11.19.1",
   "scripts": {
     "dev": "vite --host 127.0.0.1",
+    "prototype:formal-reply-streaming": "vite --host 127.0.0.1",
     "typecheck": "vue-tsc --noEmit",
     "test:auth": "node --test tests/auth-failure.test.mjs tests/tab-recovery.test.mjs",
     "test:composer": "node --test tests/composer.test.mjs",
@@ -14,6 +15,7 @@
     "test:history": "node --test tests/history.test.mjs",
     "test:run-watch": "node --test tests/run-watch.test.mjs",
     "test:process-timeline": "node --test tests/process-timeline-reducer.test.mjs tests/process-timeline-view.test.mjs tests/process-history-mapping.test.mjs",
+    "test:text-projection": "node --test tests/text-projection-reducer.test.mjs",
     "test:markdown": "node --test tests/markdown.test.mjs",
     "test:session-title": "node --test tests/session-title.test.mjs",
     "build": "vite build",
