@@ -101,6 +101,8 @@ class AuthenticationConfiguration {
                 .requestMatchers(org.springframework.http.HttpMethod.GET, "/api/sessions", "/api/session-intents/*", "/api/submissions/*", "/api/employees/*/capabilities",
                         "/api/sessions/*/projection/snapshot", "/api/sessions/*/projection/messages",
                         "/api/sessions/*/projection/content/*",
+                        "/api/sessions/*/projection/events",
+                        "/api/sessions/*/projection/stream",
                         "/api/sessions/*/projection/process/snapshot",
                         "/api/sessions/*/projection/process/after",
                         "/api/sessions/*/projection/process/steps/*/detail").authenticated()
