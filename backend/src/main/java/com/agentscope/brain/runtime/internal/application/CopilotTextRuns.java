@@ -3,9 +3,14 @@ package com.agentscope.brain.runtime.internal.application;
 import com.agentscope.brain.conversation.api.CopilotThreads;
 import com.agentscope.brain.identity.api.ExecutionSession;
 import com.agentscope.brain.runtime.internal.integration.TextAgentExecution;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import io.agentscope.core.agui.AguiInterruptConstants;
 import io.agentscope.core.agui.event.AguiEvent;
 import io.agentscope.core.agui.model.AguiMessage;
 import java.time.Duration;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
@@ -23,26 +28,42 @@ import reactor.core.scheduler.Schedulers;
 @ConditionalOnProperty(name = "brain.copilot.enabled", havingValue = "true")
 public class CopilotTextRuns {
     private static final Logger LOG = LoggerFactory.getLogger(CopilotTextRuns.class);
+    private static final ObjectMapper JSON = new ObjectMapper();
     private final CopilotThreads threads;
     private final ExecutionSession sessions;
     private final TextAgentExecution agent;
+    private final WriteOperations operations;
     private final Map<String, Active> live = new ConcurrentHashMap<>();
     private final Object[] stripes = java.util.stream.IntStream.range(0, 64).mapToObj(i -> new Object()).toArray();
 
-    public CopilotTextRuns(CopilotThreads threads, ExecutionSession sessions, TextAgentExecution agent) {
-        this.threads = threads; this.sessions = sessions; this.agent = agent;
+    public CopilotTextRuns(CopilotThreads threads, ExecutionSession sessions, TextAgentExecution agent,
+            WriteOperations operations) {
+        this.threads = threads; this.sessions = sessions; this.agent = agent; this.operations = operations;
     }
 
-    public Flux<AguiEvent> start(String threadId, String runId, String employeeId, String text) {
+    public Flux<AguiEvent> start(String threadId, String runId, String employeeId, String text,
+            List<CopilotThreads.Resume> resume) {
         synchronized (stripe(threadId)) {
             var lease = sessions.capture();
-            var accepted = threads.accept(threadId, runId, employeeId, text, lease.sessionHash());
-            var active = new Active(accepted.threadId(), accepted.runId(), lease);
+            List<CopilotThreads.Resume> answers = resume == null ? List.of() : List.copyOf(resume);
+            if (!answers.isEmpty()) prepareResume(threadId, runId, answers);
+            var accepted = threads.accept(threadId, runId, employeeId, text, lease.sessionHash(), answers);
+            var active = new Active(accepted.threadId(), accepted.runId(), lease, accepted.userId());
             var previous = live.put(threadId, active);
             if (previous != null) previous.terminate("INTERRUPTED", "EXECUTION_INTERRUPTED");
             active.start(employeeId, accepted, text);
             return active.events.asFlux();
         }
+    }
+
+    /** Moves the interrupted run's proposals onto the resuming run, or retires them on refusal. */
+    private void prepareResume(String threadId, String runId, List<CopilotThreads.Resume> answers) {
+        String interrupted = threads.interruptedRun(threadId);
+        if (interrupted == null) return;
+        boolean denied = answers.stream().anyMatch(answer -> "cancelled".equals(answer.status())
+                || (answer.payload() != null && Boolean.FALSE.equals(answer.payload().get("approved"))));
+        if (denied) operations.invalidateRun(interrupted);
+        else operations.adopt(interrupted, runId);
     }
 
     public Flux<AguiEvent> connect(String threadId) {
@@ -82,10 +103,13 @@ public class CopilotTextRuns {
         return true;
     }
 
+    private record Lookup(Map<String, String> names, Map<String, String> rooms) { }
+
     private final class Active {
         private final String threadId;
         private final String runId;
         private final ExecutionSession.Lease lease;
+        private final String userId;
         private final Sinks.Many<AguiEvent> events = Sinks.many().replay().all();
         private Disposable execution;
         private Disposable monitor;
@@ -95,11 +119,13 @@ public class CopilotTextRuns {
         private long characters;
         private int eventCount;
         private final RunDisplay display = new RunDisplay();
+        private Lookup priorLookup = new Lookup(Map.of(), Map.of());
 
-        Active(String threadId, String runId, ExecutionSession.Lease lease) {
-            this.threadId = threadId; this.runId = runId; this.lease = lease;
+        Active(String threadId, String runId, ExecutionSession.Lease lease, String userId) {
+            this.threadId = threadId; this.runId = runId; this.lease = lease; this.userId = userId;
         }
         synchronized void start(String employeeId, CopilotThreads.Accepted accepted, String text) {
+            priorLookup = lookup(accepted.history());
             monitor = Flux.interval(Duration.ofSeconds(2)).publishOn(Schedulers.boundedElastic())
                     .subscribe(tick -> checkLease(), error -> {
                         LOG.warn("Copilot text run lease check failed threadId={} runId={}", threadId, runId, error);
@@ -151,7 +177,20 @@ public class CopilotTextRuns {
                             ? failure.message() : "MODEL_STREAM_FAILED";
                     terminate("FAILED", code); return;
                 }
-                if (event instanceof AguiEvent.RunFinished) {
+                if (event instanceof AguiEvent.RunFinished finished) {
+                    if (finished.outcome() instanceof AguiEvent.RunFinishedInterruptOutcome pending
+                            && !pending.interrupts().isEmpty()) {
+                        // The write proposal is recorded before the user sees the confirmation card.
+                        for (var interrupt : pending.interrupts()) propose(interrupt);
+                        if (!threads.finish(threadId, runId, "INTERRUPTED", "CONFIRMATION_REQUIRED")) {
+                            terminate("INTERRUPTED", "EXECUTION_INTERRUPTED"); return;
+                        }
+                        ended = true;
+                        events.tryEmitNext(enriched(finished, pending.interrupts()));
+                        events.tryEmitComplete();
+                        close();
+                        return;
+                    }
                     if (sawTool && !finalTextAfterTool) { terminate("FAILED", "MODEL_FINAL_ANSWER_MISSING"); return; }
                     if (!threads.finish(threadId, runId, "SUCCEEDED", null)) {
                         terminate("INTERRUPTED", "EXECUTION_INTERRUPTED"); return;
@@ -174,6 +213,103 @@ public class CopilotTextRuns {
                 }
             }
         }
+        /** Records the write proposal carried by a permission interrupt; nothing is sent yet. */
+        private void propose(AguiEvent.Interrupt interrupt) {
+            Map<String, Object> metadata = interrupt.metadata() == null ? Map.of() : interrupt.metadata();
+            if (!AguiInterruptConstants.INTERRUPT_KIND_PERMISSION_CONFIRM.equals(
+                    String.valueOf(metadata.get(AguiInterruptConstants.METADATA_AGENTSCOPE_INTERRUPT_KIND)))) return;
+            String registered = String.valueOf(metadata.get(AguiInterruptConstants.METADATA_TOOL_NAME));
+            String tool = AgentToolCatalog.catalogName(registered);
+            if (!AgentToolCatalog.MUTATING.contains(tool)) {
+                LOG.warn("Permission interrupt for an unknown tool registered={} catalog={}", registered, tool);
+                return;
+            }
+            Object raw = metadata.get(AguiInterruptConstants.METADATA_TOOL_INPUT);
+            @SuppressWarnings("unchecked")
+            Map<String, Object> input = raw instanceof Map<?, ?> map ? (Map<String, Object>) map : Map.of();
+            operations.propose(threadId, runId, userId, tool, input);
+        }
+
+        /** Adds human-readable attendees and room to the copy the user sees; the resume path keeps the original. */
+        private AguiEvent enriched(AguiEvent.RunFinished finished, List<AguiEvent.Interrupt> interrupts) {
+            List<AguiEvent.Interrupt> view = new ArrayList<>(interrupts.size());
+            Lookup lookup = lookup();
+            for (var interrupt : interrupts) view.add(enrich(interrupt, lookup));
+            return new AguiEvent.RunFinished(finished.threadId(), finished.runId(), finished.result(),
+                    new AguiEvent.RunFinishedInterruptOutcome(view), finished.timestamp(), finished.rawEvent());
+        }
+
+        private AguiEvent.Interrupt enrich(AguiEvent.Interrupt interrupt, Lookup lookup) {
+            Map<String, Object> metadata = interrupt.metadata();
+            if (metadata == null) return interrupt;
+            String tool = AgentToolCatalog.catalogName(
+                    String.valueOf(metadata.get(AguiInterruptConstants.METADATA_TOOL_NAME)));
+            if (!AgentToolCatalog.MUTATING.contains(tool)) return interrupt;
+            Object raw = metadata.get(AguiInterruptConstants.METADATA_TOOL_INPUT);
+            if (!(raw instanceof Map<?, ?> map)) return interrupt;
+            Map<String, Object> input = new LinkedHashMap<>();
+            map.forEach((key, value) -> input.put(String.valueOf(key), value));
+            if (input.get("attendeePhones") instanceof List<?> phones && !phones.isEmpty()) {
+                input.put("attendeeNames", phones.stream().map(String::valueOf)
+                        .map(phone -> lookup.names().getOrDefault(phone, mask(phone))).toList());
+            }
+            String room = lookup.rooms().get(String.valueOf(input.get("roomId")));
+            if (room != null && !room.isBlank()) input.put("roomName", room);
+            Map<String, Object> copy = new LinkedHashMap<>(metadata);
+            copy.put(AguiInterruptConstants.METADATA_TOOL_INPUT, input);
+            return new AguiEvent.Interrupt(interrupt.id(), interrupt.reason(), interrupt.message(),
+                    interrupt.toolCallId(), interrupt.responseSchema(), interrupt.expiresAt(), copy);
+        }
+
+        /** Employee and room names already returned by this conversation's lookups. */
+        private Lookup lookup() {
+            Map<String, String> names = new java.util.HashMap<>(priorLookup.names());
+            Map<String, String> rooms = new java.util.HashMap<>(priorLookup.rooms());
+            collect(display.messages(), names, rooms);
+            return new Lookup(names, rooms);
+        }
+
+        private static Lookup lookup(List<CopilotThreads.Message> history) {
+            Map<String, String> names = new java.util.HashMap<>();
+            Map<String, String> rooms = new java.util.HashMap<>();
+            for (var message : history) {
+                if (message.displayJson() == null) continue;
+                try {
+                    collect(RunDisplay.restore(message.displayJson()), names, rooms);
+                } catch (RuntimeException unreadable) {
+                    // A legacy display is simply skipped.
+                }
+            }
+            return new Lookup(names, rooms);
+        }
+
+        private static void collect(List<AguiMessage> messages, Map<String, String> names, Map<String, String> rooms) {
+            for (var message : messages) {
+                String text = message.getRole().equals("tool") ? message.getTextContent() : null;
+                if (text == null || !text.contains("{\"")) continue;
+                try {
+                    var root = JSON.readTree(text);
+                    for (var employee : root.path("employees")) {
+                        String phone = employee.path("phone").asText("");
+                        String name = employee.path("name").asText("");
+                        if (!phone.isBlank() && !name.isBlank()) names.put(phone, name);
+                    }
+                    for (var room : root.path("rooms")) {
+                        String id = room.path("chamberId").asText("");
+                        String name = room.path("chamberName").asText("");
+                        if (!id.isBlank() && !name.isBlank()) rooms.put(id, name);
+                    }
+                } catch (Exception unreadable) {
+                    // Not a directory payload.
+                }
+            }
+        }
+
+        private static String mask(String phone) {
+            return phone != null && phone.length() >= 7
+                    ? phone.substring(0, 3) + "****" + phone.substring(phone.length() - 4) : phone;
+        }
+
         synchronized void checkLease() {
             if (!ended && (!lease.valid() || !threads.heartbeat(threadId, runId)))
                 terminate("CANCELLED", "SESSION_EXPIRED");

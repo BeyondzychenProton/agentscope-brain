@@ -1,6 +1,7 @@
 package com.agentscope.brain.runtime.internal.web;
 
 import com.agentscope.brain.conversation.api.CopilotThreadFailure;
+import com.agentscope.brain.conversation.api.CopilotThreads;
 import com.agentscope.brain.identity.api.ExecutionSession;
 import com.agentscope.brain.release.api.EmployeeAccess;
 import com.agentscope.brain.runtime.internal.application.CopilotTextRuns;
@@ -9,6 +10,7 @@ import io.agentscope.core.util.JsonUtils;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.time.Duration;
+import java.util.List;
 import java.util.Map;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -31,7 +33,8 @@ class CopilotRuntimeController {
             @Value("${brain.copilot.runtime-secret:}") String secret) {
         this.runs = runs; this.sessions = sessions; this.secret = secret;
     }
-    record Start(String threadId, String runId, String employeeId, String text) { }
+    record Start(String threadId, String runId, String employeeId, String text, List<ResumeInput> resume) { }
+    record ResumeInput(String interruptId, String status, Map<String, Object> payload) { }
     record Stop(String threadId, String runId) { }
 
     @PostMapping("/csrf-check")
@@ -45,7 +48,11 @@ class CopilotRuntimeController {
             @RequestBody Start input) {
         requireRuntime(key);
         var viewer = sessions.capture();
-        return encode(runs.start(input.threadId(), input.runId(), input.employeeId(), input.text()), viewer);
+        var answers = input.resume() == null ? List.<CopilotThreads.Resume>of()
+                : input.resume().stream()
+                        .map(r -> new CopilotThreads.Resume(r.interruptId(), r.status(), r.payload()))
+                        .toList();
+        return encode(runs.start(input.threadId(), input.runId(), input.employeeId(), input.text(), answers), viewer);
     }
     @GetMapping(value = "/connect/{threadId}", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
     Flux<ServerSentEvent<String>> connect(@RequestHeader(value = "X-Brain-Runtime", required = false) String key,
@@ -82,3 +89,4 @@ class CopilotRuntimeController {
     @ExceptionHandler({org.springframework.dao.DataAccessException.class, org.springframework.transaction.TransactionException.class})
     ResponseEntity<?> unavailable() { return ResponseEntity.status(503).body(Map.of("code", "THREAD_UNAVAILABLE")); }
 }
+

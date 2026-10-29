@@ -1,6 +1,7 @@
 package com.agentscope.brain.conversation.api;
 
 import java.util.List;
+import java.util.Map;
 
 /** Text-chat thread facts, independent of business sessions and formal messages. */
 public interface CopilotThreads {
@@ -10,12 +11,18 @@ public interface CopilotThreads {
     record Thread(String id, String employeeId, String releaseId, String title, String version,
                   String activeRunId, String unavailableReason, String lastRunState, String failureCode,
                   List<Message> messages) { }
-    record Accepted(String threadId, String runId, String releaseId, List<Message> history, String userId) { }
+    /** One user answer to a pending interrupt. Payload stays SDK-agnostic here. */
+    record Resume(String interruptId, String status, Map<String, Object> payload) { }
+    record Accepted(String threadId, String runId, String releaseId, List<Message> history, String userId,
+                    List<Resume> resume) { }
     record Summary(String id, String title, String version, String activeRunId, String updatedAt) { }
 
-    /** The caller is authenticated and supplies only the newly submitted text. */
-    Accepted accept(String threadId, String runId, String employeeId, String text, byte[] sessionHash);
+    /** The caller is authenticated and supplies only the newly submitted text and resume entries. */
+    Accepted accept(String threadId, String runId, String employeeId, String text, byte[] sessionHash,
+                    List<Resume> resume);
     Thread open(String threadId);
+    /** The most recent run that paused for a user answer, or null. */
+    String interruptedRun(String threadId);
     List<Summary> list(String employeeId, String query, int limit, int offset);
     void rename(String threadId, String expectedVersion, String title);
     /** Execution-owner operations; never exposed directly as unauthenticated HTTP endpoints. */

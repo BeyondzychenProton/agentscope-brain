@@ -68,13 +68,17 @@ class PlatformRunner extends AgentRunner {
   }
   run(request: AgentRunnerRunRequest): Observable<BaseEvent> {
     const last = request.input.messages.at(-1);
-    if (!last || last.role !== "user" || typeof last.content !== "string"
-        || request.input.tools.length || request.input.resume?.length) {
-      console.error(`Copilot runtime rejected non-text run threadId=${request.threadId}`);
-      return new Observable(subscriber => subscriber.error(new Error("Only text messages are supported")));
+    const resume = (request.input.resume ?? []).map(entry => ({
+      interruptId: entry.interruptId, status: entry.status, payload: entry.payload }));
+    // A resume answers a pending confirmation; it never carries a new user text.
+    const text = resume.length || !last || last.role !== "user" || typeof last.content !== "string"
+      ? "" : last.content;
+    if (request.input.tools.length || (!text && !resume.length)) {
+      console.error(`Copilot runtime rejected unsupported run threadId=${request.threadId}`);
+      return new Observable(subscriber => subscriber.error(new Error("Only text messages and interrupt resumes are supported")));
     }
     return this.events("/api/copilot/runtime/run", { threadId: request.threadId,
-      runId: request.input.runId, employeeId: this.employeeId, text: last.content });
+      runId: request.input.runId, employeeId: this.employeeId, text, resume });
   }
   connect(request: AgentRunnerConnectRequest): Observable<BaseEvent> {
     return this.events(`/api/copilot/runtime/connect/${encodeURIComponent(request.threadId)}`, undefined, request.threadId);

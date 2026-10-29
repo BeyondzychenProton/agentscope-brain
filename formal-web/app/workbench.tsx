@@ -1,6 +1,6 @@
 "use client";
 
-import { CopilotChat, CopilotKitProvider, useAgent, useDefaultRenderTool } from "@copilotkit/react-core/v2";
+import { CopilotChat, CopilotKitProvider, useAgent, useDefaultRenderTool, useInterrupt } from "@copilotkit/react-core/v2";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { ApiFailure, Identity, mutate, read } from "./api-client";
 import { AssistantMarkdown } from "./assistant-markdown";
@@ -20,6 +20,40 @@ function ToolCard({ name, parameters, status }: { name: string; parameters?: unk
   return <p className="tool-call-card">{busy ? "正在调用工具" : toolLabel(name, args)}</p>;
 }
 
+function value(input: unknown): string {
+  if (Array.isArray(input)) return input.map(item => String(item)).join("、");
+  if (input === null || input === undefined || input === "") return "";
+  return String(input);
+}
+
+/** One-time confirmation for mutating tools; the platform only sends after this resolves. */
+function WriteConfirm() {
+  useInterrupt({
+    render: ({ interrupt, resolve, cancel }) => {
+      const metadata = (interrupt?.metadata ?? {}) as Record<string, unknown>;
+      const name = String(metadata.toolName ?? "");
+      const args = (metadata.toolInput ?? {}) as Record<string, unknown>;
+      const rows: [string, string][] = name.includes("reserve")
+        ? [["会议室", value(args.roomName) || value(args.roomId)], ["开始时间", value(args.startTime)],
+           ["时长", value(args.durationMinutes) ? `${value(args.durationMinutes)} 分钟` : ""],
+           ["参会人", value(args.attendeeNames) || value(args.attendeePhones)], ["主题", value(args.meetingTheme)],
+           ["说明", value(args.meetingNote)]]
+        : [["会议", value(args.meetingId)]];
+      return <div className="tool-confirm-card">
+        <p className="tool-confirm-title">确认{toolLabel(name, args)}</p>
+        <ul className="tool-confirm-detail">{rows.filter(([, text]) => text)
+          .map(([label, text]) => <li key={label}>{label}：{text}</li>)}</ul>
+        <p className="tool-confirm-hint">确认后立即提交，同一操作只会执行一次。</p>
+        <div className="tool-confirm-actions">
+          <button type="button" onClick={() => { void resolve({ approved: true }); }}>确认提交</button>
+          <button type="button" className="secondary" onClick={() => { void cancel(); }}>取消</button>
+        </div>
+      </div>;
+    }
+  });
+  return null;
+}
+
 function Observer({ changed }: { changed: (running: boolean, failed?: boolean, runId?: string) => void }) {
   const { agent, isReady } = useAgent({ agentId: "default" });
   useDefaultRenderTool({ render: ToolCard }, []);
@@ -29,7 +63,7 @@ function Observer({ changed }: { changed: (running: boolean, failed?: boolean, r
       onRunErrorEvent: () => changed(false, true), onRunFailed: () => changed(false, true) });
     return () => subscription.unsubscribe();
   }, [agent, isReady, changed]);
-  return null;
+  return <WriteConfirm />;
 }
 
 export function Workbench({ identity, busy, onLogout, onAuthLost }: {

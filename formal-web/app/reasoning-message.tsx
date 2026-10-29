@@ -6,10 +6,10 @@ import { CopilotChatReasoningMessage } from "@copilotkit/react-core/v2";
 type Props = ComponentProps<typeof CopilotChatReasoningMessage>;
 
 /** Render provider reasoning verbatim, independently of answer Markdown and tool execution facts. */
-export function ReasoningMessage({ message, messages = [], isRunning, isLatest }: Props) {
+export const ReasoningMessage = Object.assign(function ReasoningMessage({ message, messages = [], isRunning, isLatest }: Props) {
   const index = messages.findIndex(item => item.id === message.id);
   const answerStarted = index >= 0 && messages.slice(index + 1).some(item =>
-    item.role === "assistant" && typeof item.content === "string" && item.content.length > 0);
+    item.role === "assistant");
   const streaming = Boolean(isRunning && (isLatest ?? messages.at(-1)?.id === message.id));
   const [open, setOpen] = useState(Boolean(isRunning && !answerStarted));
   const panelId = useId();
@@ -33,4 +33,4 @@ export function ReasoningMessage({ message, messages = [], isRunning, isLatest }
     </button>
     <pre ref={panel} id={panelId} className="reasoning-content" hidden={!open}>{message.content}</pre>
   </section>;
-}
+}, { Header: CopilotChatReasoningMessage.Header, Content: CopilotChatReasoningMessage.Content, Toggle: CopilotChatReasoningMessage.Toggle });

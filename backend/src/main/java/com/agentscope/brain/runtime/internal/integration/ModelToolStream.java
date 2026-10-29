@@ -60,6 +60,11 @@ final class ModelToolStream {
             if ("length".equals(finish)) throw new IllegalStateException("MODEL_OUTPUT_TRUNCATED");
             if ("content_filter".equals(finish)) throw new IllegalStateException("MODEL_OUTPUT_FILTERED");
             List<String> out = new ArrayList<>();
+            // A provider may put reasoning and answer text in the same chunk. Preserve their order.
+            if (delta.hasNonNull("reasoning_content")) {
+                emit(root, out, Map.of("reasoning_content", delta.get("reasoning_content").asText()));
+                delta.remove("reasoning_content");
+            }
             if (delta.path("content").isTextual()) {
                 pending.append(delta.path("content").asText());
                 delta.remove("content");

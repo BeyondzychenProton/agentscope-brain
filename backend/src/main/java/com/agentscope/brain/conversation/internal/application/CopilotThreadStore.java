@@ -32,14 +32,21 @@ public class CopilotThreadStore implements CopilotThreads {
         this.clock = clock;
     }
 
-    /** Accepts only the new text; callers cannot supply or replace the stored history. */
+    /** Accepts only the new text or a resume answer; callers cannot supply or replace stored history. */
     @Transactional(isolation = Isolation.REPEATABLE_READ)
-    public Accepted accept(String threadId, String runId, String employeeId, String text, byte[] sessionHash) {
+    public Accepted accept(String threadId, String runId, String employeeId, String text, byte[] sessionHash,
+            List<Resume> resume) {
         var user = users.requireLocked();
         if (user.passwordChangeRequired()) throw failure(403, "PASSWORD_CHANGE_REQUIRED");
         threadId = id(threadId);
         runId = id(runId);
-        validateText(text);
+        List<Resume> answers = resume == null ? List.of() : List.copyOf(resume);
+        boolean resuming = !answers.isEmpty();
+        if (resuming) {
+            if (text != null && !text.isBlank()) throw failure(400, "REQUEST_INVALID");
+        } else {
+            validateText(text);
+        }
         if (employeeId == null || !employeeId.matches("[1-9][0-9]{0,19}") || sessionHash == null || sessionHash.length != 32)
             throw failure(400, "REQUEST_INVALID");
 
@@ -56,7 +63,7 @@ public class CopilotThreadStore implements CopilotThreads {
                 jdbc.update("""
                         INSERT INTO copilot_thread(thread_id,user_id,employee_id,employee_release_id,title,last_activity_at,gmt_create,gmt_modified)
                         VALUES(?,?,?,?,?,?,?,?)
-                        """, threadId, user.userId(), employeeId, release.releaseId(), title(text), now, now, now);
+                        """, threadId, user.userId(), employeeId, release.releaseId(), title(text == null || text.isBlank() ? "会议助手" : text), now, now, now);
             } catch (org.springframework.dao.DuplicateKeyException duplicate) {
                 // A foreign or concurrent thread ID never reveals its owner and is never reused.
                 throw failure(409, "THREAD_UNAVAILABLE");
@@ -69,24 +76,40 @@ public class CopilotThreadStore implements CopilotThreads {
         if (row.get("active_run_id") != null) {
             if (!recoverExpired(threadId, row, now)) throw failure(409, "THREAD_ALREADY_RUNNING");
         }
-        var history = messages(threadId).stream().filter(message -> message.status().equals("COMPLETE")).toList();
+        var history = messages(threadId).stream()
+                .filter(message -> message.status().equals("COMPLETE")
+                        || (resuming && message.displayJson() != null))
+                .toList();
         long last = ((Number) row.get("last_message_no")).longValue();
         if (last > Long.MAX_VALUE - 2) throw failure(503, "THREAD_UNAVAILABLE");
         jdbc.update("INSERT INTO copilot_thread_run(thread_id,run_id,session_id_hash,state,started_at,lease_until) VALUES(?,?,?,'RUNNING',?,?)",
                 threadId, runId, sessionHash, now, now.plusSeconds(30));
-        jdbc.update("""
-                INSERT INTO copilot_thread_message(thread_id,message_no,message_id,run_id,role,content,status,gmt_create,gmt_modified)
-                VALUES(?,?,?,?,'USER',?,'COMPLETE',?,?)
-                """, threadId, last + 1, UUID.randomUUID().toString(), runId, text, now, now);
+        if (!resuming) {
+            jdbc.update("""
+                    INSERT INTO copilot_thread_message(thread_id,message_no,message_id,run_id,role,content,status,gmt_create,gmt_modified)
+                    VALUES(?,?,?,?,'USER',?,'COMPLETE',?,?)
+                    """, threadId, last + 1, UUID.randomUUID().toString(), runId, text, now, now);
+            last = last + 1;
+        }
         jdbc.update("""
                 INSERT INTO copilot_thread_message(thread_id,message_no,message_id,run_id,role,content,status,gmt_create,gmt_modified)
                 VALUES(?,?,?,?,'ASSISTANT','','STREAMING',?,?)
-                """, threadId, last + 2, UUID.randomUUID().toString(), runId, now, now);
+                """, threadId, last + 1, UUID.randomUUID().toString(), runId, now, now);
         jdbc.update("""
                 UPDATE copilot_thread SET active_run_id=?,last_message_no=?,last_activity_at=?,gmt_modified=?,row_version=row_version+1
                 WHERE thread_id=? AND user_id=?
-                """, runId, last + 2, now, now, threadId, user.userId());
-        return new Accepted(threadId, runId, release.releaseId(), history, user.userId());
+                """, runId, last + 1, now, now, threadId, user.userId());
+        return new Accepted(threadId, runId, release.releaseId(), history, user.userId(), answers);
+    }
+
+    @Override
+    public String interruptedRun(String threadId) {
+        var rows = jdbc.queryForList("""
+                SELECT run_id FROM copilot_thread_run
+                WHERE thread_id=? AND state='INTERRUPTED' AND failure_code='CONFIRMATION_REQUIRED'
+                ORDER BY started_at DESC LIMIT 1
+                """, String.class, id(threadId));
+        return rows.isEmpty() ? null : rows.get(0);
     }
 
     @Transactional(isolation = Isolation.REPEATABLE_READ)

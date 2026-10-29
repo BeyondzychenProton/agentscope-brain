@@ -6,6 +6,8 @@ const LABELS: Record<string, string> = {
   "calendar.verify": "核对会议",
   "meeting.list_mine": "查询我的会议",
   "room.search": "查找会议室",
+  "room.reserve": "预约会议室",
+  "meeting.cancel": "取消会议",
 };
 
 const ALIASES = Object.fromEntries(Object.keys(LABELS).map(name => [name.replaceAll(".", "_"), name]));

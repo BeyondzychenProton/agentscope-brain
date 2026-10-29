@@ -31,7 +31,7 @@ spec.loader.exec_module(web)
 SECRET = 'issue46-synthetic-runtime-secret-0123456789abcdef'
 
 
-def isolated(client, tool_mode=False, jar_path=None):
+def isolated(client, tool_mode=False, jar_path=None, reasoning_mode=False):
     from playwright.sync_api import sync_playwright, expect
 
     mysql_port = int(next(x.split('=', 1)[1] for x in client if x.startswith('--port=')))
@@ -83,6 +83,14 @@ def isolated(client, tool_mode=False, jar_path=None):
                 self.wfile.write(('data: ' + json.dumps(data, ensure_ascii=False) + '\n\n').encode())
                 self.wfile.flush()
             try:
+                if reasoning_mode:
+                    chunk({'reasoning_content':'原样 <text> **非 Markdown**\n' + '思考中的一行\n'*35})
+                    chunk({'reasoning_content':'思考第二段'})
+                    while not release_second.wait(.1):
+                        self.wfile.write(b': keepalive\n\n'); self.wfile.flush()
+                    chunk({'content':'思考后的正文'})
+                    finish.wait(25)
+                    chunk({}, 'stop'); self.wfile.write(b'data: [DONE]\n\n'); self.wfile.flush(); return
                 if tool_mode:
                     has_result = any(m['role']=='tool' for m in payload['messages'])
                     if not has_result:
@@ -216,6 +224,38 @@ def isolated(client, tool_mode=False, jar_path=None):
                     page.wait_for_url('**/workbench')
                     composer = page.get_by_role('textbox', name='发送消息')
                     expect(composer).to_be_visible()
+                    if reasoning_mode:
+                        composer.fill('请先思考再回答')
+                        page.get_by_role('button',name='发送',exact=True).click()
+                        box=page.locator('.reasoning-message')
+                        toggle=box.get_by_role('button')
+                        raw=box.locator('pre')
+                        expect(raw).to_contain_text('思考第二段',timeout=30000)
+                        expect(raw).to_be_visible()
+                        expect(toggle).to_have_attribute('aria-expanded','true')
+                        assert '原样 <text> **非 Markdown**' in raw.inner_text()
+                        assert raw.evaluate('(el)=>el.clientHeight')==180
+                        assert raw.evaluate('(el)=>el.scrollHeight>el.clientHeight')
+                        release_second.set()
+                        expect(page.get_by_text('思考后的正文',exact=True)).to_be_visible()
+                        expect(toggle).to_have_attribute('aria-expanded','false')
+                        expect(raw).not_to_be_visible()
+                        toggle.click()
+                        expect(raw).to_be_visible()
+                        finish.set()
+                        expect(page.get_by_role('button',name='发送',exact=True)).to_be_visible(timeout=15000)
+                        page.reload()
+                        expect(toggle).to_have_attribute('aria-expanded','false')
+                        toggle.click()
+                        expect(raw).to_contain_text('思考第二段')
+                        assert len(requests)==1
+                        with db.cursor() as cursor:
+                            cursor.execute("SELECT content,display_json FROM copilot_thread_message WHERE role='ASSISTANT'")
+                            body,display=cursor.fetchone()
+                        assert body=='思考后的正文' and any(m['role']=='reasoning' for m in json.loads(display))
+                        assert not [a for a in activity if 'pageerror' in a],activity
+                        print('PASS: reasoning streams verbatim in a 180px scrolling panel; answer auto-collapses; manual reopen and refresh preserve reasoning; one model request',flush=True)
+                        return {'browserExecuted':True,'reasoningDisplayed':True,'modelRequests':len(requests)}
                     if tool_mode:
                         composer.fill('查询合成人员')
                         page.get_by_role('button', name='发送', exact=True).click()
@@ -364,11 +404,12 @@ def main():
     parser.add_argument('--mysql-bin', type=Path, default=Path('D:/code environment/mysql/mysql-8.0.45-winx64/bin'))
     parser.add_argument('--tools', action='store_true', help='Validate the signed read-only tool and streaming continuation chain')
     parser.add_argument('--jar', type=Path)
+    parser.add_argument('--reasoning',action='store_true')
     args = parser.parse_args()
     ddl = sorted((ROOT / 'db/schema').glob('*.sql'))
     count = sum(len(re.findall(r'CREATE TABLE (\w+)', p.read_text('utf-8'))) for p in ddl)
     web.base.verify(args.mysql_bin.resolve(), ddl_files=ddl, probes=[], expected_table_count=count,
-        inspection_check=lambda _:0, concurrency_check=lambda _:0, extra_checks=lambda client: isolated(client,args.tools,args.jar.resolve() if args.jar else None))
+        inspection_check=lambda _:0, concurrency_check=lambda _:0, extra_checks=lambda client: isolated(client,args.tools,args.jar.resolve() if args.jar else None,args.reasoning))
 
 
 if __name__ == '__main__': main()

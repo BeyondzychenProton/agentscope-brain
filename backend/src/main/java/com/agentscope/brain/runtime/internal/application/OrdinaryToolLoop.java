@@ -18,11 +18,11 @@ public class OrdinaryToolLoop {
     private static final int MAX_ROUNDS = 6;
     private final CompatibleChatModelCaller model;
     private final MeetingMcpClient mcp;
-    private final ReadonlyToolCatalog tools;
+    private final AgentToolCatalog tools;
     private final JdbcTemplate jdbc;
     private final ObjectMapper json = new ObjectMapper();
 
-    public OrdinaryToolLoop(CompatibleChatModelCaller model, MeetingMcpClient mcp, ReadonlyToolCatalog tools, JdbcTemplate jdbc) {
+    public OrdinaryToolLoop(CompatibleChatModelCaller model, MeetingMcpClient mcp, AgentToolCatalog tools, JdbcTemplate jdbc) {
         this.model = model;
         this.mcp = mcp;
         this.tools = tools;
@@ -31,7 +31,7 @@ public class OrdinaryToolLoop {
 
     public String run(String userId, String releaseId, List<Map<String, Object>> seedMessages) {
         String phone = currentPhone(userId);
-        List<ReadonlyToolCatalog.Tool> catalog = tools.forRelease(releaseId);
+        List<AgentToolCatalog.Tool> catalog = tools.forRelease(releaseId);
         List<Map<String, Object>> openaiTools = tools.openaiTools(catalog);
         List<Map<String, Object>> messages = new ArrayList<>(seedMessages);
         messages.add(0, Map.of(
@@ -51,7 +51,7 @@ public class OrdinaryToolLoop {
             assistant.put("tool_calls", turn.rawToolCalls());
             messages.add(assistant);
             for (CompatibleChatModelCaller.ToolCall call : turn.toolCalls()) {
-                if (!ReadonlyToolCatalog.READ_ONLY.contains(call.name())) {
+                if (!AgentToolCatalog.READ_ONLY.contains(call.name())) {
                     messages.add(toolMessage(call.id(), "{\"error\":\"TOOL_NOT_ALLOWED\"}"));
                     continue;
                 }

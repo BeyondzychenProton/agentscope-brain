@@ -12,7 +12,7 @@ import java.util.List;
 import java.util.Map;
 
 /** One fold of SDK events for both durable recovery and live display. Private to run execution. */
-final class RunDisplay {
+public final class RunDisplay {
     private final Map<String, Part> parts = new LinkedHashMap<>();
     private Part current;
 
@@ -51,7 +51,7 @@ final class RunDisplay {
         return List.copyOf(out);
     }
     String json() { return JsonUtils.getJsonCodec().toJson(messages()); }
-    static List<AguiMessage> restore(String json) {
+    public static List<AguiMessage> restore(String json) {
         return JsonUtils.getJsonCodec().fromJson(json, new TypeReference<List<AguiMessage>>() { });
     }
     private Part assistant(String id) {
@@ -77,3 +77,4 @@ final class RunDisplay {
         Call(String name) { this.name = name; }
     }
 }
+
