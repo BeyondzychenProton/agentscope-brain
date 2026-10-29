@@ -32,15 +32,19 @@ public class AgentTools {
     private final AgentToolCatalog catalog;
     private final MeetingMcpClient mcp;
     private final WriteOperations operations;
+    private final PlatformFacts facts;
     private final JdbcTemplate jdbc;
     private final ObjectMapper json = new ObjectMapper();
 
-    public AgentTools(AgentToolCatalog catalog, MeetingMcpClient mcp, WriteOperations operations, JdbcTemplate jdbc) {
-        this.catalog = catalog; this.mcp = mcp; this.operations = operations; this.jdbc = jdbc;
+    public AgentTools(AgentToolCatalog catalog, MeetingMcpClient mcp, WriteOperations operations,
+            PlatformFacts facts, JdbcTemplate jdbc) {
+        this.catalog = catalog; this.mcp = mcp; this.operations = operations; this.facts = facts; this.jdbc = jdbc;
     }
 
     public Toolkit forRun(String userId, String releaseId) {
         var toolkit = new Toolkit();
+        // Platform facts come first: they must stay available even when a release configures no MCP tools.
+        for (var local : catalog.localTools()) toolkit.registerAgentTool(local(local, userId));
         var tools = catalog.forRelease(releaseId);
         if (tools.isEmpty()) return toolkit;
         var phones = jdbc.queryForList("SELECT phone_normalized FROM phone_reservation WHERE owner_user_id=? AND reservation_status='CURRENT'", userId);
@@ -52,6 +56,27 @@ public class AgentTools {
             else toolkit.registerAgentTool(write(tool, phone, userId));
         }
         return toolkit;
+    }
+
+    /** Locally answered platform fact; never forwarded to the meeting MCP. */
+    private AgentTool local(AgentToolCatalog.Tool tool, String userId) {
+        return new AgentTool() {
+            public String getName() { return tool.name().replace('.', '_'); }
+            public String getDescription() { return tool.description(); }
+            public Map<String, Object> getParameters() { return tool.parameters(); }
+            public boolean isReadOnly() { return true; }
+            public Mono<ToolResultBlock> callAsync(ToolCallParam param) {
+                return Mono.fromCallable(() -> ToolResultBlock.text(switch (tool.name()) {
+                            case "platform.current_time" -> facts.currentTime();
+                            default -> facts.currentUser(userId);
+                        }))
+                        .subscribeOn(Schedulers.boundedElastic())
+                        .onErrorResume(failure -> {
+                            LOG.warn("Platform fact tool failed tool={} userId={}", tool.name(), userId, failure);
+                            return Mono.just(ToolResultBlock.error("PLATFORM_FACT_UNAVAILABLE"));
+                        });
+            }
+        };
     }
 
     private AgentTool readOnly(AgentToolCatalog.Tool tool, String phone, String userId) {

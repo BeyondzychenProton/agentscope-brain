@@ -166,7 +166,7 @@ class CopilotToolRunTest {
             server.start();
             TextRelease releases = (employee, release) -> new TextRelease.Configuration("Synthetic instructions.",
                     "http://127.0.0.1:"+server.getAddress().getPort(),"published-model","synthetic");
-            var tools = new AgentTools(null,null,null,null) {
+            var tools = new AgentTools(null,null,null,null,null) {
                 @Override public Toolkit forRun(String userId, String releaseId) {
                     assertThat(userId).isEqualTo("trusted-user");
                     var toolkit = new Toolkit();

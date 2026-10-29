@@ -32,6 +32,15 @@ public class AgentToolCatalog {
     static final Set<String> MUTATING = Set.of(
             "room.reserve",
             "meeting.cancel");
+    /**
+     * Platform facts are answered in-process and never reach the meeting MCP. They stay available
+     * regardless of the release tool list, so the model never guesses the clock or the caller.
+     */
+    static final Set<String> LOCAL_READ_ONLY = Set.of(
+            "platform.current_time",
+            "platform.current_user");
+    private static final Map<String, Object> NO_ARGUMENTS =
+            Map.of("type", "object", "properties", Map.of(), "additionalProperties", false);
 
     /**
      * SDK tool names replace dots with underscores because model function names must match
@@ -41,8 +50,15 @@ public class AgentToolCatalog {
         return switch (registered) {
             case "room_reserve" -> "room.reserve";
             case "meeting_cancel" -> "meeting.cancel";
+            case "platform_current_time" -> "platform.current_time";
+            case "platform_current_user" -> "platform.current_user";
             default -> registered;
         };
+    }
+
+    /** True when the tool is a platform fact rather than a release MCP tool. */
+    public static boolean isLocal(String name) {
+        return LOCAL_READ_ONLY.contains(catalogName(name));
     }
 
     public record Tool(String name, String description, Map<String, Object> parameters, boolean readOnly) { }
@@ -92,6 +108,16 @@ public class AgentToolCatalog {
         }
     }
 
+    /**
+     * Built-in platform facts. They are not listed in the release tool configuration and carry no
+     * arguments, so the model cannot mistake them for meeting MCP calls.
+     */
+    public List<Tool> localTools() {
+        return List.of(
+                new Tool("platform.current_time", description("platform.current_time"), NO_ARGUMENTS, true),
+                new Tool("platform.current_user", description("platform.current_user"), NO_ARGUMENTS, true));
+    }
+
     /** Only read-only tools are exposed to the ordinary loop, which has no confirmation path. */
     public List<Map<String, Object>> openaiTools(List<Tool> tools) {
         List<Map<String, Object>> out = new ArrayList<>();
@@ -128,6 +154,8 @@ public class AgentToolCatalog {
             case "room.search" -> "查询可预约会议室。";
             case "room.reserve" -> "为当前登录用户预约会议室。执行前平台会要求本人一次性确认；发起人不会自动加入参会人。";
             case "meeting.cancel" -> "取消当前登录用户本人发起的未开始会议。执行前平台会要求本人一次性确认。";
+            case "platform.current_time" -> "获取平台当前的日期、时间、星期与时区。回答“今天/明天/下周几”等相对时间前先调用。";
+            case "platform.current_user" -> "获取当前登录用户的身份信息：显示名、打码手机号和用户标识。无需入参。";
             default -> name;
         };
     }

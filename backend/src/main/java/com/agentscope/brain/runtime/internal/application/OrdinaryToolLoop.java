@@ -2,6 +2,7 @@ package com.agentscope.brain.runtime.internal.application;
 
 import com.agentscope.brain.runtime.internal.integration.CompatibleChatModelCaller;
 import com.agentscope.brain.runtime.internal.integration.MeetingMcpClient;
+import com.agentscope.brain.runtime.internal.integration.PlatformFacts;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -19,19 +20,25 @@ public class OrdinaryToolLoop {
     private final CompatibleChatModelCaller model;
     private final MeetingMcpClient mcp;
     private final AgentToolCatalog tools;
+    private final PlatformFacts facts;
     private final JdbcTemplate jdbc;
     private final ObjectMapper json = new ObjectMapper();
 
-    public OrdinaryToolLoop(CompatibleChatModelCaller model, MeetingMcpClient mcp, AgentToolCatalog tools, JdbcTemplate jdbc) {
+    public OrdinaryToolLoop(CompatibleChatModelCaller model, MeetingMcpClient mcp, AgentToolCatalog tools,
+            PlatformFacts facts, JdbcTemplate jdbc) {
         this.model = model;
         this.mcp = mcp;
         this.tools = tools;
+        this.facts = facts;
         this.jdbc = jdbc;
     }
 
     public String run(String userId, String releaseId, List<Map<String, Object>> seedMessages) {
-        String phone = currentPhone(userId);
-        List<AgentToolCatalog.Tool> catalog = tools.forRelease(releaseId);
+        List<AgentToolCatalog.Tool> releaseTools = tools.forRelease(releaseId);
+        // No MCP tool in the release means no phone is needed; platform facts still work.
+        String phone = releaseTools.isEmpty() ? null : currentPhone(userId);
+        List<AgentToolCatalog.Tool> catalog = new ArrayList<>(tools.localTools());
+        catalog.addAll(releaseTools);
         List<Map<String, Object>> openaiTools = tools.openaiTools(catalog);
         List<Map<String, Object>> messages = new ArrayList<>(seedMessages);
         messages.add(0, Map.of(
@@ -51,6 +58,10 @@ public class OrdinaryToolLoop {
             assistant.put("tool_calls", turn.rawToolCalls());
             messages.add(assistant);
             for (CompatibleChatModelCaller.ToolCall call : turn.toolCalls()) {
+                if (AgentToolCatalog.isLocal(call.name())) {
+                    messages.add(toolMessage(call.id(), platformFact(call.name(), userId)));
+                    continue;
+                }
                 if (!AgentToolCatalog.READ_ONLY.contains(call.name())) {
                     messages.add(toolMessage(call.id(), "{\"error\":\"TOOL_NOT_ALLOWED\"}"));
                     continue;
@@ -63,6 +74,7 @@ public class OrdinaryToolLoop {
                     continue;
                 }
                 try {
+                    if (phone == null) throw new IllegalStateException("MCP_PHONE_UNAVAILABLE");
                     String result = mcp.callTool(phone, call.name(), args);
                     messages.add(toolMessage(call.id(), result));
                 } catch (RuntimeException failure) {
@@ -72,6 +84,18 @@ public class OrdinaryToolLoop {
             }
         }
         throw new IllegalStateException("TOOL_LOOP_EXCEEDED");
+    }
+
+    /** Platform facts need no phone number and no MCP round trip. */
+    private String platformFact(String name, String userId) {
+        try {
+            return switch (AgentToolCatalog.catalogName(name)) {
+                case "platform.current_time" -> facts.currentTime();
+                default -> facts.currentUser(userId);
+            };
+        } catch (RuntimeException failure) {
+            return "{\"error\":\"PLATFORM_FACT_UNAVAILABLE\"}";
+        }
     }
 
     private String currentPhone(String userId) {
