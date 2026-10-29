@@ -88,7 +88,8 @@ public class TextAgentExecution {
                     for (var message : accepted.history()) {
                         if (message.displayJson() != null) {
                             // Structured display keeps assistant tool calls, which a resumed run needs.
-                            history.addAll(RunDisplay.restore(message.displayJson()));
+                            history.addAll(RunDisplay.restore(message.displayJson()).stream()
+                                    .filter(part -> !"reasoning".equals(part.getRole())).toList());
                         } else {
                             history.add(message.role().equals("USER")
                                     ? AguiMessage.userMessage(message.id(), message.content())

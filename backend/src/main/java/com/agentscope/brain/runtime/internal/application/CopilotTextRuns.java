@@ -145,6 +145,11 @@ public class CopilotTextRuns {
         synchronized void event(AguiEvent event) {
             if (ended) return;
             try {
+                // SDK RunStarted carries its model replay as raw input. The AG-UI client appends
+                // input.messages to the visible chat, duplicating users/tools under SDK ids.
+                // Only connect() may restore the transcript from the platform's stored display.
+                if (event instanceof AguiEvent.RunStarted)
+                    event = new AguiEvent.RunStarted(threadId, runId);
                 if (++eventCount > 20000) { terminate("FAILED", "MODEL_OUTPUT_TOO_LARGE"); return; }
                 if (event instanceof AguiEvent.ToolCallStart || event instanceof AguiEvent.ToolCallChunk) {
                     sawTool = true; finalTextAfterTool = false;

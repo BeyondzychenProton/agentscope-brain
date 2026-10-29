@@ -24,13 +24,12 @@ public final class RunDisplay {
         if (event instanceof AguiEvent.TextMessageContent e) { current = assistant(e.messageId()); current.text.append(e.delta()); return true; }
         if (event instanceof AguiEvent.TextMessageChunk e) { current = assistant(e.messageId()); if (e.delta() != null) current.text.append(e.delta()); return true; }
         if (event instanceof AguiEvent.ToolCallStart e) {
-            if (current == null) current = assistant("tool-message-" + e.toolCallId());
+            current = assistant(e.toolCallId());
             current.tools.putIfAbsent(e.toolCallId(), new Call(e.toolCallName())); return true;
         }
         if (event instanceof AguiEvent.ToolCallArgs e) { call(e.toolCallId()).args.append(e.delta()); return true; }
         if (event instanceof AguiEvent.ToolCallChunk e) {
-            if (e.parentMessageId() != null) current = assistant(e.parentMessageId());
-            if (current == null) current = assistant("tool-message-" + e.toolCallId());
+            current = assistant(e.parentMessageId() != null ? e.parentMessageId() : e.toolCallId());
             Call call = current.tools.computeIfAbsent(e.toolCallId(), id -> new Call(e.toolCallName()));
             if (e.delta() != null) call.args.append(e.delta()); return true;
         }

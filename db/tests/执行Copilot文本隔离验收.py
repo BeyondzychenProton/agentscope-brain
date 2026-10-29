@@ -31,7 +31,7 @@ spec.loader.exec_module(web)
 SECRET = 'issue46-synthetic-runtime-secret-0123456789abcdef'
 
 
-def isolated(client, tool_mode=False, jar_path=None, reasoning_mode=False):
+def isolated(client, tool_mode=False, jar_path=None, reasoning_mode=False, multi_turn=False):
     from playwright.sync_api import sync_playwright, expect
 
     mysql_port = int(next(x.split('=', 1)[1] for x in client if x.startswith('--port=')))
@@ -83,6 +83,15 @@ def isolated(client, tool_mode=False, jar_path=None, reasoning_mode=False):
                 self.wfile.write(('data: ' + json.dumps(data, ensure_ascii=False) + '\n\n').encode())
                 self.wfile.flush()
             try:
+                if multi_turn:
+                    turn = sum(m['role']=='user' for m in payload['messages'])
+                    chunk({'reasoning_content':f'第{turn}轮思考'})
+                    if tool_mode and payload['messages'][-1]['role'] != 'tool':
+                        chunk({'tool_calls':[{'index':0,'id':f'call-turn-{turn}','type':'function',
+                            'function':{'name':'identity_resolve','arguments':'{"name":"合成人员"}'}}]})
+                        chunk({}, 'tool_calls'); self.wfile.write(b'data: [DONE]\n\n'); self.wfile.flush(); return
+                    chunk({'content':f'第{turn}轮独立回答\n\n- 第一项\n- 第二项'})
+                    chunk({}, 'stop'); self.wfile.write(b'data: [DONE]\n\n'); self.wfile.flush(); return
                 if reasoning_mode:
                     chunk({'reasoning_content':'原样 <text> **非 Markdown**\n' + '思考中的一行\n'*35})
                     chunk({'reasoning_content':'思考第二段'})
@@ -207,6 +216,8 @@ def isolated(client, tool_mode=False, jar_path=None, reasoning_mode=False):
                     page = browser.new_page(viewport={'width':1440,'height':960})
                     page.set_default_timeout(15000)
                     activity = []
+                    runtime_responses = []
+                    page.on('response', lambda res: runtime_responses.append(res) if '/api/copilotkit/' in res.url and res.request.method == 'POST' else None)
                     page.on('response', lambda res: activity.append({'status':res.status,'path':urllib.parse.urlsplit(res.url).path})
                             if '/api/' in res.url else None)
                     page.on('pageerror', lambda error: activity.append({'pageerror':str(error)}))
@@ -224,6 +235,46 @@ def isolated(client, tool_mode=False, jar_path=None, reasoning_mode=False):
                     page.wait_for_url('**/workbench')
                     composer = page.get_by_role('textbox', name='发送消息')
                     expect(composer).to_be_visible()
+                    if multi_turn:
+                        questions = ['你好', '下午有没有会议', '请继续说明']
+                        for turn, question in enumerate(questions, 1):
+                            composer.fill(question)
+                            page.get_by_role('button', name='发送', exact=True).click()
+                            expect(page.get_by_text(f'第{turn}轮独立回答', exact=True)).to_be_visible(timeout=30000)
+                            expect(page.get_by_role('button', name='发送', exact=True)).to_be_visible()
+                            for res in runtime_responses:
+                                if 'event-stream' in res.headers.get('content-type',''):
+                                    events = [json.loads(line[5:]) for line in res.body().decode('utf-8').splitlines() if line.startswith('data:')]
+                                    assert all('input' not in event for event in events if event['type']=='RUN_STARTED'), 'Model replay leaked into chat events'
+                            runtime_responses.clear()
+                            for prior in range(1, turn + 1):
+                                expect(page.get_by_text(f'第{prior}轮独立回答', exact=True)).to_have_count(1)
+                                # Restrict to the chat surface: the thread title repeats the first input.
+                                expect(page.locator('.chat-area').get_by_text(questions[prior-1], exact=True)).to_have_count(1)
+                            if tool_mode:
+                                expect(page.locator('.tool-call-card')).to_have_count(turn)
+                        before = page.locator('.chat-area').inner_text()
+                        positions = [before.index(text) for pair in zip(questions, [f'第{i}轮独立回答' for i in range(1,4)]) for text in pair]
+                        assert positions == sorted(positions), before
+                        live_ids = page.locator('.chat-area [data-message-id]').evaluate_all('(els)=>els.map(el=>el.dataset.messageId)')
+                        page.reload()
+                        for turn, question in enumerate(questions, 1):
+                            expect(page.locator('.chat-area').get_by_text(question, exact=True)).to_have_count(1)
+                            expect(page.get_by_text(f'第{turn}轮独立回答', exact=True)).to_have_count(1)
+                        restored_ids = page.locator('.chat-area [data-message-id]').evaluate_all('(els)=>els.map(el=>el.dataset.messageId)')
+                        assert restored_ids == live_ids, (live_ids, restored_ids)
+                        assert len(requests) == (6 if tool_mode else 3)
+                        assert [m['content'] for m in requests[-1]['messages'] if m['role']=='user'] == questions
+                        assert all('轮思考' not in m.get('content','') for req in requests for m in req['messages'])
+                        if tool_mode:
+                            expect(page.locator('.tool-call-card')).to_have_count(3)
+                            assert len(tool_requests) == 3
+                        screenshot = ROOT / ('verification/engineering/chat-render-multi-turn-tools.png' if tool_mode
+                                             else 'verification/engineering/chat-render-multi-turn.png')
+                        page.screenshot(path=str(screenshot), full_page=True)
+                        assert not [a for a in activity if 'pageerror' in a], activity
+                        print('PASS: three live turns keep every answer and user bubble exactly once, in order; refresh and model history agree', flush=True)
+                        return {'browserExecuted':True,'modelRequests':len(requests),'multiTurn':True}
                     if reasoning_mode:
                         composer.fill('请先思考再回答')
                         page.get_by_role('button',name='发送',exact=True).click()
@@ -405,11 +456,12 @@ def main():
     parser.add_argument('--tools', action='store_true', help='Validate the signed read-only tool and streaming continuation chain')
     parser.add_argument('--jar', type=Path)
     parser.add_argument('--reasoning',action='store_true')
+    parser.add_argument('--multi-turn',action='store_true')
     args = parser.parse_args()
     ddl = sorted((ROOT / 'db/schema').glob('*.sql'))
     count = sum(len(re.findall(r'CREATE TABLE (\w+)', p.read_text('utf-8'))) for p in ddl)
     web.base.verify(args.mysql_bin.resolve(), ddl_files=ddl, probes=[], expected_table_count=count,
-        inspection_check=lambda _:0, concurrency_check=lambda _:0, extra_checks=lambda client: isolated(client,args.tools,args.jar.resolve() if args.jar else None,args.reasoning))
+        inspection_check=lambda _:0, concurrency_check=lambda _:0, extra_checks=lambda client: isolated(client,args.tools,args.jar.resolve() if args.jar else None,args.reasoning,args.multi_turn))
 
 
 if __name__ == '__main__': main()
