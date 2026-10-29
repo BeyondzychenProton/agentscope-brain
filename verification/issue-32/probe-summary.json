@@ -1,0 +1,492 @@
+{
+  "issue": 32,
+  "phase": "stage1-09",
+  "executed_at": "2026-10-26T11:55:06.037770+08:00",
+  "contract_refs": [
+    "https://github.com/BeyondzychenProton/agentscope-brain/issues/22#issuecomment-6394913987",
+    "https://github.com/BeyondzychenProton/agentscope-brain/issues/19#issuecomment-6359974007",
+    "https://github.com/BeyondzychenProton/agentscope-brain/issues/23#issuecomment-6396363970"
+  ],
+  "git_head": "72068bd779d7a44850b7d853beaa5aa42a659431",
+  "worktree": "codex/formal-web-implementation; existing changes preserved; no commit/push",
+  "environment": "one-shot loopback MySQL; no-defaults; isolated datadir verified; synthetic data only",
+  "summary": {
+    "mysql_version": "8.0.45",
+    "tables": 37,
+    "expected_rejections": 55,
+    "positive_checks": 9,
+    "inspection_checks": 13,
+    "concurrency_checks": 17,
+    "synthetic_rows_rolled_back": true,
+    "framework_kv_tested": false,
+    "application_integration_tested": false,
+    "probes": {},
+    "constraint_rejections": 55,
+    "constraint_positive_checks": 9,
+    "inspection_names": [
+      "interaction_owner",
+      "interaction_current_revision",
+      "interaction_revision_snapshot",
+      "interaction_response_binding",
+      "interaction_answered_fact",
+      "interaction_form_message",
+      "interaction_source_checkpoint",
+      "interaction_form_consumption",
+      "interaction_confirmation_contract",
+      "interaction_second_authorization",
+      "interaction_nonce_binding",
+      "interaction_sdk_response_reference",
+      "interaction_confirmation_sync"
+    ],
+    "directed_anomaly_checks": 55,
+    "directed_positive_checks": 9,
+    "directed_results": [
+      {
+        "case": "wrong_owner",
+        "expected": "ANOMALY",
+        "target": "interaction_owner",
+        "target_anomalies": 1
+      },
+      {
+        "case": "wrong_session",
+        "expected": "ANOMALY",
+        "target": "interaction_owner",
+        "target_anomalies": 1
+      },
+      {
+        "case": "wrong_release",
+        "expected": "ANOMALY",
+        "target": "interaction_owner",
+        "target_anomalies": 1
+      },
+      {
+        "case": "missing_run",
+        "expected": "ANOMALY",
+        "target": "interaction_owner",
+        "target_anomalies": 1
+      },
+      {
+        "case": "cross_current_revision",
+        "expected": "ANOMALY",
+        "target": "interaction_current_revision",
+        "target_anomalies": 1
+      },
+      {
+        "case": "wrong_revision_no",
+        "expected": "ANOMALY",
+        "target": "interaction_current_revision",
+        "target_anomalies": 1
+      },
+      {
+        "case": "snapshot_tamper",
+        "expected": "ANOMALY",
+        "target": "interaction_revision_snapshot",
+        "target_anomalies": 1
+      },
+      {
+        "case": "orphan_revision",
+        "expected": "ANOMALY",
+        "target": "interaction_revision_snapshot",
+        "target_anomalies": 1
+      },
+      {
+        "case": "actor_mismatch",
+        "expected": "ANOMALY",
+        "target": "interaction_response_binding",
+        "target_anomalies": 1
+      },
+      {
+        "case": "stale_accepted_revision",
+        "expected": "ANOMALY",
+        "target": "interaction_response_binding",
+        "target_anomalies": 1
+      },
+      {
+        "case": "accepted_snapshot_mismatch",
+        "expected": "ANOMALY",
+        "target": "interaction_response_binding",
+        "target_anomalies": 1
+      },
+      {
+        "case": "answered_without_response",
+        "expected": "ANOMALY",
+        "target": "interaction_answered_fact",
+        "target_anomalies": 1
+      },
+      {
+        "case": "answered_reopened",
+        "expected": "ANOMALY",
+        "target": "interaction_answered_fact",
+        "target_anomalies": 1
+      },
+      {
+        "case": "form_wrong_run",
+        "expected": "ANOMALY",
+        "target": "interaction_form_message",
+        "target_anomalies": 1
+      },
+      {
+        "case": "form_wrong_session",
+        "expected": "ANOMALY",
+        "target": "interaction_form_message",
+        "target_anomalies": 1
+      },
+      {
+        "case": "form_wrong_submit_digest",
+        "expected": "ANOMALY",
+        "target": "interaction_form_message",
+        "target_anomalies": 1
+      },
+      {
+        "case": "source_wrong_owner",
+        "expected": "ANOMALY",
+        "target": "interaction_source_checkpoint",
+        "target_anomalies": 1
+      },
+      {
+        "case": "source_wrong_slot",
+        "expected": "ANOMALY",
+        "target": "interaction_source_checkpoint",
+        "target_anomalies": 1
+      },
+      {
+        "case": "source_wrong_release",
+        "expected": "ANOMALY",
+        "target": "interaction_source_checkpoint",
+        "target_anomalies": 1
+      },
+      {
+        "case": "source_wrong_session",
+        "expected": "ANOMALY",
+        "target": "interaction_source_checkpoint",
+        "target_anomalies": 1
+      },
+      {
+        "case": "wrong_source_call",
+        "expected": "ANOMALY",
+        "target": "interaction_source_checkpoint",
+        "target_anomalies": 1
+      },
+      {
+        "case": "source_no_save_receipt",
+        "expected": "ANOMALY",
+        "target": "interaction_source_checkpoint",
+        "target_anomalies": 1
+      },
+      {
+        "case": "source_unverified",
+        "expected": "ANOMALY",
+        "target": "interaction_source_checkpoint",
+        "target_anomalies": 1
+      },
+      {
+        "case": "source_wrong_pending",
+        "expected": "ANOMALY",
+        "target": "interaction_source_checkpoint",
+        "target_anomalies": 1
+      },
+      {
+        "case": "source_wrong_checkpoint",
+        "expected": "ANOMALY",
+        "target": "interaction_source_checkpoint",
+        "target_anomalies": 1
+      },
+      {
+        "case": "consume_wrong_generation",
+        "expected": "ANOMALY",
+        "target": "interaction_form_consumption",
+        "target_anomalies": 1
+      },
+      {
+        "case": "consume_wrong_fence",
+        "expected": "ANOMALY",
+        "target": "interaction_form_consumption",
+        "target_anomalies": 1
+      },
+      {
+        "case": "consume_wrong_slot",
+        "expected": "ANOMALY",
+        "target": "interaction_form_consumption",
+        "target_anomalies": 1
+      },
+      {
+        "case": "consume_wrong_pending",
+        "expected": "ANOMALY",
+        "target": "interaction_form_consumption",
+        "target_anomalies": 1
+      },
+      {
+        "case": "consume_source_reused",
+        "expected": "ANOMALY",
+        "target": "interaction_form_consumption",
+        "target_anomalies": 1
+      },
+      {
+        "case": "consume_no_receipt",
+        "expected": "ANOMALY",
+        "target": "interaction_form_consumption",
+        "target_anomalies": 1
+      },
+      {
+        "case": "consume_unverified",
+        "expected": "ANOMALY",
+        "target": "interaction_form_consumption",
+        "target_anomalies": 1
+      },
+      {
+        "case": "consume_no_before_version",
+        "expected": "ANOMALY",
+        "target": "interaction_form_consumption",
+        "target_anomalies": 1
+      },
+      {
+        "case": "consume_no_independent_readback",
+        "expected": "ANOMALY",
+        "target": "interaction_form_consumption",
+        "target_anomalies": 1
+      },
+      {
+        "case": "confirmation_wrong_owner",
+        "expected": "ANOMALY",
+        "target": "interaction_confirmation_contract",
+        "target_anomalies": 1
+      },
+      {
+        "case": "confirmation_wrong_operation",
+        "expected": "ANOMALY",
+        "target": "interaction_confirmation_contract",
+        "target_anomalies": 1
+      },
+      {
+        "case": "confirmation_digest_mismatch",
+        "expected": "ANOMALY",
+        "target": "interaction_confirmation_contract",
+        "target_anomalies": 1
+      },
+      {
+        "case": "confirmation_wrong_identity_version",
+        "expected": "ANOMALY",
+        "target": "interaction_confirmation_contract",
+        "target_anomalies": 1
+      },
+      {
+        "case": "confirmation_extended_expiry",
+        "expected": "ANOMALY",
+        "target": "interaction_confirmation_contract",
+        "target_anomalies": 1
+      },
+      {
+        "case": "confirmation_not_consumed",
+        "expected": "ANOMALY",
+        "target": "interaction_confirmation_contract",
+        "target_anomalies": 1
+      },
+      {
+        "case": "confirmation_after_deadline",
+        "expected": "ANOMALY",
+        "target": "interaction_confirmation_contract",
+        "target_anomalies": 1
+      },
+      {
+        "case": "confirmation_made_form",
+        "expected": "ANOMALY",
+        "target": "interaction_response_binding",
+        "target_anomalies": 1
+      },
+      {
+        "case": "second_authorization",
+        "expected": "ANOMALY",
+        "target": "interaction_second_authorization",
+        "target_anomalies": 1
+      },
+      {
+        "case": "premature_ready_to_send",
+        "expected": "ANOMALY",
+        "target": "interaction_second_authorization",
+        "target_anomalies": 1
+      },
+      {
+        "case": "missing_recovery_waiting",
+        "expected": "ANOMALY",
+        "target": "interaction_confirmation_contract",
+        "target_anomalies": 1
+      },
+      {
+        "case": "missing_key_cursor",
+        "expected": "ANOMALY",
+        "target": "interaction_nonce_binding",
+        "target_anomalies": 1
+      },
+      {
+        "case": "wrong_nonce_prefix",
+        "expected": "ANOMALY",
+        "target": "interaction_nonce_binding",
+        "target_anomalies": 2
+      },
+      {
+        "case": "nonce_zero",
+        "expected": "ANOMALY",
+        "target": "interaction_nonce_binding",
+        "target_anomalies": 1
+      },
+      {
+        "case": "nonce_not_reserved",
+        "expected": "ANOMALY",
+        "target": "interaction_nonce_binding",
+        "target_anomalies": 1
+      },
+      {
+        "case": "nonce_rollback",
+        "expected": "ANOMALY",
+        "target": "interaction_nonce_binding",
+        "target_anomalies": 1
+      },
+      {
+        "case": "orphan_sdk_response",
+        "expected": "ANOMALY",
+        "target": "interaction_sdk_response_reference",
+        "target_anomalies": 1
+      },
+      {
+        "case": "missing_sdk_response",
+        "expected": "ANOMALY",
+        "target": "interaction_sdk_response_reference",
+        "target_anomalies": 1
+      },
+      {
+        "case": "sync_wrong_call",
+        "expected": "ANOMALY",
+        "target": "interaction_confirmation_sync",
+        "target_anomalies": 1
+      },
+      {
+        "case": "accepted_unclaimed",
+        "expected": "CLEAN",
+        "target": null,
+        "target_anomalies": 0
+      },
+      {
+        "case": "reconciling_preserves_answer",
+        "expected": "CLEAN",
+        "target": null,
+        "target_anomalies": 0
+      },
+      {
+        "case": "old_revision_readonly",
+        "expected": "CLEAN",
+        "target": null,
+        "target_anomalies": 0
+      },
+      {
+        "case": "confirmation_no_sdk_pending",
+        "expected": "CLEAN",
+        "target": null,
+        "target_anomalies": 0
+      },
+      {
+        "case": "confirmation_sync_pending",
+        "expected": "CLEAN",
+        "target": null,
+        "target_anomalies": 0
+      },
+      {
+        "case": "permission_changed_historical_facts",
+        "expected": "CLEAN",
+        "target": null,
+        "target_anomalies": 0
+      },
+      {
+        "case": "legacy_digest_not_recoverable",
+        "expected": "CLEAN",
+        "target": null,
+        "target_anomalies": 0
+      },
+      {
+        "case": "new_key_same_counter",
+        "expected": "CLEAN",
+        "target": null,
+        "target_anomalies": 0
+      },
+      {
+        "case": "preparing_source_not_yet_verified",
+        "expected": "CLEAN",
+        "target": null,
+        "target_anomalies": 0
+      },
+      {
+        "case": "operation_without_original_confirmation",
+        "expected": "ANOMALY",
+        "target": "interaction_second_authorization",
+        "target_anomalies": 1
+      },
+      {
+        "case": "short_nonce_padded_to_zero",
+        "expected": "ANOMALY",
+        "target": "interaction_nonce_binding",
+        "target_anomalies": 1
+      }
+    ],
+    "concurrency_names": [
+      "confirmation_atomic_rollback_readback",
+      "shared_active_request_unique",
+      "draft_cas_preserves_snapshot",
+      "stale_draft_version_and_snapshot_rejected",
+      "historical_revision_draft_rejected",
+      "form_acceptance_atomic_original_run",
+      "answered_request_cannot_reopen",
+      "form_continue_claim_cas_preserves_answer",
+      "actor_submission_unique",
+      "confirmation_consumption_atomic_no_form_message",
+      "post_race_facts_inspected",
+      "nonce_expected_version_cas",
+      "nonce_wrong_generation_rejected",
+      "nonce_wrong_prefix_rejected",
+      "nonce_serial_reservations_unique",
+      "committed_nonce_survives_domain_rollback",
+      "nonce_exhaustion_no_wrap"
+    ],
+    "synthetic_nonce_reservation_counters": [
+      4,
+      5,
+      6,
+      7
+    ],
+    "synthetic_rows_remaining": 0,
+    "legacy_operation_regression": {
+      "rejections": 25,
+      "positive_checks": 4
+    },
+    "foreign_keys": 0,
+    "triggers": 0,
+    "model_calls": 0,
+    "sdk_calls": 0,
+    "tool_sends": 0,
+    "crypto_operations": 0,
+    "real_keyring_used": false,
+    "real_sdk_consumption_proven": false
+  },
+  "fingerprints": {
+    "db/schema/01_用户与管理员建表.sql": "d10b03a1d7a8c918856b63e20780a4883674fd03d63eda17ae566b1f799118c0",
+    "db/schema/02_会话运行消息建表.sql": "e6bfb1578156caf05ff6abd3e3f98252748d00bde3766c6c757edf6077718f56",
+    "db/schema/03_记忆控制建表.sql": "c4066d952684c4a1d87a1dd87d965c263b5891090ba6c599efc97999a68a137a",
+    "db/schema/04_会话运行资料建表.sql": "6b4a4ba064e0ddcb0ae0a4cff6132291821258dd8363271b7513f8c874f7aa64",
+    "db/schema/05_员工配置发布与授权建表.sql": "68f14e20ff3e201e4c3d0aa1c84cb6510274d8c1d0405837150ba1c7961f8e7a",
+    "db/schema/08_Run调度可信调用与终结建表.sql": "b69af37c2892950ac8ceb23032aae7ecab7b2c4b1506e18438ebdffeccb089cb",
+    "db/schema/09_交互响应与确认恢复建表.sql": "ab4b5e8965071877aeb6cc0a75a4dd6c5a1251cd4c2df7cf93b8429b061101da",
+    "db/tests/03_通用素材与工具操作建表验收.sql": "63aa3a891658f5dfb9c8153e71cfda5a6bfe964c794600400b24e38c38983537",
+    "db/tests/24_交互响应与确认恢复建表验收.sql": "528ad07b870cbce2e1a893d0f821d5e681f33dc93ce4f5e1df8000a0e0a7f788",
+    "db/tests/25_交互响应与确认恢复关联巡检.sql": "5bc4c67283ad459ee06ddf9d6fae596b20ae1c99e9e046e9fe52fb21ec8e0342",
+    "db/tests/26_交互响应与确认恢复巡检种子.sql": "1cab9590c8e764258799f3bed0ca10419566338fcc2ef531853834b2c4d60ce0",
+    "db/tests/27_交互响应与确认恢复定向异常验收.sql": "f845620cbe23fb231b1c6f505217a864abee5e314f5564a11ed0a68dd6ae8c4c",
+    "db/tests/执行交互响应与确认恢复隔离验收.py": "40f917ba877076d833cfbd7b6933d87027fca1a47c59233a01653cf9751d6a99",
+    "db/tests/执行记忆控制隔离验收.py": "2a082740baa685e072d51ecbf026d964614f61b562d376dbf125881085f65fb5"
+  },
+  "claims": {
+    "database_contracts_verified": true,
+    "http_acceptance_verified": false,
+    "sdk_consumption_verified": false,
+    "real_crypto_or_key_recovery_verified": false,
+    "independent_nonce_runtime_verified": false,
+    "real_tool_send_verified": false
+  }
+}

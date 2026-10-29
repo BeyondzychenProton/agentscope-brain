@@ -1,0 +1,139 @@
+{
+  "issue": 30,
+  "phase": "stage1-07",
+  "executed_at": "2026-10-26T11:24:54.216746+08:00",
+  "contract_refs": [
+    "issue-22 data contract §6.1/§7/§8/§13",
+    "issue-22 interface §5 close/late-accept semantics (DB probe only)",
+    "issue-23 stage1 exit condition staging/submission portion"
+  ],
+  "summary": {
+    "mysql_version": "8.0.45",
+    "tables": 32,
+    "expected_rejections": 23,
+    "positive_checks": 10,
+    "inspection_checks": 8,
+    "concurrency_checks": 8,
+    "synthetic_rows_rolled_back": true,
+    "framework_kv_tested": false,
+    "application_integration_tested": false,
+    "probes": {
+      "16_新建意图暂存与普通提交建表验收.sql": {
+        "rejections": 23,
+        "positive_checks": 10
+      }
+    },
+    "inspection_names": [
+      "intent_bind_without_first_message",
+      "intent_first_submission_mismatch",
+      "upload_expired_still_ready",
+      "upload_bound_without_formal_media",
+      "upload_formal_still_temp_deleting",
+      "upload_owner_or_target_mismatch",
+      "submission_accepted_incomplete",
+      "submission_control_message_mismatch"
+    ],
+    "directed_anomaly_checks": 8,
+    "directed_positive_checks": 2,
+    "directed_inspection_results": [
+      {
+        "case": "release_mismatch",
+        "expected": "ANOMALY",
+        "target": "intent_bind_without_first_message",
+        "target_anomalies": 1
+      },
+      {
+        "case": "first_submission_wrong",
+        "expected": "ANOMALY",
+        "target": "intent_first_submission_mismatch",
+        "target_anomalies": 1
+      },
+      {
+        "case": "expired_ready",
+        "expected": "ANOMALY",
+        "target": "upload_expired_still_ready",
+        "target_anomalies": 1
+      },
+      {
+        "case": "bound_missing_media",
+        "expected": "ANOMALY",
+        "target": "upload_bound_without_formal_media",
+        "target_anomalies": 1
+      },
+      {
+        "case": "bound_temp_delete",
+        "expected": "ANOMALY",
+        "target": "upload_formal_still_temp_deleting",
+        "target_anomalies": 1
+      },
+      {
+        "case": "upload_owner_mismatch",
+        "expected": "ANOMALY",
+        "target": "upload_owner_or_target_mismatch",
+        "target_anomalies": 1
+      },
+      {
+        "case": "accepted_wrong_message",
+        "expected": "ANOMALY",
+        "target": "submission_accepted_incomplete",
+        "target_anomalies": 1
+      },
+      {
+        "case": "control_message_drift",
+        "expected": "ANOMALY",
+        "target": "submission_control_message_mismatch",
+        "target_anomalies": 1
+      },
+      {
+        "case": "legal_registered_text_empty_uploads",
+        "expected": "CLEAN",
+        "target": null,
+        "target_anomalies": 0
+      },
+      {
+        "case": "legal_tombstone_untouched",
+        "expected": "CLEAN",
+        "target": null,
+        "target_anomalies": 0
+      }
+    ],
+    "new_tables": 3,
+    "new_check_constraints": 24,
+    "foreign_keys": 0,
+    "triggers": 0,
+    "concurrency_names": [
+      "submission_first_insert_unique",
+      "submission_same_key_different_params",
+      "intent_bind_cas",
+      "accept_versus_close_cas",
+      "close_first_rejects_late_accept",
+      "accept_first_close_reads_original",
+      "upload_bind_cas_and_block",
+      "control_key_readback_after_commit"
+    ],
+    "http_acceptance_tested": false,
+    "minio_object_tested": false,
+    "real_business_run_tested": false,
+    "issue29_preset_polluted": false
+  },
+  "fingerprints": {
+    "db/schema/01_用户与管理员建表.sql": "D10B03A1D7A8C918856B63E20780A4883674FD03D63EDA17AE566B1F799118C0",
+    "db/schema/02_会话运行消息建表.sql": "4A994B4B62EB8A2A194A5213A720AE90C28759F04DF055F28787C55D5ABDF7DC",
+    "db/schema/03_记忆控制建表.sql": "C4066D952684C4A1D87A1DD87D965C263B5891090BA6C599EFC97999A68A137A",
+    "db/schema/04_会话运行资料建表.sql": "6B4A4BA064E0DDCB0AE0A4CFF6132291821258DD8363271B7513F8C874F7AA64",
+    "db/schema/05_员工配置发布与授权建表.sql": "68F14E20FF3E201E4C3D0AA1C84CB6510274D8C1D0405837150BA1C7961F8E7A",
+    "db/schema/07_新建意图暂存与普通提交建表.sql": "B1A2C2140999AB064BA5E9353365D75732E5B8F72711EEF2C82CE3583AE26089",
+    "db/tests/16_新建意图暂存与普通提交建表验收.sql": "5722CBB6B0D523606F1A3F0EAD257DFFE1B22EC5420B9675EABA9E177F9D1EC2",
+    "db/tests/17_新建意图暂存与普通提交关联巡检.sql": "86BB6900603DB08531F79584AF4844F7B527FDF60D86D901FC4A607FB5A46A28",
+    "db/tests/18_新建意图暂存与普通提交巡检种子.sql": "93B4AB70425889295D22D897D99362BFBCA7B2BB26C6B3050B3DAE6021623AC9",
+    "db/tests/19_新建意图暂存与普通提交定向异常验收.sql": "E361EEE20C470ECB0D5EF15CC4BD8E9C10C6EB6474DA6D09A74303A6F9286661",
+    "db/tests/执行新建意图暂存与普通提交隔离验收.py": "2A25021E81CD291444A84442C6A33D205EFB7D826BAC907D5D629E38FBB3BC37",
+    "db/tests/执行记忆控制隔离验收.py": "2A082740BAA685E072D51ECBF026D964614F61B562D376DBF125881085F65FB5"
+  },
+  "claims": {
+    "database_constraints_verified": true,
+    "http_accept_upload_close_verified": false,
+    "minio_verified": false,
+    "real_run_verified": false
+  }
+}

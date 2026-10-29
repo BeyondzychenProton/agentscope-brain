@@ -1,0 +1,1711 @@
+{
+  "issue": 33,
+  "phase": "stage1-10",
+  "executed_at": "2026-10-26T12:16:30.629513+08:00",
+  "contract_refs": [
+    "https://github.com/BeyondzychenProton/agentscope-brain/issues/22#issuecomment-6394913987",
+    "https://github.com/BeyondzychenProton/agentscope-brain/issues/20#issuecomment-6361323849",
+    "https://github.com/BeyondzychenProton/agentscope-brain/issues/23#issuecomment-6396363970"
+  ],
+  "git_head": "72068bd779d7a44850b7d853beaa5aa42a659431",
+  "worktree": "codex/formal-web-implementation; pre-existing changes preserved; no commit/push",
+  "environment": "temporary no-defaults loopback MySQL; datadir ownership verified; synthetic only",
+  "runtime": {
+    "python": "3.14.3",
+    "os": "Windows-11-10.0.26200-SP0",
+    "dependencies": "Python standard library; MySQL CLI",
+    "mysql_binary_sha256": {
+      "mysql.exe": "139da179d49838e11a5a5e954bacdf324a89b9bc535992e61a9c4c611be4b8cf",
+      "mysqld.exe": "4a96393527bf101563548aa741b3b59b219776fe9a0997859516ea668f512a00",
+      "mysqladmin.exe": "cb44798800e6147d58b8ff668cc799f3918ab2c8bb9b925db7d9bda3245b33c7"
+    },
+    "java_build_or_release_loaded": false
+  },
+  "synthetic_release_id": 950001,
+  "summary": {
+    "mysql_version": "8.0.45",
+    "tables": 40,
+    "expected_rejections": 49,
+    "positive_checks": 5,
+    "inspection_checks": 12,
+    "concurrency_checks": 13,
+    "synthetic_rows_rolled_back": false,
+    "framework_kv_tested": false,
+    "application_integration_tested": false,
+    "probes": {},
+    "constraint_rejections": 49,
+    "constraint_positive_checks": 5,
+    "inspection_names": [
+      "projection_prefix",
+      "projection_batch_integrity",
+      "projection_content_owner",
+      "projection_version_chain",
+      "projection_version_payload",
+      "projection_version_event",
+      "projection_source_reference",
+      "projection_interaction_reference",
+      "projection_progress_reference",
+      "projection_success_promotion",
+      "projection_run_text_budget",
+      "projection_controlled_payload"
+    ],
+    "directed_anomaly_checks": 69,
+    "directed_positive_checks": 6,
+    "directed_results": [
+      {
+        "case": "missing_middle_batch",
+        "expected": "ANOMALY",
+        "target": "projection_prefix",
+        "actual": {
+          "projection_prefix": 1,
+          "projection_batch_integrity": 0,
+          "projection_content_owner": 0,
+          "projection_version_chain": 0,
+          "projection_version_payload": 0,
+          "projection_version_event": 1,
+          "projection_source_reference": 0,
+          "projection_interaction_reference": 0,
+          "projection_progress_reference": 0,
+          "projection_success_promotion": 0,
+          "projection_run_text_budget": 0,
+          "projection_controlled_payload": 0
+        }
+      },
+      {
+        "case": "head_ahead",
+        "expected": "ANOMALY",
+        "target": "projection_prefix",
+        "actual": {
+          "projection_prefix": 1,
+          "projection_batch_integrity": 0,
+          "projection_content_owner": 0,
+          "projection_version_chain": 0,
+          "projection_version_payload": 0,
+          "projection_version_event": 0,
+          "projection_source_reference": 0,
+          "projection_interaction_reference": 0,
+          "projection_progress_reference": 0,
+          "projection_success_promotion": 0,
+          "projection_run_text_budget": 0,
+          "projection_controlled_payload": 0
+        }
+      },
+      {
+        "case": "head_behind",
+        "expected": "ANOMALY",
+        "target": "projection_prefix",
+        "actual": {
+          "projection_prefix": 1,
+          "projection_batch_integrity": 0,
+          "projection_content_owner": 0,
+          "projection_version_chain": 0,
+          "projection_version_payload": 0,
+          "projection_version_event": 0,
+          "projection_source_reference": 0,
+          "projection_interaction_reference": 0,
+          "projection_progress_reference": 0,
+          "projection_success_promotion": 0,
+          "projection_run_text_budget": 0,
+          "projection_controlled_payload": 0
+        }
+      },
+      {
+        "case": "wrong_stream",
+        "expected": "ANOMALY",
+        "target": "projection_prefix",
+        "actual": {
+          "projection_prefix": 2,
+          "projection_batch_integrity": 1,
+          "projection_content_owner": 0,
+          "projection_version_chain": 0,
+          "projection_version_payload": 0,
+          "projection_version_event": 2,
+          "projection_source_reference": 0,
+          "projection_interaction_reference": 0,
+          "projection_progress_reference": 0,
+          "projection_success_promotion": 0,
+          "projection_run_text_budget": 0,
+          "projection_controlled_payload": 0
+        }
+      },
+      {
+        "case": "orphan_batch",
+        "expected": "ANOMALY",
+        "target": "projection_prefix",
+        "actual": {
+          "projection_prefix": 2,
+          "projection_batch_integrity": 1,
+          "projection_content_owner": 0,
+          "projection_version_chain": 0,
+          "projection_version_payload": 0,
+          "projection_version_event": 2,
+          "projection_source_reference": 0,
+          "projection_interaction_reference": 0,
+          "projection_progress_reference": 0,
+          "projection_success_promotion": 0,
+          "projection_run_text_budget": 0,
+          "projection_controlled_payload": 0
+        }
+      },
+      {
+        "case": "batch_digest",
+        "expected": "ANOMALY",
+        "target": "projection_batch_integrity",
+        "actual": {
+          "projection_prefix": 0,
+          "projection_batch_integrity": 1,
+          "projection_content_owner": 0,
+          "projection_version_chain": 0,
+          "projection_version_payload": 0,
+          "projection_version_event": 0,
+          "projection_source_reference": 0,
+          "projection_interaction_reference": 0,
+          "projection_progress_reference": 0,
+          "projection_success_promotion": 0,
+          "projection_run_text_budget": 0,
+          "projection_controlled_payload": 0
+        }
+      },
+      {
+        "case": "envelope_seq",
+        "expected": "ANOMALY",
+        "target": "projection_batch_integrity",
+        "actual": {
+          "projection_prefix": 0,
+          "projection_batch_integrity": 1,
+          "projection_content_owner": 0,
+          "projection_version_chain": 0,
+          "projection_version_payload": 0,
+          "projection_version_event": 0,
+          "projection_source_reference": 0,
+          "projection_interaction_reference": 0,
+          "projection_progress_reference": 0,
+          "projection_success_promotion": 0,
+          "projection_run_text_budget": 0,
+          "projection_controlled_payload": 0
+        }
+      },
+      {
+        "case": "envelope_stream",
+        "expected": "ANOMALY",
+        "target": "projection_batch_integrity",
+        "actual": {
+          "projection_prefix": 0,
+          "projection_batch_integrity": 1,
+          "projection_content_owner": 0,
+          "projection_version_chain": 0,
+          "projection_version_payload": 0,
+          "projection_version_event": 0,
+          "projection_source_reference": 0,
+          "projection_interaction_reference": 0,
+          "projection_progress_reference": 0,
+          "projection_success_promotion": 0,
+          "projection_run_text_budget": 0,
+          "projection_controlled_payload": 0
+        }
+      },
+      {
+        "case": "batch_count",
+        "expected": "ANOMALY",
+        "target": "projection_batch_integrity",
+        "actual": {
+          "projection_prefix": 0,
+          "projection_batch_integrity": 1,
+          "projection_content_owner": 0,
+          "projection_version_chain": 0,
+          "projection_version_payload": 0,
+          "projection_version_event": 0,
+          "projection_source_reference": 0,
+          "projection_interaction_reference": 0,
+          "projection_progress_reference": 0,
+          "projection_success_promotion": 0,
+          "projection_run_text_budget": 0,
+          "projection_controlled_payload": 0
+        }
+      },
+      {
+        "case": "content_wrong_owner",
+        "expected": "ANOMALY",
+        "target": "projection_content_owner",
+        "actual": {
+          "projection_prefix": 0,
+          "projection_batch_integrity": 0,
+          "projection_content_owner": 1,
+          "projection_version_chain": 0,
+          "projection_version_payload": 0,
+          "projection_version_event": 0,
+          "projection_source_reference": 1,
+          "projection_interaction_reference": 0,
+          "projection_progress_reference": 2,
+          "projection_success_promotion": 1,
+          "projection_run_text_budget": 0,
+          "projection_controlled_payload": 0
+        }
+      },
+      {
+        "case": "content_wrong_session",
+        "expected": "ANOMALY",
+        "target": "projection_content_owner",
+        "actual": {
+          "projection_prefix": 0,
+          "projection_batch_integrity": 0,
+          "projection_content_owner": 1,
+          "projection_version_chain": 0,
+          "projection_version_payload": 0,
+          "projection_version_event": 6,
+          "projection_source_reference": 1,
+          "projection_interaction_reference": 0,
+          "projection_progress_reference": 2,
+          "projection_success_promotion": 2,
+          "projection_run_text_budget": 0,
+          "projection_controlled_payload": 0
+        }
+      },
+      {
+        "case": "content_wrong_run",
+        "expected": "ANOMALY",
+        "target": "projection_content_owner",
+        "actual": {
+          "projection_prefix": 0,
+          "projection_batch_integrity": 0,
+          "projection_content_owner": 1,
+          "projection_version_chain": 0,
+          "projection_version_payload": 0,
+          "projection_version_event": 0,
+          "projection_source_reference": 3,
+          "projection_interaction_reference": 0,
+          "projection_progress_reference": 3,
+          "projection_success_promotion": 1,
+          "projection_run_text_budget": 0,
+          "projection_controlled_payload": 0
+        }
+      },
+      {
+        "case": "anchor_moved",
+        "expected": "ANOMALY",
+        "target": "projection_version_chain",
+        "actual": {
+          "projection_prefix": 0,
+          "projection_batch_integrity": 0,
+          "projection_content_owner": 0,
+          "projection_version_chain": 1,
+          "projection_version_payload": 0,
+          "projection_version_event": 3,
+          "projection_source_reference": 0,
+          "projection_interaction_reference": 0,
+          "projection_progress_reference": 3,
+          "projection_success_promotion": 0,
+          "projection_run_text_budget": 0,
+          "projection_controlled_payload": 0
+        }
+      },
+      {
+        "case": "missing_fixed_version",
+        "expected": "ANOMALY",
+        "target": "projection_version_chain",
+        "actual": {
+          "projection_prefix": 0,
+          "projection_batch_integrity": 0,
+          "projection_content_owner": 0,
+          "projection_version_chain": 1,
+          "projection_version_payload": 0,
+          "projection_version_event": 1,
+          "projection_source_reference": 0,
+          "projection_interaction_reference": 0,
+          "projection_progress_reference": 0,
+          "projection_success_promotion": 0,
+          "projection_run_text_budget": 0,
+          "projection_controlled_payload": 0
+        }
+      },
+      {
+        "case": "missing_predecessor",
+        "expected": "ANOMALY",
+        "target": "projection_version_chain",
+        "actual": {
+          "projection_prefix": 0,
+          "projection_batch_integrity": 0,
+          "projection_content_owner": 0,
+          "projection_version_chain": 1,
+          "projection_version_payload": 0,
+          "projection_version_event": 1,
+          "projection_source_reference": 0,
+          "projection_interaction_reference": 0,
+          "projection_progress_reference": 1,
+          "projection_success_promotion": 0,
+          "projection_run_text_budget": 0,
+          "projection_controlled_payload": 0
+        }
+      },
+      {
+        "case": "head_version_missing",
+        "expected": "ANOMALY",
+        "target": "projection_version_chain",
+        "actual": {
+          "projection_prefix": 0,
+          "projection_batch_integrity": 0,
+          "projection_content_owner": 0,
+          "projection_version_chain": 1,
+          "projection_version_payload": 0,
+          "projection_version_event": 0,
+          "projection_source_reference": 0,
+          "projection_interaction_reference": 0,
+          "projection_progress_reference": 0,
+          "projection_success_promotion": 0,
+          "projection_run_text_budget": 0,
+          "projection_controlled_payload": 0
+        }
+      },
+      {
+        "case": "head_state_disagrees",
+        "expected": "ANOMALY",
+        "target": "projection_version_chain",
+        "actual": {
+          "projection_prefix": 0,
+          "projection_batch_integrity": 0,
+          "projection_content_owner": 0,
+          "projection_version_chain": 1,
+          "projection_version_payload": 0,
+          "projection_version_event": 0,
+          "projection_source_reference": 0,
+          "projection_interaction_reference": 0,
+          "projection_progress_reference": 0,
+          "projection_success_promotion": 1,
+          "projection_run_text_budget": 0,
+          "projection_controlled_payload": 0
+        }
+      },
+      {
+        "case": "closed_then_append",
+        "expected": "ANOMALY",
+        "target": "projection_version_chain",
+        "actual": {
+          "projection_prefix": 0,
+          "projection_batch_integrity": 0,
+          "projection_content_owner": 0,
+          "projection_version_chain": 1,
+          "projection_version_payload": 0,
+          "projection_version_event": 1,
+          "projection_source_reference": 0,
+          "projection_interaction_reference": 0,
+          "projection_progress_reference": 1,
+          "projection_success_promotion": 0,
+          "projection_run_text_budget": 0,
+          "projection_controlled_payload": 0
+        }
+      },
+      {
+        "case": "promoted_then_append",
+        "expected": "ANOMALY",
+        "target": "projection_version_chain",
+        "actual": {
+          "projection_prefix": 0,
+          "projection_batch_integrity": 0,
+          "projection_content_owner": 0,
+          "projection_version_chain": 1,
+          "projection_version_payload": 0,
+          "projection_version_event": 1,
+          "projection_source_reference": 0,
+          "projection_interaction_reference": 0,
+          "projection_progress_reference": 1,
+          "projection_success_promotion": 0,
+          "projection_run_text_budget": 0,
+          "projection_controlled_payload": 0
+        }
+      },
+      {
+        "case": "version_event_order",
+        "expected": "ANOMALY",
+        "target": "projection_version_chain",
+        "actual": {
+          "projection_prefix": 0,
+          "projection_batch_integrity": 0,
+          "projection_content_owner": 0,
+          "projection_version_chain": 1,
+          "projection_version_payload": 0,
+          "projection_version_event": 2,
+          "projection_source_reference": 0,
+          "projection_interaction_reference": 0,
+          "projection_progress_reference": 1,
+          "projection_success_promotion": 0,
+          "projection_run_text_budget": 0,
+          "projection_controlled_payload": 0
+        }
+      },
+      {
+        "case": "body_digest",
+        "expected": "ANOMALY",
+        "target": "projection_version_payload",
+        "actual": {
+          "projection_prefix": 0,
+          "projection_batch_integrity": 0,
+          "projection_content_owner": 0,
+          "projection_version_chain": 0,
+          "projection_version_payload": 1,
+          "projection_version_event": 1,
+          "projection_source_reference": 0,
+          "projection_interaction_reference": 0,
+          "projection_progress_reference": 0,
+          "projection_success_promotion": 0,
+          "projection_run_text_budget": 0,
+          "projection_controlled_payload": 0
+        }
+      },
+      {
+        "case": "structure_over_64k",
+        "expected": "ANOMALY",
+        "target": "projection_version_payload",
+        "actual": {
+          "projection_prefix": 0,
+          "projection_batch_integrity": 0,
+          "projection_content_owner": 0,
+          "projection_version_chain": 0,
+          "projection_version_payload": 1,
+          "projection_version_event": 1,
+          "projection_source_reference": 0,
+          "projection_interaction_reference": 0,
+          "projection_progress_reference": 0,
+          "projection_success_promotion": 0,
+          "projection_run_text_budget": 0,
+          "projection_controlled_payload": 0
+        }
+      },
+      {
+        "case": "table_actual_rows",
+        "expected": "ANOMALY",
+        "target": "projection_version_payload",
+        "actual": {
+          "projection_prefix": 0,
+          "projection_batch_integrity": 0,
+          "projection_content_owner": 0,
+          "projection_version_chain": 0,
+          "projection_version_payload": 1,
+          "projection_version_event": 0,
+          "projection_source_reference": 0,
+          "projection_interaction_reference": 0,
+          "projection_progress_reference": 0,
+          "projection_success_promotion": 0,
+          "projection_run_text_budget": 0,
+          "projection_controlled_payload": 0
+        }
+      },
+      {
+        "case": "summary_actual_bytes",
+        "expected": "ANOMALY",
+        "target": "projection_version_payload",
+        "actual": {
+          "projection_prefix": 0,
+          "projection_batch_integrity": 0,
+          "projection_content_owner": 0,
+          "projection_version_chain": 0,
+          "projection_version_payload": 1,
+          "projection_version_event": 0,
+          "projection_source_reference": 0,
+          "projection_interaction_reference": 0,
+          "projection_progress_reference": 0,
+          "projection_success_promotion": 0,
+          "projection_run_text_budget": 0,
+          "projection_controlled_payload": 0
+        }
+      },
+      {
+        "case": "wrong_content_source_kind",
+        "expected": "ANOMALY",
+        "target": "projection_version_payload",
+        "actual": {
+          "projection_prefix": 0,
+          "projection_batch_integrity": 0,
+          "projection_content_owner": 0,
+          "projection_version_chain": 0,
+          "projection_version_payload": 2,
+          "projection_version_event": 0,
+          "projection_source_reference": 0,
+          "projection_interaction_reference": 2,
+          "projection_progress_reference": 0,
+          "projection_success_promotion": 0,
+          "projection_run_text_budget": 0,
+          "projection_controlled_payload": 0
+        }
+      },
+      {
+        "case": "missing_event_content_version",
+        "expected": "ANOMALY",
+        "target": "projection_version_event",
+        "actual": {
+          "projection_prefix": 0,
+          "projection_batch_integrity": 0,
+          "projection_content_owner": 0,
+          "projection_version_chain": 0,
+          "projection_version_payload": 0,
+          "projection_version_event": 2,
+          "projection_source_reference": 0,
+          "projection_interaction_reference": 0,
+          "projection_progress_reference": 0,
+          "projection_success_promotion": 0,
+          "projection_run_text_budget": 0,
+          "projection_controlled_payload": 0
+        }
+      },
+      {
+        "case": "event_bad_base",
+        "expected": "ANOMALY",
+        "target": "projection_version_event",
+        "actual": {
+          "projection_prefix": 0,
+          "projection_batch_integrity": 0,
+          "projection_content_owner": 0,
+          "projection_version_chain": 0,
+          "projection_version_payload": 0,
+          "projection_version_event": 1,
+          "projection_source_reference": 0,
+          "projection_interaction_reference": 0,
+          "projection_progress_reference": 0,
+          "projection_success_promotion": 0,
+          "projection_run_text_budget": 0,
+          "projection_controlled_payload": 0
+        }
+      },
+      {
+        "case": "event_bad_delta",
+        "expected": "ANOMALY",
+        "target": "projection_version_event",
+        "actual": {
+          "projection_prefix": 0,
+          "projection_batch_integrity": 0,
+          "projection_content_owner": 0,
+          "projection_version_chain": 0,
+          "projection_version_payload": 0,
+          "projection_version_event": 1,
+          "projection_source_reference": 0,
+          "projection_interaction_reference": 0,
+          "projection_progress_reference": 0,
+          "projection_success_promotion": 0,
+          "projection_run_text_budget": 0,
+          "projection_controlled_payload": 0
+        }
+      },
+      {
+        "case": "event_missing_content",
+        "expected": "ANOMALY",
+        "target": "projection_version_event",
+        "actual": {
+          "projection_prefix": 0,
+          "projection_batch_integrity": 0,
+          "projection_content_owner": 0,
+          "projection_version_chain": 0,
+          "projection_version_payload": 0,
+          "projection_version_event": 2,
+          "projection_source_reference": 0,
+          "projection_interaction_reference": 0,
+          "projection_progress_reference": 0,
+          "projection_success_promotion": 0,
+          "projection_run_text_budget": 0,
+          "projection_controlled_payload": 0
+        }
+      },
+      {
+        "case": "fixed_message_source_missing",
+        "expected": "ANOMALY",
+        "target": "projection_source_reference",
+        "actual": {
+          "projection_prefix": 0,
+          "projection_batch_integrity": 0,
+          "projection_content_owner": 0,
+          "projection_version_chain": 0,
+          "projection_version_payload": 0,
+          "projection_version_event": 0,
+          "projection_source_reference": 1,
+          "projection_interaction_reference": 0,
+          "projection_progress_reference": 0,
+          "projection_success_promotion": 0,
+          "projection_run_text_budget": 0,
+          "projection_controlled_payload": 0
+        }
+      },
+      {
+        "case": "fixed_message_source_changed",
+        "expected": "ANOMALY",
+        "target": "projection_source_reference",
+        "actual": {
+          "projection_prefix": 0,
+          "projection_batch_integrity": 0,
+          "projection_content_owner": 0,
+          "projection_version_chain": 0,
+          "projection_version_payload": 0,
+          "projection_version_event": 0,
+          "projection_source_reference": 1,
+          "projection_interaction_reference": 0,
+          "projection_progress_reference": 0,
+          "projection_success_promotion": 0,
+          "projection_run_text_budget": 0,
+          "projection_controlled_payload": 0
+        }
+      },
+      {
+        "case": "wrong_media_owner",
+        "expected": "ANOMALY",
+        "target": "projection_source_reference",
+        "actual": {
+          "projection_prefix": 0,
+          "projection_batch_integrity": 0,
+          "projection_content_owner": 0,
+          "projection_version_chain": 0,
+          "projection_version_payload": 0,
+          "projection_version_event": 0,
+          "projection_source_reference": 1,
+          "projection_interaction_reference": 0,
+          "projection_progress_reference": 0,
+          "projection_success_promotion": 0,
+          "projection_run_text_budget": 0,
+          "projection_controlled_payload": 0
+        }
+      },
+      {
+        "case": "wrong_tool_run",
+        "expected": "ANOMALY",
+        "target": "projection_source_reference",
+        "actual": {
+          "projection_prefix": 0,
+          "projection_batch_integrity": 0,
+          "projection_content_owner": 0,
+          "projection_version_chain": 0,
+          "projection_version_payload": 0,
+          "projection_version_event": 0,
+          "projection_source_reference": 2,
+          "projection_interaction_reference": 0,
+          "projection_progress_reference": 0,
+          "projection_success_promotion": 0,
+          "projection_run_text_budget": 0,
+          "projection_controlled_payload": 0
+        }
+      },
+      {
+        "case": "progress_source_missing",
+        "expected": "ANOMALY",
+        "target": "projection_source_reference",
+        "actual": {
+          "projection_prefix": 0,
+          "projection_batch_integrity": 0,
+          "projection_content_owner": 0,
+          "projection_version_chain": 0,
+          "projection_version_payload": 0,
+          "projection_version_event": 0,
+          "projection_source_reference": 1,
+          "projection_interaction_reference": 0,
+          "projection_progress_reference": 0,
+          "projection_success_promotion": 0,
+          "projection_run_text_budget": 0,
+          "projection_controlled_payload": 0
+        }
+      },
+      {
+        "case": "request_missing",
+        "expected": "ANOMALY",
+        "target": "projection_interaction_reference",
+        "actual": {
+          "projection_prefix": 0,
+          "projection_batch_integrity": 0,
+          "projection_content_owner": 0,
+          "projection_version_chain": 0,
+          "projection_version_payload": 0,
+          "projection_version_event": 0,
+          "projection_source_reference": 0,
+          "projection_interaction_reference": 1,
+          "projection_progress_reference": 0,
+          "projection_success_promotion": 0,
+          "projection_run_text_budget": 0,
+          "projection_controlled_payload": 0
+        }
+      },
+      {
+        "case": "revision_missing",
+        "expected": "ANOMALY",
+        "target": "projection_interaction_reference",
+        "actual": {
+          "projection_prefix": 0,
+          "projection_batch_integrity": 0,
+          "projection_content_owner": 0,
+          "projection_version_chain": 0,
+          "projection_version_payload": 0,
+          "projection_version_event": 0,
+          "projection_source_reference": 0,
+          "projection_interaction_reference": 1,
+          "projection_progress_reference": 0,
+          "projection_success_promotion": 0,
+          "projection_run_text_budget": 0,
+          "projection_controlled_payload": 0
+        }
+      },
+      {
+        "case": "wrong_request_revision",
+        "expected": "ANOMALY",
+        "target": "projection_interaction_reference",
+        "actual": {
+          "projection_prefix": 0,
+          "projection_batch_integrity": 0,
+          "projection_content_owner": 0,
+          "projection_version_chain": 0,
+          "projection_version_payload": 0,
+          "projection_version_event": 0,
+          "projection_source_reference": 0,
+          "projection_interaction_reference": 1,
+          "projection_progress_reference": 0,
+          "projection_success_promotion": 0,
+          "projection_run_text_budget": 0,
+          "projection_controlled_payload": 0
+        }
+      },
+      {
+        "case": "wrong_historical_revision",
+        "expected": "ANOMALY",
+        "target": "projection_interaction_reference",
+        "actual": {
+          "projection_prefix": 0,
+          "projection_batch_integrity": 0,
+          "projection_content_owner": 0,
+          "projection_version_chain": 0,
+          "projection_version_payload": 0,
+          "projection_version_event": 0,
+          "projection_source_reference": 0,
+          "projection_interaction_reference": 1,
+          "projection_progress_reference": 0,
+          "projection_success_promotion": 0,
+          "projection_run_text_budget": 0,
+          "projection_controlled_payload": 0
+        }
+      },
+      {
+        "case": "wrong_interaction_type",
+        "expected": "ANOMALY",
+        "target": "projection_interaction_reference",
+        "actual": {
+          "projection_prefix": 0,
+          "projection_batch_integrity": 0,
+          "projection_content_owner": 0,
+          "projection_version_chain": 0,
+          "projection_version_payload": 0,
+          "projection_version_event": 0,
+          "projection_source_reference": 0,
+          "projection_interaction_reference": 1,
+          "projection_progress_reference": 0,
+          "projection_success_promotion": 0,
+          "projection_run_text_budget": 0,
+          "projection_controlled_payload": 0
+        }
+      },
+      {
+        "case": "request_wrong_owner",
+        "expected": "ANOMALY",
+        "target": "projection_interaction_reference",
+        "actual": {
+          "projection_prefix": 0,
+          "projection_batch_integrity": 0,
+          "projection_content_owner": 0,
+          "projection_version_chain": 0,
+          "projection_version_payload": 0,
+          "projection_version_event": 0,
+          "projection_source_reference": 0,
+          "projection_interaction_reference": 2,
+          "projection_progress_reference": 0,
+          "projection_success_promotion": 0,
+          "projection_run_text_budget": 0,
+          "projection_controlled_payload": 0
+        }
+      },
+      {
+        "case": "request_wrong_session",
+        "expected": "ANOMALY",
+        "target": "projection_interaction_reference",
+        "actual": {
+          "projection_prefix": 0,
+          "projection_batch_integrity": 0,
+          "projection_content_owner": 0,
+          "projection_version_chain": 0,
+          "projection_version_payload": 0,
+          "projection_version_event": 0,
+          "projection_source_reference": 0,
+          "projection_interaction_reference": 2,
+          "projection_progress_reference": 0,
+          "projection_success_promotion": 0,
+          "projection_run_text_budget": 0,
+          "projection_controlled_payload": 0
+        }
+      },
+      {
+        "case": "request_wrong_run",
+        "expected": "ANOMALY",
+        "target": "projection_interaction_reference",
+        "actual": {
+          "projection_prefix": 0,
+          "projection_batch_integrity": 0,
+          "projection_content_owner": 0,
+          "projection_version_chain": 0,
+          "projection_version_payload": 0,
+          "projection_version_event": 0,
+          "projection_source_reference": 0,
+          "projection_interaction_reference": 2,
+          "projection_progress_reference": 0,
+          "projection_success_promotion": 0,
+          "projection_run_text_budget": 0,
+          "projection_controlled_payload": 0
+        }
+      },
+      {
+        "case": "request_wrong_release",
+        "expected": "ANOMALY",
+        "target": "projection_interaction_reference",
+        "actual": {
+          "projection_prefix": 0,
+          "projection_batch_integrity": 0,
+          "projection_content_owner": 0,
+          "projection_version_chain": 0,
+          "projection_version_payload": 0,
+          "projection_version_event": 0,
+          "projection_source_reference": 0,
+          "projection_interaction_reference": 2,
+          "projection_progress_reference": 0,
+          "projection_success_promotion": 0,
+          "projection_run_text_budget": 0,
+          "projection_controlled_payload": 0
+        }
+      },
+      {
+        "case": "revision_tamper",
+        "expected": "ANOMALY",
+        "target": "projection_interaction_reference",
+        "actual": {
+          "projection_prefix": 0,
+          "projection_batch_integrity": 0,
+          "projection_content_owner": 0,
+          "projection_version_chain": 0,
+          "projection_version_payload": 0,
+          "projection_version_event": 0,
+          "projection_source_reference": 0,
+          "projection_interaction_reference": 1,
+          "projection_progress_reference": 0,
+          "projection_success_promotion": 0,
+          "projection_run_text_budget": 0,
+          "projection_controlled_payload": 0
+        }
+      },
+      {
+        "case": "progress_wrong_run",
+        "expected": "ANOMALY",
+        "target": "projection_progress_reference",
+        "actual": {
+          "projection_prefix": 0,
+          "projection_batch_integrity": 0,
+          "projection_content_owner": 0,
+          "projection_version_chain": 0,
+          "projection_version_payload": 0,
+          "projection_version_event": 0,
+          "projection_source_reference": 1,
+          "projection_interaction_reference": 0,
+          "projection_progress_reference": 1,
+          "projection_success_promotion": 0,
+          "projection_run_text_budget": 0,
+          "projection_controlled_payload": 0
+        }
+      },
+      {
+        "case": "progress_wrong_anchor",
+        "expected": "ANOMALY",
+        "target": "projection_progress_reference",
+        "actual": {
+          "projection_prefix": 0,
+          "projection_batch_integrity": 0,
+          "projection_content_owner": 0,
+          "projection_version_chain": 0,
+          "projection_version_payload": 0,
+          "projection_version_event": 0,
+          "projection_source_reference": 0,
+          "projection_interaction_reference": 0,
+          "projection_progress_reference": 1,
+          "projection_success_promotion": 0,
+          "projection_run_text_budget": 0,
+          "projection_controlled_payload": 0
+        }
+      },
+      {
+        "case": "progress_wrong_call",
+        "expected": "ANOMALY",
+        "target": "projection_progress_reference",
+        "actual": {
+          "projection_prefix": 0,
+          "projection_batch_integrity": 0,
+          "projection_content_owner": 0,
+          "projection_version_chain": 0,
+          "projection_version_payload": 0,
+          "projection_version_event": 0,
+          "projection_source_reference": 0,
+          "projection_interaction_reference": 0,
+          "projection_progress_reference": 1,
+          "projection_success_promotion": 0,
+          "projection_run_text_budget": 0,
+          "projection_controlled_payload": 0
+        }
+      },
+      {
+        "case": "progress_wrong_source",
+        "expected": "ANOMALY",
+        "target": "projection_progress_reference",
+        "actual": {
+          "projection_prefix": 0,
+          "projection_batch_integrity": 0,
+          "projection_content_owner": 0,
+          "projection_version_chain": 0,
+          "projection_version_payload": 0,
+          "projection_version_event": 0,
+          "projection_source_reference": 0,
+          "projection_interaction_reference": 0,
+          "projection_progress_reference": 1,
+          "projection_success_promotion": 0,
+          "projection_run_text_budget": 0,
+          "projection_controlled_payload": 0
+        }
+      },
+      {
+        "case": "call_wrong_slot",
+        "expected": "ANOMALY",
+        "target": "projection_progress_reference",
+        "actual": {
+          "projection_prefix": 0,
+          "projection_batch_integrity": 0,
+          "projection_content_owner": 0,
+          "projection_version_chain": 0,
+          "projection_version_payload": 0,
+          "projection_version_event": 0,
+          "projection_source_reference": 0,
+          "projection_interaction_reference": 0,
+          "projection_progress_reference": 2,
+          "projection_success_promotion": 1,
+          "projection_run_text_budget": 0,
+          "projection_controlled_payload": 0
+        }
+      },
+      {
+        "case": "progress_wrong_close",
+        "expected": "ANOMALY",
+        "target": "projection_progress_reference",
+        "actual": {
+          "projection_prefix": 0,
+          "projection_batch_integrity": 0,
+          "projection_content_owner": 0,
+          "projection_version_chain": 0,
+          "projection_version_payload": 0,
+          "projection_version_event": 0,
+          "projection_source_reference": 0,
+          "projection_interaction_reference": 0,
+          "projection_progress_reference": 1,
+          "projection_success_promotion": 0,
+          "projection_run_text_budget": 0,
+          "projection_controlled_payload": 0
+        }
+      },
+      {
+        "case": "promotion_wrong_message",
+        "expected": "ANOMALY",
+        "target": "projection_success_promotion",
+        "actual": {
+          "projection_prefix": 0,
+          "projection_batch_integrity": 0,
+          "projection_content_owner": 0,
+          "projection_version_chain": 1,
+          "projection_version_payload": 0,
+          "projection_version_event": 0,
+          "projection_source_reference": 0,
+          "projection_interaction_reference": 0,
+          "projection_progress_reference": 0,
+          "projection_success_promotion": 2,
+          "projection_run_text_budget": 0,
+          "projection_controlled_payload": 0
+        }
+      },
+      {
+        "case": "promotion_wrong_message_owner",
+        "expected": "ANOMALY",
+        "target": "projection_success_promotion",
+        "actual": {
+          "projection_prefix": 0,
+          "projection_batch_integrity": 0,
+          "projection_content_owner": 0,
+          "projection_version_chain": 0,
+          "projection_version_payload": 0,
+          "projection_version_event": 0,
+          "projection_source_reference": 1,
+          "projection_interaction_reference": 0,
+          "projection_progress_reference": 0,
+          "projection_success_promotion": 2,
+          "projection_run_text_budget": 0,
+          "projection_controlled_payload": 0
+        }
+      },
+      {
+        "case": "promotion_wrong_message_run",
+        "expected": "ANOMALY",
+        "target": "projection_success_promotion",
+        "actual": {
+          "projection_prefix": 0,
+          "projection_batch_integrity": 0,
+          "projection_content_owner": 0,
+          "projection_version_chain": 0,
+          "projection_version_payload": 0,
+          "projection_version_event": 0,
+          "projection_source_reference": 1,
+          "projection_interaction_reference": 0,
+          "projection_progress_reference": 0,
+          "projection_success_promotion": 4,
+          "projection_run_text_budget": 0,
+          "projection_controlled_payload": 0
+        }
+      },
+      {
+        "case": "success_without_formal_message",
+        "expected": "ANOMALY",
+        "target": "projection_success_promotion",
+        "actual": {
+          "projection_prefix": 0,
+          "projection_batch_integrity": 0,
+          "projection_content_owner": 0,
+          "projection_version_chain": 0,
+          "projection_version_payload": 0,
+          "projection_version_event": 0,
+          "projection_source_reference": 1,
+          "projection_interaction_reference": 0,
+          "projection_progress_reference": 0,
+          "projection_success_promotion": 3,
+          "projection_run_text_budget": 0,
+          "projection_controlled_payload": 0
+        }
+      },
+      {
+        "case": "run_failure_with_success_batch",
+        "expected": "ANOMALY",
+        "target": "projection_success_promotion",
+        "actual": {
+          "projection_prefix": 0,
+          "projection_batch_integrity": 0,
+          "projection_content_owner": 0,
+          "projection_version_chain": 0,
+          "projection_version_payload": 0,
+          "projection_version_event": 0,
+          "projection_source_reference": 0,
+          "projection_interaction_reference": 0,
+          "projection_progress_reference": 0,
+          "projection_success_promotion": 4,
+          "projection_run_text_budget": 0,
+          "projection_controlled_payload": 0
+        }
+      },
+      {
+        "case": "success_batch_missing_run_set",
+        "expected": "ANOMALY",
+        "target": "projection_success_promotion",
+        "actual": {
+          "projection_prefix": 0,
+          "projection_batch_integrity": 1,
+          "projection_content_owner": 0,
+          "projection_version_chain": 0,
+          "projection_version_payload": 0,
+          "projection_version_event": 0,
+          "projection_source_reference": 0,
+          "projection_interaction_reference": 0,
+          "projection_progress_reference": 0,
+          "projection_success_promotion": 3,
+          "projection_run_text_budget": 0,
+          "projection_controlled_payload": 0
+        }
+      },
+      {
+        "case": "missing_preview_replacement",
+        "expected": "ANOMALY",
+        "target": "projection_success_promotion",
+        "actual": {
+          "projection_prefix": 0,
+          "projection_batch_integrity": 0,
+          "projection_content_owner": 0,
+          "projection_version_chain": 0,
+          "projection_version_payload": 0,
+          "projection_version_event": 0,
+          "projection_source_reference": 0,
+          "projection_interaction_reference": 0,
+          "projection_progress_reference": 0,
+          "projection_success_promotion": 1,
+          "projection_run_text_budget": 0,
+          "projection_controlled_payload": 0
+        }
+      },
+      {
+        "case": "wrong_preview_replacement",
+        "expected": "ANOMALY",
+        "target": "projection_success_promotion",
+        "actual": {
+          "projection_prefix": 0,
+          "projection_batch_integrity": 0,
+          "projection_content_owner": 0,
+          "projection_version_chain": 0,
+          "projection_version_payload": 0,
+          "projection_version_event": 0,
+          "projection_source_reference": 0,
+          "projection_interaction_reference": 0,
+          "projection_progress_reference": 0,
+          "projection_success_promotion": 2,
+          "projection_run_text_budget": 0,
+          "projection_controlled_payload": 0
+        }
+      },
+      {
+        "case": "missing_sdk_persistence",
+        "expected": "ANOMALY",
+        "target": "projection_success_promotion",
+        "actual": {
+          "projection_prefix": 0,
+          "projection_batch_integrity": 0,
+          "projection_content_owner": 0,
+          "projection_version_chain": 0,
+          "projection_version_payload": 0,
+          "projection_version_event": 0,
+          "projection_source_reference": 0,
+          "projection_interaction_reference": 0,
+          "projection_progress_reference": 2,
+          "projection_success_promotion": 1,
+          "projection_run_text_budget": 0,
+          "projection_controlled_payload": 0
+        }
+      },
+      {
+        "case": "duplicate_success_change",
+        "expected": "ANOMALY",
+        "target": "projection_success_promotion",
+        "actual": {
+          "projection_prefix": 0,
+          "projection_batch_integrity": 1,
+          "projection_content_owner": 0,
+          "projection_version_chain": 0,
+          "projection_version_payload": 0,
+          "projection_version_event": 0,
+          "projection_source_reference": 0,
+          "projection_interaction_reference": 0,
+          "projection_progress_reference": 0,
+          "projection_success_promotion": 1,
+          "projection_run_text_budget": 0,
+          "projection_controlled_payload": 0
+        }
+      },
+      {
+        "case": "message_wrong_batch_run",
+        "expected": "ANOMALY",
+        "target": "projection_success_promotion",
+        "actual": {
+          "projection_prefix": 0,
+          "projection_batch_integrity": 0,
+          "projection_content_owner": 0,
+          "projection_version_chain": 0,
+          "projection_version_payload": 0,
+          "projection_version_event": 0,
+          "projection_source_reference": 0,
+          "projection_interaction_reference": 0,
+          "projection_progress_reference": 0,
+          "projection_success_promotion": 1,
+          "projection_run_text_budget": 0,
+          "projection_controlled_payload": 0
+        }
+      },
+      {
+        "case": "forbidden_batch_field",
+        "expected": "ANOMALY",
+        "target": "projection_controlled_payload",
+        "actual": {
+          "projection_prefix": 0,
+          "projection_batch_integrity": 0,
+          "projection_content_owner": 0,
+          "projection_version_chain": 0,
+          "projection_version_payload": 0,
+          "projection_version_event": 0,
+          "projection_source_reference": 0,
+          "projection_interaction_reference": 0,
+          "projection_progress_reference": 0,
+          "projection_success_promotion": 0,
+          "projection_run_text_budget": 0,
+          "projection_controlled_payload": 1
+        }
+      },
+      {
+        "case": "forbidden_nested_payload",
+        "expected": "ANOMALY",
+        "target": "projection_controlled_payload",
+        "actual": {
+          "projection_prefix": 0,
+          "projection_batch_integrity": 0,
+          "projection_content_owner": 0,
+          "projection_version_chain": 0,
+          "projection_version_payload": 1,
+          "projection_version_event": 1,
+          "projection_source_reference": 0,
+          "projection_interaction_reference": 0,
+          "projection_progress_reference": 0,
+          "projection_success_promotion": 0,
+          "projection_run_text_budget": 0,
+          "projection_controlled_payload": 1
+        }
+      },
+      {
+        "case": "forbidden_progress_payload",
+        "expected": "ANOMALY",
+        "target": "projection_controlled_payload",
+        "actual": {
+          "projection_prefix": 0,
+          "projection_batch_integrity": 0,
+          "projection_content_owner": 0,
+          "projection_version_chain": 0,
+          "projection_version_payload": 0,
+          "projection_version_event": 0,
+          "projection_source_reference": 0,
+          "projection_interaction_reference": 0,
+          "projection_progress_reference": 0,
+          "projection_success_promotion": 0,
+          "projection_run_text_budget": 0,
+          "projection_controlled_payload": 1
+        }
+      },
+      {
+        "case": "unknown_change_type",
+        "expected": "ANOMALY",
+        "target": "projection_controlled_payload",
+        "actual": {
+          "projection_prefix": 0,
+          "projection_batch_integrity": 0,
+          "projection_content_owner": 0,
+          "projection_version_chain": 0,
+          "projection_version_payload": 0,
+          "projection_version_event": 1,
+          "projection_source_reference": 0,
+          "projection_interaction_reference": 0,
+          "projection_progress_reference": 0,
+          "projection_success_promotion": 0,
+          "projection_run_text_budget": 0,
+          "projection_controlled_payload": 1
+        }
+      },
+      {
+        "case": "historical_revision_is_not_latest",
+        "expected": "CLEAN",
+        "target": null,
+        "actual": {
+          "projection_prefix": 0,
+          "projection_batch_integrity": 0,
+          "projection_content_owner": 0,
+          "projection_version_chain": 0,
+          "projection_version_payload": 0,
+          "projection_version_event": 0,
+          "projection_source_reference": 0,
+          "projection_interaction_reference": 0,
+          "projection_progress_reference": 0,
+          "projection_success_promotion": 0,
+          "projection_run_text_budget": 0,
+          "projection_controlled_payload": 0
+        }
+      },
+      {
+        "case": "numeric_bigint_sequence",
+        "expected": "ANOMALY",
+        "target": "projection_batch_integrity",
+        "actual": {
+          "projection_prefix": 0,
+          "projection_batch_integrity": 1,
+          "projection_content_owner": 0,
+          "projection_version_chain": 0,
+          "projection_version_payload": 0,
+          "projection_version_event": 0,
+          "projection_source_reference": 0,
+          "projection_interaction_reference": 0,
+          "projection_progress_reference": 0,
+          "projection_success_promotion": 0,
+          "projection_run_text_budget": 0,
+          "projection_controlled_payload": 0
+        }
+      },
+      {
+        "case": "latest_call_unverified",
+        "expected": "ANOMALY",
+        "target": "projection_success_promotion",
+        "actual": {
+          "projection_prefix": 0,
+          "projection_batch_integrity": 0,
+          "projection_content_owner": 0,
+          "projection_version_chain": 0,
+          "projection_version_payload": 0,
+          "projection_version_event": 0,
+          "projection_source_reference": 0,
+          "projection_interaction_reference": 0,
+          "projection_progress_reference": 0,
+          "projection_success_promotion": 1,
+          "projection_run_text_budget": 0,
+          "projection_controlled_payload": 0
+        }
+      },
+      {
+        "case": "cumulative_run_text_budget",
+        "expected": "ANOMALY",
+        "target": "projection_run_text_budget",
+        "actual": {
+          "projection_prefix": 0,
+          "projection_batch_integrity": 0,
+          "projection_content_owner": 1,
+          "projection_version_chain": 0,
+          "projection_version_payload": 0,
+          "projection_version_event": 1,
+          "projection_source_reference": 1,
+          "projection_interaction_reference": 0,
+          "projection_progress_reference": 1,
+          "projection_success_promotion": 0,
+          "projection_run_text_budget": 1,
+          "projection_controlled_payload": 0
+        }
+      },
+      {
+        "case": "multiple_final_blocks_budget",
+        "expected": "ANOMALY",
+        "target": "projection_run_text_budget",
+        "actual": {
+          "projection_prefix": 0,
+          "projection_batch_integrity": 0,
+          "projection_content_owner": 0,
+          "projection_version_chain": 0,
+          "projection_version_payload": 0,
+          "projection_version_event": 2,
+          "projection_source_reference": 0,
+          "projection_interaction_reference": 0,
+          "projection_progress_reference": 0,
+          "projection_success_promotion": 0,
+          "projection_run_text_budget": 1,
+          "projection_controlled_payload": 0
+        }
+      },
+      {
+        "case": "draft_change_does_not_change_display",
+        "expected": "CLEAN",
+        "target": null,
+        "actual": {
+          "projection_prefix": 0,
+          "projection_batch_integrity": 0,
+          "projection_content_owner": 0,
+          "projection_version_chain": 0,
+          "projection_version_payload": 0,
+          "projection_version_event": 0,
+          "projection_source_reference": 0,
+          "projection_interaction_reference": 0,
+          "projection_progress_reference": 0,
+          "projection_success_promotion": 0,
+          "projection_run_text_budget": 0,
+          "projection_controlled_payload": 0
+        }
+      },
+      {
+        "case": "tool_success_survives_run_failure",
+        "expected": "CLEAN",
+        "target": null,
+        "actual": {
+          "projection_prefix": 0,
+          "projection_batch_integrity": 0,
+          "projection_content_owner": 0,
+          "projection_version_chain": 0,
+          "projection_version_payload": 0,
+          "projection_version_event": 0,
+          "projection_source_reference": 0,
+          "projection_interaction_reference": 0,
+          "projection_progress_reference": 0,
+          "projection_success_promotion": 0,
+          "projection_run_text_budget": 0,
+          "projection_controlled_payload": 0
+        }
+      },
+      {
+        "case": "no_nonce_needed_for_reference",
+        "expected": "CLEAN",
+        "target": null,
+        "actual": {
+          "projection_prefix": 0,
+          "projection_batch_integrity": 0,
+          "projection_content_owner": 0,
+          "projection_version_chain": 0,
+          "projection_version_payload": 0,
+          "projection_version_event": 0,
+          "projection_source_reference": 0,
+          "projection_interaction_reference": 0,
+          "projection_progress_reference": 0,
+          "projection_success_promotion": 0,
+          "projection_run_text_budget": 0,
+          "projection_controlled_payload": 0
+        }
+      },
+      {
+        "case": "independent_session_local_sequences",
+        "expected": "CLEAN",
+        "target": null,
+        "actual": {
+          "projection_prefix": 0,
+          "projection_batch_integrity": 0,
+          "projection_content_owner": 0,
+          "projection_version_chain": 0,
+          "projection_version_payload": 0,
+          "projection_version_event": 0,
+          "projection_source_reference": 0,
+          "projection_interaction_reference": 0,
+          "projection_progress_reference": 0,
+          "projection_success_promotion": 0,
+          "projection_run_text_budget": 0,
+          "projection_controlled_payload": 0
+        }
+      },
+      {
+        "case": "mutable_tool_state_does_not_rewrite_snapshot",
+        "expected": "CLEAN",
+        "target": null,
+        "actual": {
+          "projection_prefix": 0,
+          "projection_batch_integrity": 0,
+          "projection_content_owner": 0,
+          "projection_version_chain": 0,
+          "projection_version_payload": 0,
+          "projection_version_event": 0,
+          "projection_source_reference": 0,
+          "projection_interaction_reference": 0,
+          "projection_progress_reference": 0,
+          "projection_success_promotion": 0,
+          "projection_run_text_budget": 0,
+          "projection_controlled_payload": 0
+        }
+      }
+    ],
+    "immutable_readback_versions": [
+      {
+        "content_id": "000000000000000000000000000ea601",
+        "version": 1,
+        "bytes": 18,
+        "sha256": "46a839374ecefd6883e986cca492fb27bb7aab751f1aafc47db0847786da76ea",
+        "source": "RUN_PROGRESS",
+        "storage": "INLINE"
+      },
+      {
+        "content_id": "000000000000000000000000000ea601",
+        "version": 2,
+        "bytes": 28,
+        "sha256": "dbd534195c25c4c7a00fbe8382008f4715b6d026f34a4a34ac60ded63c37c309",
+        "source": "RUN_PROGRESS",
+        "storage": "INLINE"
+      },
+      {
+        "content_id": "000000000000000000000000000ea601",
+        "version": 3,
+        "bytes": 28,
+        "sha256": "dbd534195c25c4c7a00fbe8382008f4715b6d026f34a4a34ac60ded63c37c309",
+        "source": "MESSAGE_BLOCK",
+        "storage": "INLINE"
+      },
+      {
+        "content_id": "000000000000000000000000000ea602",
+        "version": 1,
+        "bytes": 24,
+        "sha256": "aba36351bd09a6d7c34db0632e8e00574bae61cb81178d64144a5b1fbee9754a",
+        "source": "RUN_PROGRESS",
+        "storage": "INLINE"
+      },
+      {
+        "content_id": "000000000000000000000000000ea603",
+        "version": 1,
+        "bytes": 79,
+        "sha256": "14593c3ad8118f6dee49e42593de2c45056ee914f1927c1671115948b3decaab",
+        "source": "TOOL_OPERATION",
+        "storage": "INLINE"
+      },
+      {
+        "content_id": "000000000000000000000000000ea604",
+        "version": 1,
+        "bytes": 48,
+        "sha256": "bc44627f3299a67184e9c48d86f037de2ed0bf60c2aaad5ce676d0985f125a1d",
+        "source": "TOOL_OPERATION",
+        "storage": "INLINE"
+      },
+      {
+        "content_id": "000000000000000000000000000ea60a",
+        "version": 1,
+        "bytes": 98,
+        "sha256": "36111c13633f8b51fe6358cf1f06b2541eb68868888c56a15366da5e84d5564e",
+        "source": "INTERACTION_REVISION",
+        "storage": "FIXED_REF"
+      },
+      {
+        "content_id": "000000000000000000000000000ea60a",
+        "version": 2,
+        "bytes": 118,
+        "sha256": "fa5c36313ac2a55ea68b98676a8d16fafa0c7884693eeffa0c7645f3b2546474",
+        "source": "INTERACTION_REVISION",
+        "storage": "FIXED_REF"
+      },
+      {
+        "content_id": "000000000000000000000000000ea60b",
+        "version": 1,
+        "bytes": 64,
+        "sha256": "a40d765f23769751e68611e4fc8f58e0b4cf4fbddf6594e58755714222966b61",
+        "source": "INTERACTION_REVISION",
+        "storage": "FIXED_REF"
+      },
+      {
+        "content_id": "000000000000000000000000000ea614",
+        "version": 1,
+        "bytes": 20,
+        "sha256": "4bab6c8f140ceffa492b832d1c51771d59ede2c27a22b6c6cdf730b4684b9fc2",
+        "source": "MESSAGE_MEDIA",
+        "storage": "INLINE"
+      },
+      {
+        "content_id": "000000000000000000000000000ea615",
+        "version": 1,
+        "bytes": 18,
+        "sha256": "b03cff70224d64fea945a5af45cca83a3adea4e2a0b9dc6e47c8c435e521e3b2",
+        "source": "MESSAGE_BLOCK",
+        "storage": "FIXED_REF"
+      }
+    ],
+    "independent_utf8_sha256_checks": 11,
+    "old_version_retained": true,
+    "missing_exact_version_no_fallback": true,
+    "projection_json_without_forbidden_fields": 7,
+    "concurrency_results": [
+      {
+        "case": "writers_commit_prefix",
+        "allocated": [
+          2,
+          3
+        ],
+        "observed_lock_waits": 1,
+        "uncommitted_read": "1\t<NULL>\t1",
+        "committed_read": "3\twriter-b\t1,2,3"
+      },
+      {
+        "case": "writer_rollback_reuses_seq",
+        "allocated": [
+          2,
+          2
+        ],
+        "observed_lock_waits": 1,
+        "uncommitted_read": "1\t<NULL>\t1",
+        "committed_read": "2\twriter-b\t1,2"
+      },
+      {
+        "case": "finalization_rollback",
+        "readback": "RUNNING\tOPEN\t2\t2\t2\t0"
+      },
+      {
+        "case": "budget_rejection_rolls_back_whole_finalization",
+        "reply_count": 0,
+        "head_seq": 2
+      },
+      {
+        "case": "four_finalizers_exactly_once",
+        "affected": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "reply_batch_version": "1\t1\t3"
+      },
+      {
+        "case": "repeated_finalization_returns_existing_fact",
+        "affected": 0
+      },
+      {
+        "case": "late_append_after_promotion_rejected",
+        "affected": 0
+      },
+      {
+        "case": "stale_call_fence_rejected",
+        "affected": 0
+      },
+      {
+        "case": "append_rollback_preserves_version_and_batch",
+        "version": 2
+      },
+      {
+        "case": "four_appenders_one_version_and_batch",
+        "affected": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "version": 3
+      },
+      {
+        "case": "stale_content_predecessor_rejected",
+        "affected": 0
+      },
+      {
+        "case": "closed_content_append_rejected",
+        "affected": 0
+      },
+      {
+        "case": "committed_facts_cross_inspected",
+        "checks": 12
+      }
+    ],
+    "synthetic_rows_remaining": 0,
+    "committed_synthetic_rows_deleted": true,
+    "mysql_settings": {
+      "sql_mode": "ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION",
+      "database_charset": "utf8mb4",
+      "database_collation": "utf8mb4_0900_ai_ci",
+      "isolation": "REPEATABLE-READ",
+      "time_zone": "SYSTEM",
+      "system_time_zone": "?й???׼ʱ?"
+    },
+    "legacy_regression": {
+      "tool_and_message_rejections": 25,
+      "tool_and_message_positive": 4,
+      "interaction_constraints": {
+        "constraint_rejections": 55,
+        "constraint_positive_checks": 9
+      },
+      "interaction_anomalies": 55,
+      "interaction_clean": 9
+    },
+    "foreign_keys": 0,
+    "triggers": 0,
+    "model_calls": 0,
+    "sdk_calls": 0,
+    "tool_sends": 0,
+    "real_crypto_operations": 0
+  },
+  "fingerprints": {
+    "db/schema/01_用户与管理员建表.sql": "d10b03a1d7a8c918856b63e20780a4883674fd03d63eda17ae566b1f799118c0",
+    "db/schema/02_会话运行消息建表.sql": "e6bfb1578156caf05ff6abd3e3f98252748d00bde3766c6c757edf6077718f56",
+    "db/schema/03_记忆控制建表.sql": "c4066d952684c4a1d87a1dd87d965c263b5891090ba6c599efc97999a68a137a",
+    "db/schema/04_会话运行资料建表.sql": "6b4a4ba064e0ddcb0ae0a4cff6132291821258dd8363271b7513f8c874f7aa64",
+    "db/schema/05_员工配置发布与授权建表.sql": "68f14e20ff3e201e4c3d0aa1c84cb6510274d8c1d0405837150ba1c7961f8e7a",
+    "db/schema/08_Run调度可信调用与终结建表.sql": "b69af37c2892950ac8ceb23032aae7ecab7b2c4b1506e18438ebdffeccb089cb",
+    "db/schema/09_交互响应与确认恢复建表.sql": "ab4b5e8965071877aeb6cc0a75a4dd6c5a1251cd4c2df7cf93b8429b061101da",
+    "db/schema/10_持久投影与不可变内容建表.sql": "f7a3e01741d8f5346f9aab7479f59bee00ccedcf1a07f1220943ba42b0013632",
+    "db/tests/03_通用素材与工具操作建表验收.sql": "63aa3a891658f5dfb9c8153e71cfda5a6bfe964c794600400b24e38c38983537",
+    "db/tests/24_交互响应与确认恢复建表验收.sql": "528ad07b870cbce2e1a893d0f821d5e681f33dc93ce4f5e1df8000a0e0a7f788",
+    "db/tests/25_交互响应与确认恢复关联巡检.sql": "5bc4c67283ad459ee06ddf9d6fae596b20ae1c99e9e046e9fe52fb21ec8e0342",
+    "db/tests/26_交互响应与确认恢复巡检种子.sql": "1cab9590c8e764258799f3bed0ca10419566338fcc2ef531853834b2c4d60ce0",
+    "db/tests/27_交互响应与确认恢复定向异常验收.sql": "f845620cbe23fb231b1c6f505217a864abee5e314f5564a11ed0a68dd6ae8c4c",
+    "db/tests/28_持久投影与不可变内容建表验收.sql": "8ac087b317b47a3c86c63aee7c064fe3ab3cedabf75a3c0c54c7db15c282c6ce",
+    "db/tests/29_持久投影与不可变内容关联巡检.sql": "15a535d1b36a30fd64b8ad3e8cdfbd25bf2e25f98294f68dd9af403ba14d6307",
+    "db/tests/30_持久投影与不可变内容巡检种子.sql": "e9d32c332e1a3010c1e9cfe4bb62f6d8e5f28e1920ecdb91e6151edfb41b1d48",
+    "db/tests/31_持久投影与不可变内容定向异常验收.sql": "7f7961916727ee86f85cfed5b96389fd22601857edb4c38c8119262774178f67",
+    "db/tests/执行交互响应与确认恢复隔离验收.py": "40f917ba877076d833cfbd7b6933d87027fca1a47c59233a01653cf9751d6a99",
+    "db/tests/执行持久投影与不可变内容隔离验收.py": "964010764eaa45c46564d7c34bfb168b949e8354c9074f361b4d6be0e68508fe",
+    "db/tests/执行记忆控制隔离验收.py": "2a082740baa685e072d51ecbf026d964614f61b562d376dbf125881085f65fb5"
+  },
+  "claims": {
+    "database_contracts_verified": true,
+    "application_projection_verified": false,
+    "real_finalization_verified": false,
+    "snapshot_or_watermark_api_verified": false,
+    "sse_or_reducer_verified": false,
+    "sdk_persistence_verified": false
+  }
+}

@@ -1,0 +1,145 @@
+{
+  "issue": 31,
+  "phase": "stage1-08",
+  "executed_at": "2026-10-26T11:32:02.504410+08:00",
+  "contract_refs": [
+    "issue-22 data contract §4/§5/§6/§13",
+    "issue-22 interface §9-10 lock subsequence (DB probe only)",
+    "issue-23 stage1 exit condition dispatch/sdk_call/terminalization portion"
+  ],
+  "summary": {
+    "mysql_version": "8.0.45",
+    "tables": 33,
+    "expected_rejections": 19,
+    "positive_checks": 13,
+    "inspection_checks": 9,
+    "concurrency_checks": 6,
+    "synthetic_rows_rolled_back": true,
+    "framework_kv_tested": false,
+    "application_integration_tested": false,
+    "probes": {
+      "20_Run调度可信调用与终结建表验收.sql": {
+        "rejections": 19,
+        "positive_checks": 13
+      }
+    },
+    "inspection_names": [
+      "capacity_held_count_mismatch",
+      "capacity_waiting_count_mismatch",
+      "dispatch_missing_run_or_source",
+      "dispatch_duplicate_held_or_stale_epoch",
+      "sdk_call_owner_slot_mismatch",
+      "sdk_call_save_readback_mismatch",
+      "sdk_call_bootstrap_on_nonfirst",
+      "terminalization_call_or_ownership_mismatch",
+      "terminalization_applied_without_readback"
+    ],
+    "directed_anomaly_checks": 9,
+    "directed_positive_checks": 2,
+    "directed_inspection_results": [
+      {
+        "case": "held_count_drift",
+        "expected": "ANOMALY",
+        "target": "capacity_held_count_mismatch",
+        "target_anomalies": 1
+      },
+      {
+        "case": "waiting_count_drift",
+        "expected": "ANOMALY",
+        "target": "capacity_waiting_count_mismatch",
+        "target_anomalies": 1
+      },
+      {
+        "case": "dispatch_missing_run",
+        "expected": "ANOMALY",
+        "target": "dispatch_missing_run_or_source",
+        "target_anomalies": 1
+      },
+      {
+        "case": "stale_epoch_held",
+        "expected": "ANOMALY",
+        "target": "dispatch_duplicate_held_or_stale_epoch",
+        "target_anomalies": 1
+      },
+      {
+        "case": "sdk_owner_drift",
+        "expected": "ANOMALY",
+        "target": "sdk_call_owner_slot_mismatch",
+        "target_anomalies": 1
+      },
+      {
+        "case": "save_readback_drift",
+        "expected": "ANOMALY",
+        "target": "sdk_call_save_readback_mismatch",
+        "target_anomalies": 1
+      },
+      {
+        "case": "bootstrap_nonfirst",
+        "expected": "ANOMALY",
+        "target": "sdk_call_bootstrap_on_nonfirst",
+        "target_anomalies": 1
+      },
+      {
+        "case": "term_owner_drift",
+        "expected": "ANOMALY",
+        "target": "terminalization_call_or_ownership_mismatch",
+        "target_anomalies": 1
+      },
+      {
+        "case": "term_applied_no_readback",
+        "expected": "ANOMALY",
+        "target": "terminalization_applied_without_readback",
+        "target_anomalies": 1
+      },
+      {
+        "case": "legal_waiting_input_busy",
+        "expected": "CLEAN",
+        "target": null,
+        "target_anomalies": 0
+      },
+      {
+        "case": "legal_continuation_no_waiting_count",
+        "expected": "CLEAN",
+        "target": null,
+        "target_anomalies": 0
+      }
+    ],
+    "new_tables": 4,
+    "business_run_row_version": 1,
+    "related_check_constraints": 41,
+    "foreign_keys": 0,
+    "triggers": 0,
+    "concurrency_names": [
+      "business_run_cas_waiting_input_busy",
+      "dispatch_held_unique_with_c0",
+      "old_epoch_claim_rejected",
+      "dispatch_source_dedupe",
+      "terminalization_cas_lock_order",
+      "rollback_and_commit_readback"
+    ],
+    "real_sdk_store_tested": false,
+    "production_dispatch_loop_tested": false,
+    "zero_execution_adapter_tested": false,
+    "issue29_or_30_preset_polluted": false
+  },
+  "fingerprints": {
+    "db/schema/01_用户与管理员建表.sql": "D10B03A1D7A8C918856B63E20780A4883674FD03D63EDA17AE566B1F799118C0",
+    "db/schema/02_会话运行消息建表.sql": "4A994B4B62EB8A2A194A5213A720AE90C28759F04DF055F28787C55D5ABDF7DC",
+    "db/schema/03_记忆控制建表.sql": "C4066D952684C4A1D87A1DD87D965C263B5891090BA6C599EFC97999A68A137A",
+    "db/schema/04_会话运行资料建表.sql": "6B4A4BA064E0DDCB0AE0A4CFF6132291821258DD8363271B7513F8C874F7AA64",
+    "db/schema/05_员工配置发布与授权建表.sql": "68F14E20FF3E201E4C3D0AA1C84CB6510274D8C1D0405837150BA1C7961F8E7A",
+    "db/schema/08_Run调度可信调用与终结建表.sql": "B69AF37C2892950AC8CEB23032AAE7ECAB7B2C4B1506E18438EBDFFECCB089CB",
+    "db/tests/20_Run调度可信调用与终结建表验收.sql": "09118544581B049F23771049A5BCBD0F71DD294BE0918F6D02FCADF2ADC4B061",
+    "db/tests/21_Run调度可信调用与终结关联巡检.sql": "2FBB7F2945E396C22AC66F1EF9441BD2B5F3CA63CCD713FBF27383569FF44D5D",
+    "db/tests/22_Run调度可信调用与终结巡检种子.sql": "2E8112CA0C902D4DA8B841C188CBAA4169FF81986A3BE5FB7A6EE18A2E3720F2",
+    "db/tests/23_Run调度可信调用与终结定向异常验收.sql": "B23DE340DCA650D57493760BD2A68D0DD5647AFF38D5BE354BF534428F49CCC6",
+    "db/tests/执行Run调度可信调用与终结隔离验收.py": "2F40B8368286B326CC5C55A2DA257D46B3FC4C8BF30265F3601ACE0AD2C1EA73",
+    "db/tests/执行记忆控制隔离验收.py": "2A082740BAA685E072D51ECBF026D964614F61B562D376DBF125881085F65FB5"
+  },
+  "claims": {
+    "database_constraints_verified": true,
+    "real_sdk_store_verified": false,
+    "production_capacity_scheduler_verified": false,
+    "zero_execution_terminalization_adapter_verified": false
+  }
+}

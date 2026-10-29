@@ -1,0 +1,9 @@
+* { box-sizing: border-box; }
+body { margin: 0; color: #172334; font-family: system-ui, sans-serif; background: #f4f7fb; }
+main { max-width: 960px; min-height: 100vh; margin: auto; padding: 24px; display: flex; flex-direction: column; gap: 16px; }
+header { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; }
+h1 { width: 100%; margin: 0; font-size: 1.4rem; }
+header p { flex: 1; margin: 0; }
+button { cursor: pointer; }
+.chat { flex: 1; min-height: 65vh; background: white; border: 1px solid #d6dfeb; border-radius: 12px; overflow: hidden; }
+fieldset { border: 0; margin: 0; padding: 0; min-width: 0; height: 65vh; }

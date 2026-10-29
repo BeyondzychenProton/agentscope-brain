@@ -59,7 +59,9 @@ Spring Boot 自动读取本目录下的 `config/application.yaml`；不再使用
 
 登录后通过 `/workbench?sessionId=<本人业务会话ID>` 打开指定历史。TEXT 读取沿用 `projection/snapshot`、`projection/messages`、`projection/content/{contentId}`；快照及分页使用 REPEATABLE READ，只读正式消息和固定不可变展示版本，校验 UTF-8 长度／SHA-256，按固定消息上界翻页。页面对用户与员工文字均作字面展示，扩展 Markdown、SSE、完整运行／交互恢复由阶段 2 实施；超出当前 TEXT 切片的事实返回 `PROJECTION_SCOPE_UNAVAILABLE`，不返回伪完整恢复结果。
 
-启动支持两个精确结构修订：原 `structure-v1.tsv`（01～06＋原生表）及 `structure-workbench-v1.tsv`（01～10＋原生表）。任一历史投影表存在即要求完整后者；部分安装拒绝就绪。旧登录基线可继续读取身份与能力，缺历史修订时返回受控不可用，不自动 DDL。`brain.projection.cursor-key` 可配置至少 32 字节的 Base64 私有 HMAC key，使原分页定位在重启后继续有效；未配置时使用进程随机 key，旧定位需重新取快照，历史事实和 streamId 不变。
+启动支持两个精确结构修订：原 `structure-v1.tsv`（01～06＋原生表）及 `structure-workbench-v1.tsv`（当前 01～12＋原生表）。任一历史投影表存在即要求完整后者；部分安装拒绝就绪。旧登录基线可继续读取身份与能力，缺历史修订时返回受控不可用，不自动 DDL。`brain.projection.cursor-key` 可配置至少 32 字节的 Base64 私有 HMAC key，使原分页定位在重启后继续有效；未配置时使用进程随机 key，旧定位需重新取快照，历史事实和 streamId 不变。
+
+修改或新增 `db/schema/`、`db/vendor/` 的 SQL 后，从仓库根执行 `python db/tests/生成工作台结构期望.py`，用独占临时 MySQL 重新生成工作台结构基线，并将基线与 DDL 一同保留在版本管理中。该执行器不读取共用配置、不修改实际数据库。默认 Maven 测试 `ReadinessBaselineSourceTest` 核对完整脚本集合及 SHA-256，防止遗漏修订或基线回退；运行中的应用仍需重启才能加载新基线。
 
 显式运行 `python db/tests/执行工作台撤权只读隔离验收.py` 验证 #37；它使用独占、可销毁的回环 MySQL，不读共享 YAML、不改共享账号。`--browser` 在撤权夹具上等待真实浏览器观察，证据放 [#37 验收记录](../verification/issue-37/验收记录.md)。
 

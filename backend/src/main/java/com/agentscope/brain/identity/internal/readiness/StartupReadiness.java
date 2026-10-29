@@ -28,6 +28,10 @@ public class StartupReadiness implements ApplicationListener<ApplicationReadyEve
     private final IdentityRepository identities;
     private final ReleaseReadiness release;
     private final ApplicationEventPublisher events;
+    @org.springframework.beans.factory.annotation.Value("${brain.copilot.enabled:false}")
+    private boolean copilotEnabled;
+    @org.springframework.beans.factory.annotation.Value("${brain.copilot.runtime-secret:}")
+    private String copilotRuntimeSecret;
     private volatile boolean ready;
     private volatile List<String> gaps = List.of("STARTING");
     public StartupReadiness(JdbcTemplate jdbc, IdentityRepository identities, ReleaseReadiness release, ApplicationEventPublisher events) {
@@ -75,6 +79,14 @@ public class StartupReadiness implements ApplicationListener<ApplicationReadyEve
     }
 
     private void checkStructures(List<String> missing) throws Exception {
+        if (copilotEnabled) {
+            if (copilotRuntimeSecret == null || copilotRuntimeSecret.length() < 32) missing.add("COPILOT_RUNTIME_SECRET_MISSING");
+            Long copilotTables = jdbc.queryForObject("""
+                    SELECT COUNT(*) FROM information_schema.tables WHERE table_schema=DATABASE()
+                    AND LOWER(table_name) IN ('copilot_thread','copilot_thread_message','copilot_thread_run')
+                    """, Long.class);
+            if (copilotTables == null || copilotTables != 3) missing.add("COPILOT_STRUCTURE_MISSING");
+        }
         // #34's exact login baseline and the exact 01..10 workbench baseline are distinct
         // supported revisions. A partially installed history revision must fail closed.
         boolean historyRevision = jdbc.queryForObject("""
@@ -82,7 +94,14 @@ public class StartupReadiness implements ApplicationListener<ApplicationReadyEve
                 AND LOWER(table_name) IN ('session_projection_event','projection_content','projection_content_version')
                 """, Long.class) > 0;
         var resource = new ClassPathResource(historyRevision
-                ? "readiness/structure-workbench-v1.tsv" : "readiness/structure-v1.tsv");
+                ? (copilotEnabled ? "readiness/structure-workbench-v1.tsv" : "readiness/structure-workbench-v0.tsv")
+                : "readiness/structure-v1.tsv");
+        checkResource(resource, missing);
+        if (copilotEnabled && !historyRevision)
+            checkResource(new ClassPathResource("readiness/structure-copilot-v1.tsv"), missing);
+    }
+
+    private void checkResource(ClassPathResource resource, List<String> missing) throws Exception {
         try (var stream = resource.getInputStream()) {
             for (var line : new String(stream.readAllBytes(), StandardCharsets.UTF_8).split("\\R")) {
                 if (line.isBlank() || line.startsWith("#")) { continue; }

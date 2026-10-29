@@ -1,6 +1,7 @@
 package com.agentscope.brain.release.internal.application;
 
 import com.agentscope.brain.release.api.ReleaseReadiness;
+import com.agentscope.brain.release.api.TextRelease;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -18,7 +19,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
-public class PresetReleaseReadiness implements ReleaseReadiness {
+public class PresetReleaseReadiness implements ReleaseReadiness, TextRelease {
     private final JdbcTemplate jdbc;
     private final ResourceLoader loader;
     private final Environment environment;
@@ -28,6 +29,59 @@ public class PresetReleaseReadiness implements ReleaseReadiness {
     public PresetReleaseReadiness(JdbcTemplate jdbc, ResourceLoader loader, Environment environment,
             @Value("${brain.bootstrap.reference-catalog:file:config/release-catalog.private.json}") String catalogLocation) {
         this.jdbc = jdbc; this.loader = loader; this.environment = environment; this.catalogLocation = catalogLocation;
+    }
+
+    @Override @Transactional(readOnly = true)
+    public TextRelease.Configuration textConfiguration(String employeeId, String releaseId) {
+        try {
+            var release = one("SELECT * FROM employee_release WHERE id=? AND employee_id=?", releaseId, employeeId);
+            require("AVAILABLE".equals(release.get("availability_status")), "RELEASE_DISABLED");
+            var config = parse(release.get("config_json"));
+            require(Arrays.equals(hash(canonical(config)), (byte[]) release.get("manifest_sha256")), "RELEASE_MANIFEST_DIGEST");
+            var model = map(config.get("model"));
+            Map<String, Object> catalog;
+            try (var input = loader.getResource(catalogLocation).getInputStream()) {
+                catalog = json.readValue(input, new TypeReference<Map<String, Object>>() { });
+            }
+            var modelReference = verifiedReference(catalog, model.get("configRef"), "model");
+            require(Arrays.equals(canonical(model), canonical(modelReference)), "MODEL_CONFIG_MISMATCH");
+            var endpoint = verifiedReference(catalog, model.get("endpointRef"), "model-endpoint");
+            var credential = verifiedReference(catalog, model.get("credentialRef"), "credential-reference");
+            require("brain.resources.model.api-key".equals(credential.get("configurationPath")), "UNKNOWN_SECRET_REFERENCE");
+            String modelId = String.valueOf(model.get("modelId"));
+            String baseUrl = String.valueOf(endpoint.get("baseUrl"));
+            String apiKey = environment.getProperty("brain.resources.model.api-key", "");
+            require(modelId.equals(environment.getProperty("brain.resources.model.model")), "MODEL_CONFIG_MISMATCH");
+            require(baseUrl.equals(environment.getProperty("brain.resources.model.base-url")), "MODEL_ENDPOINT_MISMATCH");
+            require(!apiKey.isBlank(), "SECRET_REFERENCE_MISSING");
+            require(config.get("instructions") instanceof String, "INSTRUCTIONS_MISSING");
+            var instructions = new StringBuilder((String) config.get("instructions"));
+            var skills = list(config.get("skills"));
+            require(jdbc.queryForObject("SELECT COUNT(*) FROM employee_release_skill WHERE employee_release_id=?", Long.class,
+                    release.get("id")) == skills.size(), "SKILL_REFERENCE_COUNT");
+            for (var item : skills) {
+                var ref = map(item);
+                verifySkill(ref, release.get("id"));
+                var skill = one("SELECT * FROM employee_release_skill WHERE id=?", ref.get("snapshotId"));
+                instructions.append("\n\n").append(skill.get("skill_markdown"));
+                var resources = jdbc.queryForList("SELECT resource_path,resource_content FROM employee_release_skill_resource "
+                        + "WHERE release_skill_id=? ORDER BY resource_path COLLATE utf8mb4_bin", skill.get("id"));
+                for (var resource : resources) {
+                    instructions.append("\n\n# ").append(resource.get("resource_path")).append("\n")
+                            .append(resource.get("resource_content"));
+                }
+            }
+            return new TextRelease.Configuration(instructions.toString(), baseUrl, modelId, apiKey);
+        } catch (InvalidRelease failure) { throw failure; }
+        catch (Exception failure) { throw new InvalidRelease("TEXT_RELEASE_UNAVAILABLE:" + failure.getClass().getSimpleName()); }
+    }
+
+    private Map<String, Object> verifiedReference(Map<String, Object> catalog, Object key, String kind) throws Exception {
+        var reference = map(catalog.get(key));
+        require(kind.equals(reference.get("kind")), "REFERENCE_KIND_MISMATCH");
+        var content = map(reference.get("content"));
+        require(hex(hash(canonical(content))).equals(reference.get("sha256")), "REFERENCE_CATALOG_DIGEST");
+        return content;
     }
 
     @Override @Transactional(readOnly = true)

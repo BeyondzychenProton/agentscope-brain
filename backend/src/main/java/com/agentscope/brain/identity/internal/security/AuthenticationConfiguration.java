@@ -107,6 +107,7 @@ class AuthenticationConfiguration {
                 .requestMatchers(org.springframework.http.HttpMethod.POST, "/api/session-intents", "/api/submissions", "/api/submissions/*/close").authenticated()
                 // PathPattern + HttpMethod-only matchers have denied PATCH in some Boot builds; allow the path for authenticated users.
                 .requestMatchers("/api/sessions/*/title", "/api/sessions/{sessionId}/title").authenticated()
+                .requestMatchers("/api/copilot/**").authenticated()
                 .anyRequest().denyAll());
         return http.build();
     }

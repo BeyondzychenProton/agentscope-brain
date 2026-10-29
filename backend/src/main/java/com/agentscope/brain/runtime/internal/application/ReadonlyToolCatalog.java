@@ -36,7 +36,7 @@ public class ReadonlyToolCatalog {
             JdbcTemplate jdbc,
             @Value("${brain.bootstrap.reference-catalog:config/release-catalog.private.json}") String catalog) {
         this.jdbc = jdbc;
-        this.catalogPath = Path.of(catalog);
+        this.catalogPath = catalog.startsWith("file:") ? Path.of(java.net.URI.create(catalog)) : Path.of(catalog);
     }
 
     public List<Tool> forRelease(String releaseId) {

@@ -1,4 +1,4 @@
-"""#37: generate the exact 01..10 workbench baseline in an owned disposable MySQL only."""
+"""Generate the exact current workbench DDL baseline in an owned disposable MySQL only."""
 import argparse
 import hashlib
 import importlib.util
@@ -18,7 +18,8 @@ def generate(client):
     for path in native:
         base.require_success(base.run(client, sql=path.read_bytes()), 'native DDL')
     tables = base.require_success(base.run(client, sql=b'SHOW TABLES'), 'metadata tables').splitlines()
-    lines = ['# workbench-structure-v1: exact platform 01..10 / AgentScope JDBC 2.0.4 / Spring Session JDBC 4.1.1']
+    revision = DDL[0].name[:2] + '..' + DDL[-1].name[:2]
+    lines = [f'# workbench-structure-v1: exact platform {revision} / AgentScope JDBC 2.0.4 / Spring Session JDBC 4.1.1']
     for path in DDL + native:
         lines.append('# ' + path.relative_to(ROOT).as_posix() + ' sha256=' + hashlib.sha256(path.read_bytes()).hexdigest())
     for table in tables:
