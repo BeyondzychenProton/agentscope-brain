@@ -18,8 +18,8 @@ public interface CopilotThreads {
     record Summary(String id, String title, String version, String activeRunId, String updatedAt) { }
 
     /** The caller is authenticated and supplies only the newly submitted text and resume entries. */
-    Accepted accept(String threadId, String runId, String employeeId, String text, byte[] sessionHash,
-                    List<Resume> resume);
+    Accepted accept(String threadId, String runId, String employeeId, String text, String userMessageId,
+                    byte[] sessionHash, List<Resume> resume);
     Thread open(String threadId);
     /** The most recent run that paused for a user answer, or null. */
     String interruptedRun(String threadId);

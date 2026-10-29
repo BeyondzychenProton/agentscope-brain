@@ -44,7 +44,7 @@ class WriteConfirmationRunTest {
                             + "\"assistantMessage\":false,\"userMessage\":false,\"systemMessage\":false,"
                             + "\"textContent\":\"{\\\"employees\\\":[{\\\"phone\\\":\\\"15738515168\\\","
                             + "\\\"name\\\":\\\"测试用户\\\"}]}\"}]"));
-            var first = fixture.runs.start(fixture.store.id, fixture.store.run, "1", "帮我订个会议室", List.of())
+            var first = fixture.runs.start(fixture.store.id, fixture.store.run, "1", "帮我订个会议室", null, List.of())
                     .collectList().block(Duration.ofSeconds(15));
             var finished = first.stream().filter(e -> e instanceof AguiEvent.RunFinished)
                     .map(e -> (AguiEvent.RunFinished) e).findFirst().orElseThrow();
@@ -58,7 +58,7 @@ class WriteConfirmationRunTest {
             assertThat(view.get("attendeeNames")).isEqualTo(List.of("测试用户"));
 
             String resumeRun = UUID.randomUUID().toString();
-            var resumed = fixture.runs.start(fixture.store.id, resumeRun, "1", "",
+            var resumed = fixture.runs.start(fixture.store.id, resumeRun, "1", "", null,
                     List.of(new CopilotThreads.Resume(interrupts.get(0).id(), "resolved", Map.of("approved", true))))
                     .collectList().block(Duration.ofSeconds(15));
             assertThat(fixture.executions.get()).isEqualTo(1);
@@ -157,7 +157,7 @@ class WriteConfirmationRunTest {
         volatile String state = "RUNNING";
         volatile String displayJson;
 
-        public Accepted accept(String t, String r, String e, String text, byte[] session, List<Resume> resume) {
+        public Accepted accept(String t, String r, String e, String text, String messageId, byte[] session, List<Resume> resume) {
             run = r;
             state = "RUNNING";
             return new Accepted(id, r, "release", List.copyOf(messages), "trusted-user", resume);

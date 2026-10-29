@@ -37,7 +37,7 @@ class CopilotToolRunTest {
 
     @Test void reasoningStreamsVerbatimAndRecoversSeparatelyFromAnswerHistory() throws Exception {
         try (var fixture = new Fixture("reasoning")) {
-            var events = fixture.runs.start(fixture.store.id, fixture.store.run, "1", "Synthetic inquiry", List.of())
+            var events = fixture.runs.start(fixture.store.id, fixture.store.run, "1", "Synthetic inquiry", null, List.of())
                     .collectList().block(Duration.ofSeconds(15));
             String thinking = events.stream().filter(e -> e instanceof AguiEvent.ReasoningMessageContent)
                     .map(e -> ((AguiEvent.ReasoningMessageContent)e).delta()).collect(java.util.stream.Collectors.joining());
@@ -59,7 +59,7 @@ class CopilotToolRunTest {
     @ValueSource(strings = {"native", "tag", "trailing", "alternative", "two-tools"})
     void toolsContinueInTheSamePublishedModelAndSurviveReopen(String mode) throws Exception {
         try (var fixture = new Fixture(mode)) {
-            var events = fixture.runs.start(fixture.store.id, fixture.store.run, "1", "Synthetic inquiry", List.of())
+            var events = fixture.runs.start(fixture.store.id, fixture.store.run, "1", "Synthetic inquiry", null, List.of())
                     .collectList().block(Duration.ofSeconds(15));
             int count = mode.equals("two-tools") ? 2 : 1;
             assertThat(fixture.toolCalls.get()).isEqualTo(count);
@@ -89,7 +89,7 @@ class CopilotToolRunTest {
     @ValueSource(strings = {"incomplete", "unpublished", "invalid-json", "truncated"})
     void invalidControlOutputIsAnExplicitFailureAndNeverExecutes(String mode) throws Exception {
         try (var fixture = new Fixture(mode)) {
-            var events = fixture.runs.start(fixture.store.id, fixture.store.run, "1", "Synthetic inquiry", List.of())
+            var events = fixture.runs.start(fixture.store.id, fixture.store.run, "1", "Synthetic inquiry", null, List.of())
                     .collectList().block(Duration.ofSeconds(15));
             assertThat(fixture.toolCalls.get()).isZero();
             assertThat(fixture.requests).hasSize(1);
@@ -101,7 +101,7 @@ class CopilotToolRunTest {
 
     @Test void slowToolKeepsItsLeaseAndCanBeStoppedWithoutWaitingForTheTool() throws Exception {
         try (var fixture = new Fixture("slow")) {
-            var result = fixture.runs.start(fixture.store.id, fixture.store.run, "1", "Synthetic inquiry", List.of()).collectList().toFuture();
+            var result = fixture.runs.start(fixture.store.id, fixture.store.run, "1", "Synthetic inquiry", null, List.of()).collectList().toFuture();
             assertThat(fixture.toolStarted.await(10, TimeUnit.SECONDS)).isTrue();
             assertThat(fixture.store.heartbeat.await(5, TimeUnit.SECONDS)).isTrue();
             // A new observer must neither execute the tool again nor duplicate partial text.
@@ -201,7 +201,7 @@ class CopilotToolRunTest {
         final StringBuilder content=new StringBuilder();
         final CountDownLatch heartbeat=new CountDownLatch(1);
         volatile String state="RUNNING",displayJson;
-        public Accepted accept(String t,String r,String e,String text,byte[] session,List<Resume> resume) { return new Accepted(id,run,"release",List.of(),"trusted-user",resume); }
+        public Accepted accept(String t,String r,String e,String text,String messageId,byte[] session,List<Resume> resume) { return new Accepted(id,run,"release",List.of(),"trusted-user",resume); }
         public String interruptedRun(String t) { return null; }
         public CopilotThreads.Thread open(String t) { return new CopilotThreads.Thread(id,"1","release","Synthetic","1",
                 state.equals("RUNNING")?run:null,null,state,null,List.of(new Message("stored", "ASSISTANT",content.toString(),

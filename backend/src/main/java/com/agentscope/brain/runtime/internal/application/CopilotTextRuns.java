@@ -41,13 +41,13 @@ public class CopilotTextRuns {
         this.threads = threads; this.sessions = sessions; this.agent = agent; this.operations = operations;
     }
 
-    public Flux<AguiEvent> start(String threadId, String runId, String employeeId, String text,
+    public Flux<AguiEvent> start(String threadId, String runId, String employeeId, String text, String userMessageId,
             List<CopilotThreads.Resume> resume) {
         synchronized (stripe(threadId)) {
             var lease = sessions.capture();
             List<CopilotThreads.Resume> answers = resume == null ? List.of() : List.copyOf(resume);
             if (!answers.isEmpty()) prepareResume(threadId, runId, answers);
-            var accepted = threads.accept(threadId, runId, employeeId, text, lease.sessionHash(), answers);
+            var accepted = threads.accept(threadId, runId, employeeId, text, userMessageId, lease.sessionHash(), answers);
             var active = new Active(accepted.threadId(), accepted.runId(), lease, accepted.userId());
             var previous = live.put(threadId, active);
             if (previous != null) previous.terminate("INTERRUPTED", "EXECUTION_INTERRUPTED");

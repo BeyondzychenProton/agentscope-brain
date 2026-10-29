@@ -41,7 +41,7 @@ public class TextAgentExecution {
     private static final Logger LOG = LoggerFactory.getLogger(TextAgentExecution.class);
     private static final ExecutionConfig ONE_ATTEMPT = ExecutionConfig.builder().maxAttempts(1).build();
     private static final ObjectMapper JSON = new ObjectMapper();
-    private static final AguiAdapterConfig ADAPTER = AguiAdapterConfig.builder().enableReasoning(false)
+    private static final AguiAdapterConfig ADAPTER = AguiAdapterConfig.builder().enableReasoning(true)
             .emitRunFinishedAfterError(false).toolMergeMode(ToolMergeMode.AGENT_ONLY).build();
     private static final Duration KEEP = Duration.ofMinutes(10);
     private final TextRelease releases;

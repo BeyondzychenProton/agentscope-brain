@@ -34,8 +34,8 @@ public class CopilotThreadStore implements CopilotThreads {
 
     /** Accepts only the new text or a resume answer; callers cannot supply or replace stored history. */
     @Transactional(isolation = Isolation.REPEATABLE_READ)
-    public Accepted accept(String threadId, String runId, String employeeId, String text, byte[] sessionHash,
-            List<Resume> resume) {
+    public Accepted accept(String threadId, String runId, String employeeId, String text, String userMessageId,
+            byte[] sessionHash, List<Resume> resume) {
         var user = users.requireLocked();
         if (user.passwordChangeRequired()) throw failure(403, "PASSWORD_CHANGE_REQUIRED");
         threadId = id(threadId);
@@ -88,7 +88,7 @@ public class CopilotThreadStore implements CopilotThreads {
             jdbc.update("""
                     INSERT INTO copilot_thread_message(thread_id,message_no,message_id,run_id,role,content,status,gmt_create,gmt_modified)
                     VALUES(?,?,?,?,'USER',?,'COMPLETE',?,?)
-                    """, threadId, last + 1, UUID.randomUUID().toString(), runId, text, now, now);
+                    """, threadId, last + 1, userMessageId(userMessageId), runId, text, now, now);
             last = last + 1;
         }
         jdbc.update("""
@@ -260,6 +260,18 @@ public class CopilotThreadStore implements CopilotThreads {
             if (!normalized.equals(value)) throw new IllegalArgumentException();
             return normalized;
         } catch (Exception invalid) { throw failure(400, "REQUEST_INVALID"); }
+    }
+    /**
+     * Keeps the browser's own message id so a later MESSAGES_SNAPSHOT updates that bubble in place
+     * instead of appending a second copy. Anything that is not a canonical UUID is replaced.
+     */
+    static String userMessageId(String candidate) {
+        if (candidate == null || candidate.isBlank()) return UUID.randomUUID().toString();
+        try {
+            return UUID.fromString(candidate).toString().equals(candidate) ? candidate : UUID.randomUUID().toString();
+        } catch (RuntimeException invalid) {
+            return UUID.randomUUID().toString();
+        }
     }
     private static void validateText(String text) {
         if (text == null || text.isBlank() || text.codePoints().anyMatch(c -> c >= 0xD800 && c <= 0xDFFF)

@@ -33,7 +33,7 @@ class CopilotRuntimeController {
             @Value("${brain.copilot.runtime-secret:}") String secret) {
         this.runs = runs; this.sessions = sessions; this.secret = secret;
     }
-    record Start(String threadId, String runId, String employeeId, String text, List<ResumeInput> resume) { }
+    record Start(String threadId, String runId, String employeeId, String text, String userMessageId, List<ResumeInput> resume) { }
     record ResumeInput(String interruptId, String status, Map<String, Object> payload) { }
     record Stop(String threadId, String runId) { }
 
@@ -52,7 +52,8 @@ class CopilotRuntimeController {
                 : input.resume().stream()
                         .map(r -> new CopilotThreads.Resume(r.interruptId(), r.status(), r.payload()))
                         .toList();
-        return encode(runs.start(input.threadId(), input.runId(), input.employeeId(), input.text(), answers), viewer);
+        return encode(runs.start(input.threadId(), input.runId(), input.employeeId(), input.text(),
+                input.userMessageId(), answers), viewer);
     }
     @GetMapping(value = "/connect/{threadId}", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
     Flux<ServerSentEvent<String>> connect(@RequestHeader(value = "X-Brain-Runtime", required = false) String key,

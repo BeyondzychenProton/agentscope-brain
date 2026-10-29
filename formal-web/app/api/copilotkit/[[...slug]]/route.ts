@@ -77,8 +77,10 @@ class PlatformRunner extends AgentRunner {
       console.error(`Copilot runtime rejected unsupported run threadId=${request.threadId}`);
       return new Observable(subscriber => subscriber.error(new Error("Only text messages and interrupt resumes are supported")));
     }
+    // The browser already rendered this bubble; storing its id keeps a later snapshot from duplicating it.
+    const userMessageId = text && typeof last?.id === "string" ? last.id : "";
     return this.events("/api/copilot/runtime/run", { threadId: request.threadId,
-      runId: request.input.runId, employeeId: this.employeeId, text, resume });
+      runId: request.input.runId, employeeId: this.employeeId, text, userMessageId, resume });
   }
   connect(request: AgentRunnerConnectRequest): Observable<BaseEvent> {
     return this.events(`/api/copilot/runtime/connect/${encodeURIComponent(request.threadId)}`, undefined, request.threadId);
