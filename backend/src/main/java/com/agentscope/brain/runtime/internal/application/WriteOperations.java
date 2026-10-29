@@ -29,6 +29,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class WriteOperations {
     private static final Logger LOG = LoggerFactory.getLogger(WriteOperations.class);
     private static final Duration TTL = Duration.ofMinutes(10);
+    private static final ObjectMapper JSON = new ObjectMapper();
     private static final String PROVIDER = "meeting-mcp";
     private final JdbcTemplate jdbc;
     private final ObjectMapper json = new ObjectMapper();
@@ -168,9 +169,20 @@ public class WriteOperations {
         return prefix + UUID.randomUUID().toString().replace("-", "").substring(0, 24);
     }
 
-    private String canonical(Map<String, Object> arguments) {
+    /**
+     * Canonical form of the operation arguments. {@code requestId} is excluded because the
+     * platform owns it: a model that adds, drops or changes it must still match the proposal the
+     * user approved, otherwise the same intent produces a new confirmation card forever.
+     */
+    static String canonical(Map<String, Object> arguments) {
         try {
-            return json.writeValueAsString(new TreeMap<>(arguments == null ? Map.of() : arguments));
+            var sorted = new TreeMap<String, Object>();
+            if (arguments != null) {
+                arguments.forEach((key, value) -> {
+                    if (!"requestId".equals(key)) sorted.put(key, value);
+                });
+            }
+            return JSON.writeValueAsString(sorted);
         } catch (Exception failure) {
             throw new IllegalStateException("TOOL_ARGUMENTS_INVALID", failure);
         }

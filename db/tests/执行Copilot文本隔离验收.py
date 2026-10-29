@@ -31,7 +31,7 @@ spec.loader.exec_module(web)
 SECRET = 'issue46-synthetic-runtime-secret-0123456789abcdef'
 
 
-def isolated(client, tool_mode=False, jar_path=None, reasoning_mode=False, multi_turn=False):
+def isolated(client, tool_mode=False, jar_path=None, reasoning_mode=False, multi_turn=False, cancel_mode=False):
     from playwright.sync_api import sync_playwright, expect
 
     mysql_port = int(next(x.split('=', 1)[1] for x in client if x.startswith('--port=')))
@@ -39,9 +39,11 @@ def isolated(client, tool_mode=False, jar_path=None, reasoning_mode=False, multi
                          charset='utf8mb4', autocommit=False)
     fixture = web.fixture_module.fixture()
     fixture['employee']['model']['parameters'] = {}
+    tool_mode = tool_mode or cancel_mode
     if tool_mode:
-        fixture['employee']['tools'][0]['toolName'] = 'identity.resolve'
-        fixture['employee']['tools'][0]['binding']['inputSchemaRef'] = 'contract/meeting-mcp/identity.resolve/v1'
+        tool_name = 'meeting.cancel' if cancel_mode else 'identity.resolve'
+        fixture['employee']['tools'][0]['toolName'] = tool_name
+        fixture['employee']['tools'][0]['binding']['inputSchemaRef'] = f'contract/meeting-mcp/{tool_name}/v1'
     requests = []
     closed_requests = []
     tool_requests = []
@@ -61,9 +63,10 @@ def isolated(client, tool_mode=False, jar_path=None, reasoning_mode=False, multi
                     result = {'protocolVersion':'2025-03-26','capabilities':{},'serverInfo':{'name':'synthetic','version':'1'}}
                 elif method == 'tools/call':
                     assert self.headers.get('X-MCP-User-Phone') == fixture['identity']['phone']
-                    assert payload['params']['name'] == 'identity.resolve'
+                    assert payload['params']['name'] == ('meeting.cancel' if cancel_mode else 'identity.resolve')
                     tool_requests.append(payload['params'])
-                    result = {'content':[{'type':'text','text':'Synthetic tool result'}],'isError':False}
+                    result = {'content':[{'type':'text','text':json.dumps({'status':'CANCELLED','meetingId':302})
+                        if cancel_mode else 'Synthetic tool result'}],'isError':False}
                 else:
                     self.send_error(400); return
                 data = json.dumps({'jsonrpc':'2.0','id':payload['id'],'result':result}).encode()
@@ -83,6 +86,15 @@ def isolated(client, tool_mode=False, jar_path=None, reasoning_mode=False, multi
                 self.wfile.write(('data: ' + json.dumps(data, ensure_ascii=False) + '\n\n').encode())
                 self.wfile.flush()
             try:
+                if cancel_mode:
+                    if any(m['role']=='tool' for m in payload['messages']):
+                        chunk({'content':'取消处理完成。'}); chunk({},'stop')
+                    else:
+                        chunk({'content':'将取消会议 302，请在平台卡片中确认。'})
+                        chunk({'tool_calls':[{'index':0,'id':f'cancel-{request_number}','type':'function',
+                            'function':{'name':'meeting_cancel','arguments':'{"meetingId":302}'}}]})
+                        chunk({},'tool_calls')
+                    self.wfile.write(b'data: [DONE]\n\n'); self.wfile.flush(); return
                 if multi_turn:
                     turn = sum(m['role']=='user' for m in payload['messages'])
                     chunk({'reasoning_content':f'第{turn}轮思考'})
@@ -171,7 +183,8 @@ def isolated(client, tool_mode=False, jar_path=None, reasoning_mode=False, multi
             for tool in fixture['employee']['tools']:
                 for key, value in tool['binding'].items():
                     if key.endswith('Ref'):
-                        content = {'inputSchema':{'type':'object','properties':{'name':{'type':'string'}},'required':['name']}} if tool_mode and key=='inputSchemaRef' else {}
+                        schema = {'type':'object','properties':{'meetingId':{'type':'integer'}},'required':['meetingId']} if cancel_mode else {'type':'object','properties':{'name':{'type':'string'}},'required':['name']}
+                        content = {'inputSchema':schema} if tool_mode and key=='inputSchemaRef' else {}
                         ref(value, 'synthetic-contract', content)
             ref(model_config['configRef'], 'model', model_config)
             ref(model_config['endpointRef'], 'model-endpoint', {'baseUrl':model_url})
@@ -235,6 +248,44 @@ def isolated(client, tool_mode=False, jar_path=None, reasoning_mode=False, multi
                     page.wait_for_url('**/workbench')
                     composer = page.get_by_role('textbox', name='发送消息')
                     expect(composer).to_be_visible()
+                    if cancel_mode:
+                        composer.fill('取消会议 302')
+                        page.get_by_role('button',name='发送',exact=True).click()
+                        card = page.locator('.tool-confirm-card')
+                        expect(card).to_be_visible(timeout=30000)
+                        expect(card).to_contain_text('302')
+                        expect(page.locator('.copilotKitUserMessage')).to_have_count(1)
+                        assert len(tool_requests)==0 and len(requests)==1
+                        instructions = requests[0]['messages'][0]['content']
+                        assert all(text in instructions for text in ['唯一一次操作确认','不要要求用户回复','立即调用对应写工具','信息不全'])
+                        with db.cursor() as cursor:
+                            cursor.execute('SELECT status FROM operation_confirmation')
+                            assert cursor.fetchall()==(('PENDING',),)
+                        page.screenshot(path=str(ROOT/'verification/engineering/cancel-single-confirmation.png'),full_page=True)
+                        card.get_by_role('button',name='确认提交',exact=True).click()
+                        expect(page.get_by_text('取消处理完成。',exact=True)).to_be_visible(timeout=30000)
+                        expect(card).to_have_count(0)
+                        expect(page.locator('.copilotKitUserMessage')).to_have_count(1)
+                        assert len(tool_requests)==1 and len(requests)==2
+                        assert tool_requests[0]['arguments']['meetingId']==302
+                        assert tool_requests[0]['arguments']['requestId'].startswith('cancel-')
+                        with db.cursor() as cursor:
+                            cursor.execute('SELECT status FROM operation_confirmation')
+                            assert cursor.fetchall()==(('CONSUMED',),)
+                        page.get_by_role('button',name='＋ 新建对话',exact=True).click()
+                        composer.fill('取消会议 302')
+                        page.get_by_role('button',name='发送',exact=True).click()
+                        expect(card).to_be_visible(timeout=30000)
+                        card.get_by_role('button',name='取消',exact=True).click()
+                        expect(page.get_by_text('取消处理完成。',exact=True)).to_be_visible(timeout=30000)
+                        expect(card).to_have_count(0)
+                        assert len(tool_requests)==1, 'Rejecting a card must never cancel the meeting'
+                        with db.cursor() as cursor:
+                            cursor.execute('SELECT status FROM operation_confirmation ORDER BY id')
+                            assert cursor.fetchall()==(('CONSUMED',),('INVALIDATED',))
+                        assert not [a for a in activity if 'pageerror' in a],activity
+                        print('PASS: first cancellation intent opens one card; no MCP before approval; one click executes once without a text confirmation; rejection never executes',flush=True)
+                        return {'browserExecuted':True,'singleConfirmation':True,'toolCalls':len(tool_requests),'modelRequests':len(requests)}
                     if multi_turn:
                         questions = ['你好', '下午有没有会议', '请继续说明']
                         for turn, question in enumerate(questions, 1):
@@ -457,11 +508,12 @@ def main():
     parser.add_argument('--jar', type=Path)
     parser.add_argument('--reasoning',action='store_true')
     parser.add_argument('--multi-turn',action='store_true')
+    parser.add_argument('--cancel-confirmation',action='store_true')
     args = parser.parse_args()
     ddl = sorted((ROOT / 'db/schema').glob('*.sql'))
     count = sum(len(re.findall(r'CREATE TABLE (\w+)', p.read_text('utf-8'))) for p in ddl)
     web.base.verify(args.mysql_bin.resolve(), ddl_files=ddl, probes=[], expected_table_count=count,
-        inspection_check=lambda _:0, concurrency_check=lambda _:0, extra_checks=lambda client: isolated(client,args.tools,args.jar.resolve() if args.jar else None,args.reasoning,args.multi_turn))
+        inspection_check=lambda _:0, concurrency_check=lambda _:0, extra_checks=lambda client: isolated(client,args.tools,args.jar.resolve() if args.jar else None,args.reasoning,args.multi_turn,args.cancel_confirmation))
 
 
 if __name__ == '__main__': main()

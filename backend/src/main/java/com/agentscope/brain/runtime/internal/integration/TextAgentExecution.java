@@ -137,8 +137,15 @@ public class TextAgentExecution {
                 .generateOptions(GenerateOptions.builder().executionConfig(ONE_ATTEMPT).build()).build();
         return ReActAgent.builder().name("assistant").sysPrompt(release.instructions()
                 + "\n通过已提供的工具调用获取事实，收到工具结果后继续回答。不要在正文中输出工具 XML 或 JSON 调用。"
-                + "\n预约或取消会议属于写操作：调用工具前先用中文向用户复述会议室、时间、参会人和主题，"
-                + "平台会弹出一次性确认，用户确认后才真正提交；不要自行编造 requestId。")
+                + "\n【当前 Web 写操作交互规则】预约和取消会议的唯一一次操作确认由平台确认卡片完成。"
+                + "此规则规定发布指令与 Skill 中‘执行前须确认’在当前 Web 的具体交互方式。"
+                + "信息不全、会议目标不唯一或用户意图不明确时，先澄清，不得猜测参数。"
+                + "用户意图明确且必要信息齐全后，用中文简要复述已核实的操作内容，并在同一轮立即调用对应写工具，"
+                + "以创建待确认提案和弹出平台卡片；工具在卡片获批之前不会执行。"
+                + "不要要求用户回复‘确认取消’、‘确认预约’或‘确认提交’，不要在调用工具前停下来等待文字确认。"
+                + "用户的普通聊天文字不能替代卡片授权；即使历史回复曾要求文字确认，也应改用卡片。"
+                + "卡片批准后继续执行并报告实际工具结果，不再索要第二次确认；卡片拒绝后不得重新发起同一操作。"
+                + "不要自行编造 requestId，不得在工具返回前声称预约或取消已成功。")
                 .model(model).toolkit(toolkit).maxIters(8)
                 .modelExecutionConfig(ONE_ATTEMPT).toolExecutionConfig(ONE_ATTEMPT).maxRetries(1).build();
     }

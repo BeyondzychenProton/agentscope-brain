@@ -152,8 +152,8 @@ public class AgentToolCatalog {
             case "calendar.verify" -> "核对会议与参会人忙闲。";
             case "meeting.list_mine" -> "列出当前登录用户相关的会议。";
             case "room.search" -> "查询可预约会议室。";
-            case "room.reserve" -> "为当前登录用户预约会议室。执行前平台会要求本人一次性确认；发起人不会自动加入参会人。";
-            case "meeting.cancel" -> "取消当前登录用户本人发起的未开始会议。执行前平台会要求本人一次性确认。";
+            case "room.reserve" -> "为当前登录用户预约会议室。信息齐全后直接调用以弹出平台确认卡片；不要先索要文字确认。本人批准卡片前不会执行；发起人不会自动加入参会人。";
+            case "meeting.cancel" -> "取消当前登录用户本人发起的未开始会议。目标明确后直接调用以弹出平台确认卡片；不要先索要‘确认取消’的文字回复。本人批准卡片前不会执行。";
             case "platform.current_time" -> "获取平台当前的日期、时间、星期与时区。回答“今天/明天/下周几”等相对时间前先调用。";
             case "platform.current_user" -> "获取当前登录用户的身份信息：显示名、打码手机号和用户标识。无需入参。";
             default -> name;

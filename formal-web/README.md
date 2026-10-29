@@ -23,3 +23,5 @@ Java 配置在本机忽略的 `backend/config/application.yaml` 中启用 `brain
 思考展示浏览器验收：在仓库根执行 `C:\Python314\python.exe db/tests/执行Copilot文本隔离验收.py --reasoning --jar backend/target/tool-stream-fix/agentscope-brain-backend-0.1.0-SNAPSHOT.jar`。该模式用合成模型分段发送 reasoning，再发送正文，验证原文、固定高度、自动折叠、手动展开和刷新恢复。
 
 多轮展示回归：用当前构建的 JAR 运行同一脚本的 `--multi-turn`，以及 `--multi-turn --tools`。连续发送三轮而不刷新，逐轮检查用户气泡和旧回答仅出现一次且顺序正确，再刷新核对恢复；同时检查运行开始事件不向浏览器暴露模型重放输入、思考不作为用户文字进入下一轮模型请求。工具模式另核对每轮仅执行一次，实时与刷新后的工具卡片数量一致。
+
+取消会议确认回归：用当前构建 JAR 运行同一脚本的 `--cancel-confirmation`。合成模型在第一次取消请求中提出写工具调用；浏览器检查立即出现一张确认卡片，批准前 MCP 调用数为零，一次批准后仅执行一次，不要求再发送文字确认；拒绝卡片不调用 MCP。另检查实际模型请求中的 Web 规则明确以卡片完成唯一一次确认。该替身验证不代替真实模型对指令的遵守情况，也不取消真实会议。

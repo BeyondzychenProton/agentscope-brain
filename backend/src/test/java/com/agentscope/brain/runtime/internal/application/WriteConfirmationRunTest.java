@@ -6,6 +6,7 @@ import com.agentscope.brain.release.api.TextRelease;
 import com.agentscope.brain.runtime.internal.integration.AgentTools;
 import com.agentscope.brain.runtime.internal.integration.TextAgentExecution;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.sun.net.httpserver.HttpServer;
 import io.agentscope.core.agui.event.AguiEvent;
 import io.agentscope.core.message.ToolResultBlock;
@@ -35,6 +36,30 @@ import static org.assertj.core.api.Assertions.assertThat;
  */
 class WriteConfirmationRunTest {
     static final ObjectMapper JSON = new ObjectMapper();
+
+    @Test void cancellationUsesTheCardAsItsOnlyConfirmation() throws Exception {
+        try (var fixture = new Fixture("meeting_cancel")) {
+            var events = fixture.runs.start(fixture.store.id, fixture.store.run, "1", "取消会议 302", null, List.of())
+                    .collectList().block(Duration.ofSeconds(15));
+            assertThat(fixture.requests).hasSize(1);
+            String instructions = fixture.requests.get(0).path("messages").get(0).path("content").asText();
+            assertThat(instructions).contains("唯一一次操作确认", "不要要求用户回复", "立即调用对应写工具", "信息不全");
+            var finished = events.stream().filter(e -> e instanceof AguiEvent.RunFinished)
+                    .map(e -> (AguiEvent.RunFinished)e).findFirst().orElseThrow();
+            var interrupts = ((AguiEvent.RunFinishedInterruptOutcome)finished.outcome()).interrupts();
+            assertThat(interrupts).hasSize(1);
+            assertThat(fixture.proposed).containsExactly("meeting.cancel");
+            assertThat(fixture.executions.get()).isZero();
+            var resumed = fixture.runs.start(fixture.store.id, UUID.randomUUID().toString(), "1", "", null,
+                    List.of(new CopilotThreads.Resume(interrupts.get(0).id(), "resolved", Map.of("approved", true))))
+                    .collectList().block(Duration.ofSeconds(15));
+            assertThat(fixture.executions.get()).isEqualTo(1);
+            assertThat(fixture.requests).hasSize(2);
+            assertThat(fixture.store.state).isEqualTo("SUCCEEDED");
+            assertThat(resumed).noneMatch(e -> e instanceof AguiEvent.RunFinished f
+                    && f.outcome() instanceof AguiEvent.RunFinishedInterruptOutcome);
+        }
+    }
 
     @Test void writeToolPausesForConfirmationAndExecutesOnlyAfterResume() throws Exception {
         try (var fixture = new Fixture()) {
@@ -71,13 +96,17 @@ class WriteConfirmationRunTest {
         final Store store = new Store();
         final AtomicInteger executions = new AtomicInteger();
         final List<String> proposed = new CopyOnWriteArrayList<>();
+        final List<JsonNode> requests = new CopyOnWriteArrayList<>();
         final HttpServer server;
         final CopilotTextRuns runs;
 
-        Fixture() throws Exception {
+        Fixture() throws Exception { this("room_reserve"); }
+
+        Fixture(String toolName) throws Exception {
             server = HttpServer.create(new InetSocketAddress("127.0.0.1", 0), 0);
             server.createContext("/v1/chat/completions", exchange -> {
                 var request = JSON.readTree(exchange.getRequestBody().readAllBytes());
+                requests.add(request);
                 boolean executed = false;
                 for (var message : request.path("messages")) {
                     if (!message.path("role").asText().equals("tool")) continue;
@@ -90,8 +119,8 @@ class WriteConfirmationRunTest {
                     frames.add(chunk(Map.of(), "stop"));
                 } else {
                     frames.add(chunk(Map.of("tool_calls", List.of(Map.of("index", 0, "id", "call-1", "type", "function",
-                            "function", Map.of("name", "room_reserve", "arguments",
-                            "{\"roomId\":9,\"attendeePhones\":[\"15738515168\"],\"startTime\":\"2026-10-30 10:00:00\","
+                            "function", Map.of("name", toolName, "arguments",
+                            toolName.equals("meeting_cancel") ? "{\"meetingId\":302}" : "{\"roomId\":9,\"attendeePhones\":[\"15738515168\"],\"startTime\":\"2026-10-30 10:00:00\","
                                     + "\"durationMinutes\":30,\"meetingTheme\":\"probe\"}")))), null));
                     frames.add(chunk(Map.of(), "tool_calls"));
                 }
@@ -108,7 +137,7 @@ class WriteConfirmationRunTest {
             var tools = new AgentTools(null, null, null, null, null) {
                 @Override public Toolkit forRun(String userId, String releaseId) {
                     var toolkit = new Toolkit();
-                    toolkit.registerAgentTool(new ToolBase(ToolBase.builder().name("room_reserve")
+                    toolkit.registerAgentTool(new ToolBase(ToolBase.builder().name(toolName)
                             .description("Synthetic write").inputSchema(Map.of("type", "object", "properties", Map.of()))
                             .readOnly(false).concurrencySafe(false)) {
                         @Override public Mono<PermissionDecision> checkPermissions(Map<String, Object> input,
