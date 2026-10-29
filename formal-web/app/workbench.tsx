@@ -5,6 +5,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { ApiFailure, Identity, mutate, read } from "./api-client";
 import { AssistantMarkdown } from "./assistant-markdown";
 import { toolLabel } from "./assistant-content";
+import { ReasoningMessage } from "./reasoning-message";
 
 type Summary = { id: string; title: string; version: string; activeRunId: string | null; updatedAt: string };
 type Thread = Summary & { employeeId: string; releaseId: string; unavailableReason: string | null;
@@ -189,7 +190,7 @@ export function Workbench({ identity, busy, onLogout, onAuthLost }: {
         }}>
           <CopilotChat agentId="default" threadId={threadId} inspectorTools={false} welcomeScreen={false}
             labels={{ chatInputPlaceholder: "发送消息", chatInputToolbarSendButtonLabel: "发送", chatInputToolbarStopButtonLabel: "停止生成" }}
-            messageView={{ messageFeedback: false, assistantMessage: { toolbarVisible: false, markdownRenderer: AssistantMarkdown }, userMessage: { toolbar: () => null } }}
+            messageView={{ messageFeedback: false, reasoningMessage: ReasoningMessage, assistantMessage: { toolbarVisible: false, markdownRenderer: AssistantMarkdown }, userMessage: { toolbar: () => null } }}
             input={{ textArea: { "aria-label": "发送消息", readOnly: readonly || Boolean(thread?.activeRunId) },
               addMenuButton: () => null, startTranscribeButton: () => null }} />
         </fieldset></CopilotKitProvider></div>}</div></section>

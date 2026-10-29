@@ -1,10 +1,8 @@
 package com.agentscope.brain.runtime.internal.integration;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import io.agentscope.core.model.transport.HttpRequest;
 import io.agentscope.core.model.transport.HttpResponse;
 import io.agentscope.core.model.transport.HttpTransport;
-import java.util.concurrent.atomic.AtomicBoolean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.ParameterizedTypeReference;
@@ -15,21 +13,15 @@ import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
-/** One cancellable HTTP stream per run; no non-streaming fallback or automatic resend. */
+/** Cancellable HTTP per model turn; tool rounds stay in the same SDK agent, without fallback. */
 public final class TextStreamingTransport implements HttpTransport {
     private static final Logger LOG = LoggerFactory.getLogger(TextStreamingTransport.class);
-    private static final ObjectMapper JSON = new ObjectMapper();
     private static final ParameterizedTypeReference<ServerSentEvent<String>> SSE = new ParameterizedTypeReference<>() { };
     private final WebClient client = WebClient.create();
-    private final AtomicBoolean requested = new AtomicBoolean();
 
     @Override public Flux<String> stream(HttpRequest request) {
         return Flux.defer(() -> {
-            if (!requested.compareAndSet(false, true)) {
-                LOG.warn("Model stream rejected: code=MODEL_RETRY_FORBIDDEN endpoint={}", endpoint(request));
-                return Flux.error(new IllegalStateException("MODEL_RETRY_FORBIDDEN"));
-            }
-            var done = new AtomicBoolean();
+            var stream = new ModelToolStream(request.getBody());
             return client.method(HttpMethod.valueOf(request.getMethod())).uri(request.getUrl())
                     .headers(headers -> request.getHeaders().forEach(headers::set))
                     .bodyValue(request.getBody()).exchangeToFlux(response -> {
@@ -45,33 +37,9 @@ public final class TextStreamingTransport implements HttpTransport {
                     })
                     .filter(event -> event.data() != null)
                     .map(ServerSentEvent::data)
-                    .<String>handle((data, sink) -> {
-                        if ("[DONE]".equals(data)) { done.set(true); sink.next(data); return; }
-                        try {
-                            var choices = JSON.readTree(data).path("choices");
-                            if (!choices.isArray()) throw new IllegalArgumentException("choices is not an array");
-                            for (var choice : choices) {
-                                var delta = choice.path("delta");
-                                if (delta.hasNonNull("tool_calls") || delta.hasNonNull("function_call")
-                                        || "tool_calls".equals(choice.path("finish_reason").asText())) {
-                                    LOG.warn("Model stream rejected: code=MODEL_TOOL_CALL_FORBIDDEN endpoint={} finishReason={}",
-                                            endpoint(request), choice.path("finish_reason").asText(""));
-                                    sink.error(new IllegalStateException("MODEL_TOOL_CALL_FORBIDDEN")); return;
-                                }
-                                if ("length".equals(choice.path("finish_reason").asText())) {
-                                    LOG.warn("Model stream rejected: code=MODEL_OUTPUT_TRUNCATED endpoint={}", endpoint(request));
-                                    sink.error(new IllegalStateException("MODEL_OUTPUT_TRUNCATED")); return;
-                                }
-                            }
-                            sink.next(data);
-                        } catch (Exception invalid) {
-                            LOG.warn("Model stream rejected: code=MODEL_STREAM_INVALID endpoint={} cause={} payload={}",
-                                    endpoint(request), invalid.toString(), brief(data));
-                            sink.error(new IllegalStateException("MODEL_STREAM_INVALID", invalid));
-                        }
-                    })
+                    .concatMapIterable(stream::accept)
                     .concatWith(Mono.defer(() -> {
-                        if (done.get()) return Mono.empty();
+                        if (stream.isDone()) return Mono.empty();
                         LOG.warn("Model stream rejected: code=MODEL_STREAM_INCOMPLETE endpoint={}", endpoint(request));
                         return Mono.error(new IllegalStateException("MODEL_STREAM_INCOMPLETE"));
                     }));

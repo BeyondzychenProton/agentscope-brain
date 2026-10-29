@@ -31,7 +31,7 @@ spec.loader.exec_module(web)
 SECRET = 'issue46-synthetic-runtime-secret-0123456789abcdef'
 
 
-def isolated(client):
+def isolated(client, tool_mode=False, jar_path=None):
     from playwright.sync_api import sync_playwright, expect
 
     mysql_port = int(next(x.split('=', 1)[1] for x in client if x.startswith('--port=')))
@@ -39,18 +39,39 @@ def isolated(client):
                          charset='utf8mb4', autocommit=False)
     fixture = web.fixture_module.fixture()
     fixture['employee']['model']['parameters'] = {}
+    if tool_mode:
+        fixture['employee']['tools'][0]['toolName'] = 'identity.resolve'
+        fixture['employee']['tools'][0]['binding']['inputSchemaRef'] = 'contract/meeting-mcp/identity.resolve/v1'
     requests = []
     closed_requests = []
+    tool_requests = []
     release_second = threading.Event()
     finish = threading.Event()
     model_closed = threading.Event()
 
     class Model(http.server.BaseHTTPRequestHandler):
         def do_POST(self):
+            length = int(self.headers.get('Content-Length', '0'))
+            payload = json.loads(self.rfile.read(length))
+            if tool_mode and payload.get('method'):
+                method = payload['method']
+                if method == 'notifications/initialized':
+                    self.send_response(202); self.end_headers(); return
+                if method == 'initialize':
+                    result = {'protocolVersion':'2025-03-26','capabilities':{},'serverInfo':{'name':'synthetic','version':'1'}}
+                elif method == 'tools/call':
+                    assert self.headers.get('X-MCP-User-Phone') == fixture['identity']['phone']
+                    assert payload['params']['name'] == 'identity.resolve'
+                    tool_requests.append(payload['params'])
+                    result = {'content':[{'type':'text','text':'Synthetic tool result'}],'isError':False}
+                else:
+                    self.send_error(400); return
+                data = json.dumps({'jsonrpc':'2.0','id':payload['id'],'result':result}).encode()
+                self.send_response(200); self.send_header('Content-Type','application/json'); self.end_headers()
+                self.wfile.write(data); self.wfile.flush(); return
             if self.path != '/v1/chat/completions':
                 self.send_error(404); return
-            length = int(self.headers.get('Content-Length', '0'))
-            requests.append(json.loads(self.rfile.read(length)))
+            requests.append(payload)
             request_number = len(requests)
             self.send_response(200)
             self.send_header('Content-Type', 'text/event-stream')
@@ -62,6 +83,21 @@ def isolated(client):
                 self.wfile.write(('data: ' + json.dumps(data, ensure_ascii=False) + '\n\n').encode())
                 self.wfile.flush()
             try:
+                if tool_mode:
+                    has_result = any(m['role']=='tool' for m in payload['messages'])
+                    if not has_result:
+                        assert any(t['function']['name']=='identity_resolve' for t in payload['tools'])
+                        text = '正在查询。<tool_call>{"name":"identity.resolve","arguments":{"name":"合成人员"}}</tool_call>请稍候。'
+                        for start in range(0,len(text),3):
+                            chunk({'content':text[start:start+3]}); time.sleep(.005)
+                        chunk({}, 'stop')
+                    else:
+                        chunk({'content':'工具返回后第一段'})
+                        deadline = time.monotonic()+25
+                        while not release_second.wait(.1) and time.monotonic()<deadline:
+                            self.wfile.write(b': keepalive\n\n'); self.wfile.flush()
+                        chunk({'content':'，最终答复。'}); chunk({},'stop')
+                    self.wfile.write(b'data: [DONE]\n\n'); self.wfile.flush(); return
                 chunk({'content':'第一段'})
                 deadline = time.monotonic() + 25
                 while not release_second.wait(.2) and time.monotonic() < deadline:
@@ -84,7 +120,7 @@ def isolated(client):
     model_url = f'http://127.0.0.1:{model.server_port}/v1'
     java = Path('D:/code environment/jdk/jdk-17.0.9/bin/java.exe')
     node = ROOT / '.codex-local/issue-34/runtime/node-v24.22.1-win-x64/node.exe'
-    jar = ROOT / 'backend/target/issue46-build/agentscope-brain-backend-0.1.0-SNAPSHOT.jar'
+    jar = jar_path or ROOT / 'backend/target/issue46-build/agentscope-brain-backend-0.1.0-SNAPSHOT.jar'
     web_port, java_port = web.free_port(), web.free_port()
     origin = f'http://127.0.0.1:{web_port}'
     java_origin = f'http://127.0.0.1:{java_port}'
@@ -117,7 +153,9 @@ def isolated(client):
                 catalog[key] = {'kind':kind, 'content':content, 'sha256':web.fixture_module.boot.digest(content).hex()}
             for tool in fixture['employee']['tools']:
                 for key, value in tool['binding'].items():
-                    if key.endswith('Ref'): ref(value, 'synthetic-contract', {})
+                    if key.endswith('Ref'):
+                        content = {'inputSchema':{'type':'object','properties':{'name':{'type':'string'}},'required':['name']}} if tool_mode and key=='inputSchemaRef' else {}
+                        ref(value, 'synthetic-contract', content)
             ref(model_config['configRef'], 'model', model_config)
             ref(model_config['endpointRef'], 'model-endpoint', {'baseUrl':model_url})
             ref(model_config['credentialRef'], 'credential-reference', {'configurationPath':'brain.resources.model.api-key'})
@@ -178,6 +216,37 @@ def isolated(client):
                     page.wait_for_url('**/workbench')
                     composer = page.get_by_role('textbox', name='发送消息')
                     expect(composer).to_be_visible()
+                    if tool_mode:
+                        composer.fill('查询合成人员')
+                        page.get_by_role('button', name='发送', exact=True).click()
+                        expect(page.get_by_text('工具返回后第一段',exact=False).last).to_be_visible(timeout=30000)
+                        expect(page.locator('.tool-call-card')).to_have_count(1)
+                        assert '<tool' not in page.locator('body').inner_text()
+                        assert len(tool_requests)==1 and len(requests)==2
+                        current_url=page.url
+                        page.reload()
+                        expect(page.get_by_text('工具返回后第一段',exact=False).last).to_be_visible(timeout=15000)
+                        expect(page.locator('.tool-call-card')).to_have_count(1)
+                        assert len(tool_requests)==1 and len(requests)==2
+                        release_second.set()
+                        expect(page.get_by_text('工具返回后第一段，最终答复。',exact=False).last).to_be_visible(timeout=15000)
+                        expect(page.get_by_role('button',name='发送',exact=True)).to_be_visible(timeout=15000)
+                        page.reload()
+                        expect(page.get_by_text('工具返回后第一段，最终答复。',exact=False).last).to_be_visible(timeout=15000)
+                        expect(page.locator('.tool-call-card')).to_have_count(1)
+                        assert page.url==current_url and len(tool_requests)==1 and len(requests)==2
+                        assert '<tool' not in page.locator('body').inner_text()
+                        assert all(r['stream'] for r in requests)
+                        assert len({r['model'] for r in requests})==1
+                        assert not [a for a in activity if 'pageerror' in a], activity
+                        with db.cursor() as cursor:
+                            cursor.execute('SELECT content,display_json,status FROM copilot_thread_message WHERE role=\'ASSISTANT\'')
+                            content,display,status=cursor.fetchone()
+                        assert '<tool' not in content and '最终答复' in content and status=='COMPLETE'
+                        restored=json.loads(display)
+                        assert any(m.get('toolCalls') for m in restored) and any(m['role']=='tool' for m in restored)
+                        print('PASS: signed-in browser -> Runtime -> Java -> model -> signed MCP -> streamed final answer; active and completed refresh preserve one tool card and one execution',flush=True)
+                        return {'browserExecuted':True,'modelRequests':len(requests),'toolCalls':len(tool_requests)}
                     composer.fill('尚未发送的草稿')
                     page.reload()
                     expect(composer).to_have_value('')
@@ -248,14 +317,14 @@ def isolated(client):
                     assert len(requests) == 4
                     with db.cursor() as cursor:
                         cursor.execute("UPDATE employee_use_grant SET grant_status='ACTIVE',revoked_by=NULL,revoked_at=NULL")
-                        cursor.execute("UPDATE employee_release SET availability_status='DISABLED',availability_revision=availability_revision+1")
+                        cursor.execute("UPDATE employee_release SET availability_status='DISABLED',availability_revision=availability_revision+1,availability_changed_by=1,availability_source_kind='USER_ACTION',availability_bootstrap_batch_id=NULL")
                     page.reload()
                     expect(page.get_by_text('发布版本不可用', exact=False)).to_be_visible(timeout=15000)
                     expect(page.get_by_text('第一段第二段', exact=False).first).to_be_visible()
                     expect(composer).to_have_attribute('readonly', '')
                     assert len(requests) == 4
                     with db.cursor() as cursor:
-                        cursor.execute("UPDATE employee_release SET availability_status='AVAILABLE',availability_revision=availability_revision+1")
+                        cursor.execute("UPDATE employee_release SET availability_status='AVAILABLE',availability_revision=availability_revision+1,availability_changed_by=1,availability_source_kind='USER_ACTION',availability_bootstrap_batch_id=NULL")
                     page.reload()
                     expect(composer).not_to_have_attribute('readonly', '', timeout=15000)
                     deadline = time.monotonic() + 10
@@ -293,11 +362,13 @@ def isolated(client):
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--mysql-bin', type=Path, default=Path('D:/code environment/mysql/mysql-8.0.45-winx64/bin'))
+    parser.add_argument('--tools', action='store_true', help='Validate the signed read-only tool and streaming continuation chain')
+    parser.add_argument('--jar', type=Path)
     args = parser.parse_args()
     ddl = sorted((ROOT / 'db/schema').glob('*.sql'))
     count = sum(len(re.findall(r'CREATE TABLE (\w+)', p.read_text('utf-8'))) for p in ddl)
     web.base.verify(args.mysql_bin.resolve(), ddl_files=ddl, probes=[], expected_table_count=count,
-        inspection_check=lambda _:0, concurrency_check=lambda _:0, extra_checks=isolated)
+        inspection_check=lambda _:0, concurrency_check=lambda _:0, extra_checks=lambda client: isolated(client,args.tools,args.jar.resolve() if args.jar else None))
 
 
 if __name__ == '__main__': main()

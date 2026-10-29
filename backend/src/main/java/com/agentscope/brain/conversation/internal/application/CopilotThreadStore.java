@@ -86,7 +86,7 @@ public class CopilotThreadStore implements CopilotThreads {
                 UPDATE copilot_thread SET active_run_id=?,last_message_no=?,last_activity_at=?,gmt_modified=?,row_version=row_version+1
                 WHERE thread_id=? AND user_id=?
                 """, runId, last + 2, now, now, threadId, user.userId());
-        return new Accepted(threadId, runId, release.releaseId(), history);
+        return new Accepted(threadId, runId, release.releaseId(), history, user.userId());
     }
 
     @Transactional(isolation = Isolation.REPEATABLE_READ)
@@ -155,12 +155,17 @@ public class CopilotThreadStore implements CopilotThreads {
     @Transactional
     public boolean append(String threadId, String runId, String delta) {
         if (delta == null || delta.isEmpty()) return true;
+        return recordOutput(threadId, runId, delta, null);
+    }
+
+    @Transactional
+    public boolean recordOutput(String threadId, String runId, String delta, String displayJson) {
         var rows = jdbc.queryForList("SELECT active_run_id FROM copilot_thread WHERE thread_id=? FOR UPDATE", id(threadId));
         if (rows.size() != 1 || !id(runId).equals(rows.get(0).get("active_run_id"))) return false;
         int changed = jdbc.update("""
-                UPDATE copilot_thread_message SET content=CONCAT(content,?),gmt_modified=?
+                UPDATE copilot_thread_message SET content=CONCAT(content,?),display_json=COALESCE(?,display_json),gmt_modified=?
                 WHERE thread_id=? AND run_id=? AND role='ASSISTANT' AND status='STREAMING'
-                """, delta, now(), threadId, runId);
+                """, delta == null ? "" : delta, displayJson, now(), threadId, runId);
         if (changed != 1) throw new IllegalStateException("COPILOT_RUN_STATE_INVALID");
         return true;
     }
@@ -221,8 +226,8 @@ public class CopilotThreadStore implements CopilotThreads {
     }
 
     private List<Message> messages(String threadId) {
-        return jdbc.query("SELECT message_id,role,content,status FROM copilot_thread_message WHERE thread_id=? ORDER BY message_no",
-                (rs, n) -> new Message(rs.getString(1), rs.getString(2), rs.getString(3), rs.getString(4)), threadId);
+        return jdbc.query("SELECT message_id,role,content,status,display_json FROM copilot_thread_message WHERE thread_id=? ORDER BY message_no",
+                (rs, n) -> new Message(rs.getString(1), rs.getString(2), rs.getString(3), rs.getString(4), rs.getString(5)), threadId);
     }
 
     private LocalDateTime now() { return LocalDateTime.ofInstant(clock.instant().truncatedTo(ChronoUnit.MICROS), ZoneOffset.UTC); }

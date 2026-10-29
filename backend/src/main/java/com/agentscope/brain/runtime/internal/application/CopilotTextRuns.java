@@ -26,12 +26,11 @@ public class CopilotTextRuns {
     private final CopilotThreads threads;
     private final ExecutionSession sessions;
     private final TextAgentExecution agent;
-    private final CopilotToolReply replies;
     private final Map<String, Active> live = new ConcurrentHashMap<>();
     private final Object[] stripes = java.util.stream.IntStream.range(0, 64).mapToObj(i -> new Object()).toArray();
 
-    public CopilotTextRuns(CopilotThreads threads, ExecutionSession sessions, TextAgentExecution agent, CopilotToolReply replies) {
-        this.threads = threads; this.sessions = sessions; this.agent = agent; this.replies = replies;
+    public CopilotTextRuns(CopilotThreads threads, ExecutionSession sessions, TextAgentExecution agent) {
+        this.threads = threads; this.sessions = sessions; this.agent = agent;
     }
 
     public Flux<AguiEvent> start(String threadId, String runId, String employeeId, String text) {
@@ -56,8 +55,9 @@ public class CopilotTextRuns {
             boolean liveRun = active != null;
             String currentRun = thread.activeRunId();
             var history = thread.messages().stream().filter(m -> activeRunMessageVisible(m, currentRun, liveRun))
-                    .map(m -> m.role().equals("USER") ? AguiMessage.userMessage(m.id(), m.content())
-                            : AguiMessage.assistantMessage(m.id(), m.content())).toList();
+                    .flatMap(m -> (m.displayJson() != null ? RunDisplay.restore(m.displayJson())
+                            : java.util.List.of(m.role().equals("USER") ? AguiMessage.userMessage(m.id(), m.content())
+                            : AguiMessage.assistantMessage(m.id(), m.content()))).stream()).toList();
             Flux<AguiEvent> prefix = Flux.just(new AguiEvent.RunStarted(threadId, runId),
                     new AguiEvent.MessagesSnapshot(threadId, runId, history));
             if (active == null) return prefix.concatWithValues(new AguiEvent.RunFinished(threadId, runId));
@@ -90,12 +90,11 @@ public class CopilotTextRuns {
         private Disposable execution;
         private Disposable monitor;
         private boolean ended;
-        private boolean continued;
         private boolean sawTool;
-        private int lengthAtTool = -1;
+        private boolean finalTextAfterTool;
         private long characters;
-        private String messageId;
-        private final StringBuilder assistant = new StringBuilder();
+        private int eventCount;
+        private final RunDisplay display = new RunDisplay();
 
         Active(String threadId, String runId, ExecutionSession.Lease lease) {
             this.threadId = threadId; this.runId = runId; this.lease = lease;
@@ -110,7 +109,7 @@ public class CopilotTextRuns {
                     .publishOn(Schedulers.boundedElastic()).subscribe(this::event,
                             error -> {
                                 LOG.warn("Copilot text run failed threadId={} runId={} cause={}", threadId, runId, describe(error), error);
-                                if (!recover(error)) terminate("FAILED", "MODEL_STREAM_FAILED");
+                                terminate("FAILED", "MODEL_STREAM_FAILED");
                             },
                             () -> {
                                 LOG.warn("Copilot text run completed without RunFinished threadId={} runId={}", threadId, runId);
@@ -120,37 +119,40 @@ public class CopilotTextRuns {
         synchronized void event(AguiEvent event) {
             if (ended) return;
             try {
-                if (event instanceof AguiEvent.ToolCallStart || event instanceof AguiEvent.ToolCallChunk
-                        || event instanceof AguiEvent.ToolCallArgs || event instanceof AguiEvent.ToolCallEnd
-                        || event instanceof AguiEvent.ToolCallResult) {
-                    if (!sawTool) lengthAtTool = assistant.length();
-                    sawTool = true;
-                    events.tryEmitNext(event);
-                    return;
+                if (++eventCount > 20000) { terminate("FAILED", "MODEL_OUTPUT_TOO_LARGE"); return; }
+                if (event instanceof AguiEvent.ToolCallStart || event instanceof AguiEvent.ToolCallChunk) {
+                    sawTool = true; finalTextAfterTool = false;
                 }
-                if (event instanceof AguiEvent.TextMessageStart start && start.messageId() != null) messageId = start.messageId();
+                if (event instanceof AguiEvent.ToolCallResult) finalTextAfterTool = false;
                 String delta = event instanceof AguiEvent.TextMessageContent content ? content.delta()
                         : event instanceof AguiEvent.TextMessageChunk chunk ? chunk.delta() : null;
-                if (event instanceof AguiEvent.TextMessageContent content && content.messageId() != null) messageId = content.messageId();
-                if (event instanceof AguiEvent.TextMessageChunk chunk && chunk.messageId() != null) messageId = chunk.messageId();
+                String reasoning = event instanceof AguiEvent.ReasoningMessageContent content ? content.delta()
+                        : event instanceof AguiEvent.ReasoningMessageChunk chunk ? chunk.delta() : null;
+                if (reasoning != null) characters += reasoning.length();
+                if (characters > 1_048_576) { terminate("FAILED", "MODEL_OUTPUT_TOO_LARGE"); return; }
                 if (delta != null && !delta.isEmpty()) {
                     characters += delta.length();
                     if (characters > 1_048_576) { terminate("FAILED", "MODEL_OUTPUT_TOO_LARGE"); return; }
-                    if (!threads.append(threadId, runId, delta)) {
+                    if (sawTool && !delta.isBlank()) finalTextAfterTool = true;
+                }
+                if (display.apply(event)) {
+                    String view = display.json();
+                    if (view.getBytes(java.nio.charset.StandardCharsets.UTF_8).length > 4_194_304) {
+                        terminate("FAILED", "MODEL_OUTPUT_TOO_LARGE"); return;
+                    }
+                    if (!threads.recordOutput(threadId, runId, delta, view)) {
                         terminate("INTERRUPTED", "EXECUTION_INTERRUPTED"); return;
                     }
-                    assistant.append(delta);
                 }
-                if (event instanceof AguiEvent.TextMessageEnd end && end.messageId() != null) messageId = end.messageId();
-                if (event instanceof AguiEvent.TextMessageEnd || event instanceof AguiEvent.RunFinished) publishContinuation();
-                if (event instanceof AguiEvent.RunFinished && sawTool && !continued && assistant.length() == lengthAtTool)
-                    publishToolAnswer();
                 if (event instanceof AguiEvent.RunError failure) {
                     LOG.warn("Copilot text run received RunError threadId={} runId={} message={} code={}",
                             threadId, runId, failure.message(), failure.code());
-                    terminate("FAILED", "MODEL_STREAM_FAILED"); return;
+                    String code = failure.message() != null && failure.message().matches("MODEL_[A-Z0-9_]{1,56}")
+                            ? failure.message() : "MODEL_STREAM_FAILED";
+                    terminate("FAILED", code); return;
                 }
                 if (event instanceof AguiEvent.RunFinished) {
+                    if (sawTool && !finalTextAfterTool) { terminate("FAILED", "MODEL_FINAL_ANSWER_MISSING"); return; }
                     if (!threads.finish(threadId, runId, "SUCCEEDED", null)) {
                         terminate("INTERRUPTED", "EXECUTION_INTERRUPTED"); return;
                     }
@@ -171,57 +173,6 @@ public class CopilotTextRuns {
                     terminate("FAILED", "THREAD_STORE_UNAVAILABLE");
                 }
             }
-        }
-        private void publishContinuation() {
-            if (continued || !LeakedToolCalls.split(assistant.toString()).needsContinuation()) return;
-            continued = true;
-            appendAnswer(replies.answer(threadId, assistant.toString()));
-        }
-        private void publishToolAnswer() {
-            continued = true;
-            appendAnswer(replies.answerWithTools(threadId));
-        }
-        private void appendAnswer(String answer) {
-            if (answer == null || answer.isBlank()) return;
-            String extra = assistant.isEmpty() || assistant.charAt(assistant.length() - 1) == '\n' ? "\n" + answer : "\n\n" + answer;
-            characters += extra.length();
-            if (characters > 1_048_576) throw new IllegalStateException("MODEL_OUTPUT_TOO_LARGE");
-            if (!threads.append(threadId, runId, extra)) throw new IllegalStateException("EXECUTION_INTERRUPTED");
-            assistant.append(extra);
-            if (messageId != null)
-                events.tryEmitNext(new AguiEvent.TextMessageContent(threadId, runId, messageId, extra));
-        }
-        synchronized boolean recover(Throwable error) {
-            if (ended) return false;
-            boolean leaked = LeakedToolCalls.split(assistant.toString()).needsContinuation();
-            if (!leaked && !nativeToolRejected(error)) return false;
-            try {
-                continued = true;
-                String answer = leaked ? replies.answer(threadId, assistant.toString()) : replies.answerWithTools(threadId);
-                if (answer.isBlank()) return false;
-                boolean open = messageId != null;
-                if (!open) {
-                    messageId = UUID.randomUUID().toString();
-                    events.tryEmitNext(new AguiEvent.TextMessageStart(threadId, runId, messageId, "assistant"));
-                }
-                appendAnswer(answer);
-                events.tryEmitNext(new AguiEvent.TextMessageEnd(threadId, runId, messageId));
-                if (!threads.finish(threadId, runId, "SUCCEEDED", null)) return false;
-                ended = true;
-                events.tryEmitNext(new AguiEvent.RunFinished(threadId, runId));
-                events.tryEmitComplete();
-                close();
-                return true;
-            } catch (RuntimeException failure) {
-                LOG.warn("Copilot tool continuation failed threadId={} runId={}", threadId, runId, failure);
-                return false;
-            }
-        }
-        private static boolean nativeToolRejected(Throwable error) {
-            for (var current = error; current != null; current = current.getCause()) {
-                if ("MODEL_TOOL_CALL_FORBIDDEN".equals(current.getMessage())) return true;
-            }
-            return false;
         }
         synchronized void checkLease() {
             if (!ended && (!lease.valid() || !threads.heartbeat(threadId, runId)))

@@ -10,6 +10,8 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
@@ -17,6 +19,7 @@ import org.springframework.stereotype.Component;
 /** Loads OpenAI-compatible tool definitions for the release's read-only meeting MCP tools. */
 @Component
 public class ReadonlyToolCatalog {
+    private static final Logger LOG = LoggerFactory.getLogger(ReadonlyToolCatalog.class);
     static final Set<String> READ_ONLY = Set.of(
             "identity.resolve",
             "department.search",
@@ -57,6 +60,10 @@ public class ReadonlyToolCatalog {
                 Map<String, Object> parameters = Map.of("type", "object", "properties", Map.of());
                 if (contract.path("inputSchema").isObject()) {
                     parameters = json.convertValue(contract.path("inputSchema"), new TypeReference<>() { });
+                } else {
+                    // Never silently publish an argument-less definition: the model would guess field names.
+                    LOG.warn("MCP tool contract has no input schema; publishing an empty object schema tool={} ref={}",
+                            name, schemaRef);
                 }
                 out.add(new Tool(name, description(name), parameters));
             }

@@ -118,7 +118,9 @@ public class SessionTitleRename {
         if (active.size() > 1) {
             throw new SessionReadFailure(503, "SESSION_READ_UNAVAILABLE");
         }
-        var at = ((LocalDateTime) session.get("last_activity_at")).toInstant(ZoneOffset.UTC).toString();
+        Object activity = session.get("last_activity_at");
+        var at = (activity instanceof java.sql.Timestamp timestamp ? timestamp.toLocalDateTime()
+                : (LocalDateTime) activity).toInstant(ZoneOffset.UTC).toString();
         return new SessionDirectory.Summary(sessionId, String.valueOf(session.get("employee_id")), title, version, at,
                 active.isEmpty() ? null : active.get(0), List.of());
     }
